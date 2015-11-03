@@ -43,7 +43,8 @@ int main() {
   
     pG->set_genotype_size1(18);     // 
     pG->set_genotype_size2(8);
-    
+    pG->set_mutation_magnitude1(0.1);
+    pG->set_mutation_magnitude2(0.1);
     // --------------------------------------------------
     pT->build_table();
     

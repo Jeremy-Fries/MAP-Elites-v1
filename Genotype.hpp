@@ -60,6 +60,10 @@ public:
 
     void build_genotypes();
 // --------------------------------------------------
+    void set_mutation_magnitude1(double);
+    void set_mutation_magnitude2(double);
+    double get_mutation_magnitude1();
+    double get_mutation_magnitude2();
     void mutate1();
     void mutate2();
 // --------------------------------------------------
@@ -70,6 +74,7 @@ public:
 private:
     int genotype_size1, genotype_size2;
     double fit_rating;
+    double mutation_magnitude1, mutation_magnitude2;
     vector<double> genotype_vec1, genotype_vec2;
     
     // vector <double> movement;

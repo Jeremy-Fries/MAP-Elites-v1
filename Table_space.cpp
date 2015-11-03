@@ -122,8 +122,21 @@ void Table_space::build_table(){
     cout << endl << "Table is made" << endl;
 }
 // --------------------------------------------------
+// place genome into corresponding map_space in Table
 void Table_space::place_genome(){
-
+/*
+ Have a new phenotype class that holds the newly generated genome and corresponding fitness rating, momentarily stores new phenotype to be placed into corresponding map_space in table, map_space holds current phenotype and new phenotype, comparison of fit_ratings to determine which one will be deleted. Once new phenotype is placed or destroyed, erases new phenotyoe class for next simulation.
+ 
+            ------- TODO -------
+ 
+ 
+ 
+ class new_phenotype
+ 
+ 
+ 
+ 
+ */
 
 }
 

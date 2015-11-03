@@ -10,7 +10,7 @@
 
 // --------------------------------------------------
             // Phenotypes
-void Map_space::set_phenotypes(double p1, double p2){
+void Map_space::set_phenotypes(double p1, double p2){   // from simulation
     if (phenotype.size()==0){
         phenotype1=p1;
         phenotype2=p2;

@@ -84,12 +84,26 @@ vector<double>& Genotype::display_genotype2() {
     return genotype_vec2;
 }
 // --------------------------------------------------
+            // Mutation Magnitude
+void Genotype::set_mutation_magnitude1(double m1){
+    mutation_magnitude1= m1;
+}
+double Genotype::get_mutation_magnitude1(){
+    return mutation_magnitude1;
+}
+void Genotype::set_mutation_magnitude2(double m2){
+    mutation_magnitude2= m2;
+}
+double Genotype::get_mutation_magnitude2(){
+    return mutation_magnitude2;
+}
+// --------------------------------------------------
             // Mutate 1
 // randomly choose an element from the solution set and add random + or - number.
 void Genotype::mutate1(){
     int gs1 = genotype_size1;
     int dex1 = rand() % gs1;
-    double range = 0.1;
+    double range = mutation_magnitude1;
     double r1 = ((double)rand() / RAND_MAX) * range;
     double r2 = ((double)rand() / RAND_MAX) * range;
     genotype_vec1.at(dex1) += r1 - r2;
@@ -100,7 +114,7 @@ void Genotype::mutate1(){
 void Genotype::mutate2(){
     int gs2 = genotype_size2;
     int dex2 = rand() % gs2;
-    double range = 0.1;
+    double range = mutation_magnitude2;
     double r1 = ((double)rand() / RAND_MAX) * range;
     double r2 = ((double)rand() / RAND_MAX) * range;
     genotype_vec2.at(dex2) += r1 - r2;
