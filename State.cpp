@@ -9,6 +9,7 @@
 #include "State.hpp"
 
 
+//put all current values into the state class for communication with Neural Network
 void State::get_state(craft l, double t, double ts){
     time = t;
     timestep = ts;

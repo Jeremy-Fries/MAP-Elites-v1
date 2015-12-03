@@ -10,10 +10,10 @@
 
 //declare initializations of degree of freedom parameters
 void linDOF::initialize(){
-    s = rand()%100;
-    sdot = rand()%5;
-    sdotdot = 0;
-    target = 0;
+    s = rand()%100;     //linear position
+    sdot = rand()%5;    //linear velocity
+    sdotdot = 0;        //linear acceleration
+    target = 0;         //target position
     
     //cout << s<<"\t\t"<<sdot<<"\t\t"<<endl;
 }

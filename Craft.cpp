@@ -16,6 +16,7 @@ void craft::initialize(int dl, int dr){
     KEinitial = 0;
     sref = 0.02; // wing considered roughly rectangular with 20 cm chord length, 1 m span
     
+    //Set up Linear DOFs
     for(int i=0;i<dl;i++){
         linDOF lin;
         lin.initialize();
@@ -23,6 +24,7 @@ void craft::initialize(int dl, int dr){
         frame.push_back(lin);
     }
     
+    //Set up Rotational DOFs
     for(int i=0;i<dr;i++){
         rotDOF rot;
         rot.initialize();
@@ -30,6 +32,8 @@ void craft::initialize(int dl, int dr){
         orientation.push_back(rot);
     }
     
+    
+    //Force x-component of velocity into negative direction
     frame.at(0).sdot = frame.at(0).sdot*-1;
 }
 // --------------------------------------------------
