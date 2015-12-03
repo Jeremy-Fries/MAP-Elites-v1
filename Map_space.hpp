@@ -15,27 +15,19 @@
 #include <vector>
 #include <algorithm>
 #include <ostream>
-#include "Genotype.hpp"
+#include "Individual.hpp"
 
 using namespace std;
 
 class Map_space{
-    friend class Table_space;
-    friend class Genotype;
+    friend class Map_Elites;
+    friend class Individual;
 protected:
     
     
 public:
 // --------------------------------------------------
-            // Phenotypes
-    void set_phenotypes(double, double);
-    double get_phenotype1();
-    void display_phenotype1();
-    double get_phenotype2();
-    void display_phenotype2();
-    double get_phenotype3();
-    void display_phenotype3();
-// --------------------------------------------------
+    void display_space();
             // Lower Bound 1
     void set_LB1(int);
     int get_LB1();
@@ -62,18 +54,18 @@ public:
     void display_UB3();
 // --------------------------------------------------
     void build_map_space();
-    void build_phenotype();
-    
-    
+// --------------------------------------------------
+    void set_best_fit();
+    void compare_new_individual();
+    int get_counter();
+    void display_counter();
 // --------------------------------------------------
 private:
-    double phenotype1, phenotype2, phenotype3;
-    double possible_phenotype1, possible_phenotype2, possible_phenotype3;
+    int counter=0;
     double LB1, UB1, LB2, UB2, LB3, UB3;
+    double best_fit_rating;
     vector<double> LB_vec;
     vector<double> UB_vec;
-    vector<double> phenotype;
-    vector<double> possible_phenotype;
-    
+    vector<Individual> current_individual;
 };
 #endif /* Map_space_hpp */
