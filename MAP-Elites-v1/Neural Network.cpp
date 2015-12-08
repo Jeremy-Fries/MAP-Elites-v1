@@ -462,7 +462,7 @@ void Neural_Network::activation_function(vector<double> sim_state_variable_input
     output_layer_sigmoid();
     unnormalization();
     //Begin Communitcation From Neural Network
-    communication_to_simulator(controls_for_simulator);
+    communication_to_simulator();
     //End Communitcation From Neural Network
 }
 
