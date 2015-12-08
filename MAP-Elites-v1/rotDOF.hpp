@@ -17,6 +17,9 @@
 #include <cmath>
 #include <iomanip>
 
+//----------------------------------
+//Declaring a class of rotational degrees of freedom
+
 using namespace std;
 
 class rotDOF{

@@ -130,7 +130,6 @@ vector<double>& Individual::display_individual2() {
     return genome2;
 }
 // --------------------------------------------------
-// Determines magnitude of mutation, what range the mutation can be.
             // Mutation Magnitude
 // mutates number by preset magnitude, ex. 0.1, 0.01, 0.001
 void Individual::set_mutation_magnitude1(double m1){
@@ -152,7 +151,6 @@ void Individual::display_mutation_magnitude2(){
     cout << endl << "Mutation magnitude 2 is: " << mutation_magnitude2 << endl;
 }
 // --------------------------------------------------
-// Determines how many elements in vector can be mutated in a single mutation.
             // Mutation amount
 // amount of possible elements in Individual that can be mutated
 void Individual::set_mutation_amount1(int m1){     // 0-100%, input 15 for 15%

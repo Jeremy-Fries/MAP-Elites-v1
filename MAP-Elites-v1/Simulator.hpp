@@ -33,6 +33,16 @@ protected:
     double tstep;
     double const tmax = 60;
     double const rhoair = 1.2;
+
+    int linear, rotational, numalf;     //number of linear and rotational DOFs, number of AOAs with CL and CD values
+    double t, anglechange, fitness;     //time, rotational tracker, fitness value(likely to change)
+    double const tstep = 0.1;           //simulation calculates values every 0.1 seconds
+    double const tmax = 60;             //Maximum time that simulation will run for
+    double const rhoair = 1.2;          //Density of air, used for aerodynamic calculations
+    
+    
+    //holding values for fitness calculations
+
     vector<double> xpositions;
     vector<double> zpositions;
     vector<double> xvels;
@@ -45,10 +55,16 @@ protected:
     vector<double> anglevel;
     vector<double> angleaccel;
     vector<double> angleke;
+    
+    //track past states - We might not need this if we are holding above fitness values.
     vector<State> stateholder;  // once craft and state class are intialized
-    vector<double> controls;
+    
+    //Vectors for Communicating/Manipulating controls and forces
+    //vector<double> controls;
     vector<double> forces;
     vector<vector<double> > aero;
+    
+    // Single craft parameters
     craft lander;
     State currentstate;
     ofstream myfile;
