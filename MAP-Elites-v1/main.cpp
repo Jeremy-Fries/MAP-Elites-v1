@@ -16,12 +16,6 @@
 #include <iomanip>
 #include <cstdlib>
 #include "Wrapper.hpp"
-#include "Map_Elites.hpp"
-#include "Map_space.hpp"
-#include "Individual.hpp"
-#include "Neural Network.hpp"
-//#include "Dummy Simulator.hpp"  // Delete - only for NN
-//#include "Dummy EA.hpp"         // Delete - only for NN
 
 // TODO - include any other files?
 
@@ -30,7 +24,7 @@ using namespace std;
 
 
 int main() {
-    srand(time(NULL));
+    //srand(time(NULL));
 // --------------------------------------------------
 
 

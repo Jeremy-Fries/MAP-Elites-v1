@@ -16,10 +16,6 @@
 
 // --------------------------------------------------
 // Run NN loop
-//EA.create_weights(DS.sim_number_state_variable_inputs, DS.sim_hidden_layer_size, DS.sim_number_controls);
-
-//DS.create_state_variables();
-//DS.create_state_variable_limits();
 
 //// Loop - Start
 //NN.activation_function(DS.sim_state_variable_inputs, DS.sim_state_variable_upper_limits, DS.sim_state_variable_lower_limits, DS.sim_hidden_layer_size, DS.sim_number_controls, DS.sim_control_upper_limits, DS.sim_control_lower_limits, EA.ea_input_to_hidden_layer_weights, EA.ea_hidden_to_output_layer_weights, DS.controls_for_simulator);
@@ -73,6 +69,7 @@ void Wrapper::fill_MAP(){
         while (Sim.t<Sim.tmax || Sim.lander.frame.at(1).s > Sim.lander.frame.at(1).target){
             NN.communication_from_simulator(Sim.currentstate.translate_function(), Sim.currentstate.state_variables_UpLimit, Sim.currentstate.state_variables_LowLimit, hidden_layer_size, Sim.currentstate.num_of_controls, Sim.currentstate.control_UpLimits, Sim.currentstate.control_LowLimits);
             Sim.run_sim(NN.communication_to_simulator());
+            NN.reset_neural_network();                      // Do we want this??
         }
         // fitness function from Sim
         // I.set_fit_rating( double );
@@ -95,6 +92,7 @@ void Wrapper::mutate_MAP(){
         while (Sim.t<Sim.tmax || Sim.lander.frame.at(1).s > Sim.lander.frame.at(1).target){
             NN.communication_from_simulator(Sim.currentstate.translate_function(), Sim.currentstate.state_variables_UpLimit, Sim.currentstate.state_variables_LowLimit, hidden_layer_size, Sim.currentstate.num_of_controls, Sim.currentstate.control_UpLimits, Sim.currentstate.control_LowLimits);
             Sim.run_sim(NN.communication_to_simulator());
+            NN.reset_neural_network();                      // Do we want this??
         }
         // fitness function from Sim
         // I.set_fit_rating( double );

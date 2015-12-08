@@ -28,15 +28,9 @@ class Simulator{
     friend class State;
     friend class Wrapper;
 protected:
-    int linear, rotational, numalf;
-    double t, anglechange, fitness;
-    double tstep;
-    double const tmax = 60;
-    double const rhoair = 1.2;
-
     int linear, rotational, numalf;     //number of linear and rotational DOFs, number of AOAs with CL and CD values
     double t, anglechange, fitness;     //time, rotational tracker, fitness value(likely to change)
-    double const tstep = 0.1;           //simulation calculates values every 0.1 seconds
+    double tstep;        //simulation calculates values every 0.1 seconds set in initialize
     double const tmax = 60;             //Maximum time that simulation will run for
     double const rhoair = 1.2;          //Density of air, used for aerodynamic calculations
     
