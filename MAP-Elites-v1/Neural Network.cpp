@@ -413,18 +413,21 @@ double Neural_Network::sigmoid_function()
 
 //-----------------------------------------------------------------------------------------------------------------------------
 //communication to simulator
-void Neural_Network::communication_to_simulator(vector<double> controls_for_simulator)
+vector<double> Neural_Network::communication_to_simulator()
 {
+    controls_for_simulator.empty();
     for(int j = 0; j < Layers.at(2).Nodes.size(); j++)
     {
         controls_for_simulator.push_back(Layers.at(2).Nodes.at(j).element);
     }
-    cout << "Controls for Simulator" << endl;
-    cout << controls_for_simulator.size() << endl;
-    for(int j = 0; j < controls_for_simulator.size(); j++)
-    {
-        cout << controls_for_simulator.at(j) << "\t";
-    }
+    return controls_for_simulator;
+    
+//    cout << "Controls for Simulator" << endl;
+//    cout << controls_for_simulator.size() << endl;
+//    for(int j = 0; j < controls_for_simulator.size(); j++)
+//    {
+//        cout << controls_for_simulator.at(j) << "\t";
+//    }
     ////cout << "\n" << endl;
 }
 

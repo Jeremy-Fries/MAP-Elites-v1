@@ -47,6 +47,7 @@ void Simulator::initialize_sim(){
     linear = 2;         // TODO much later - set and get functions
     rotational = 1;     // TODO much later - set and get functions
     t = 0;
+    tstep = 0.1;
     anglechange = 0;
     myfile.open("SimulatorData.txt");
     numalf = loadaero();
@@ -69,6 +70,7 @@ void Simulator::initialize_sim(){
     angleke.clear();
     
     lander.initialize(linear, rotational);
+    currentstate.initialize_translate_limits(); 
     currentstate.printheader();
     currentstate.get_state(lander, t, tstep);
     currentstate.printround(myfile);
@@ -77,10 +79,16 @@ void Simulator::initialize_sim(){
     fitnessvector();
 }
 // --------------------------------------------------
-void Simulator::run_sim(){
-    
+
+
+// --------------------------------------------------
+void Simulator::run_sim(vector<double> controls){
+    // TODO - move target out of linDOF
+    // TODO - NO LOOP here
     while(t<tmax && lander.frame.at(1).s > lander.frame.at(1).target){
-        controls = controller(currentstate);                                        // TODO - controls from neural network
+        //controls = controller(currentstate);
+        // TODO - controls from neural network
+        
         forces = forcecalc(controls, lander, rhoair, aero);
         anglechange = anglechange + dynamicscalc(lander, forces, tstep, linear, rotational);
         t = t+tstep;

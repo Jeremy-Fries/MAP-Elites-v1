@@ -25,6 +25,7 @@ using namespace std;
 //declare a craft with a reference frame and values for mass and moment of inertia
 class craft{
     friend class State;
+    friend class Simulator;
     friend class linDOF;
     friend class rotDOF;
 public:

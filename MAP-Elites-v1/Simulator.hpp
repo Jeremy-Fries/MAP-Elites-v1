@@ -26,10 +26,11 @@ using namespace std;
 class Simulator{
     friend class Craft;
     friend class State;
+    friend class Wrapper;
 protected:
     int linear, rotational, numalf;
     double t, anglechange, fitness;
-    double const tstep = 0.1;
+    double tstep;
     double const tmax = 60;
     double const rhoair = 1.2;
     vector<double> xpositions;
@@ -56,7 +57,7 @@ public:
     int loadaero();
     void fitnessvector();
     void initialize_sim();
-    void run_sim();
+    void run_sim(vector<double>);
     void end_sim();
 // --------------------------------------------------
     

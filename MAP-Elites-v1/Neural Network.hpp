@@ -48,7 +48,8 @@ public:
     void communication_from_simulator(vector<double> sim_state_variable_inputs, vector<double> sim_state_variable_upper_limits, vector<double> sim_state_variable_lower_limits, int sim_hidden_layer_size, int sim_number_controls, vector<double> sim_control_upper_limits, vector<double> sim_control_lower_limits);
     vector<double> control_upper_limits;
     vector<double> control_lower_limits;
-    void communication_to_simulator(vector<double> controls_for_simulator);
+    vector<double> controls_for_simulator;
+    vector<double> communication_to_simulator();
     
     //Communication with EA
     vector<double> input_to_hidden_layer_weights;

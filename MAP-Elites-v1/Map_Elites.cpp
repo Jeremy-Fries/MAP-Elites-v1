@@ -275,7 +275,7 @@ void Map_Elites::individual_from_map(double p1, double p2){
         temp_individual2 = Map.at(row_value).at(element_value).current_individual.at(0).get_individual2();
         cout << endl << "individuals passed to temp" << endl;
         get_temp_individual1();     // TODO - check to see if works !!!!!!!!!!
-        get_temp_individual2();
+        get_temp_individual2();     
     }
     else {
         cout << endl << "No individual in: " << p1 << p2 << endl;
@@ -290,18 +290,6 @@ vector<double>& Map_Elites::get_temp_individual2(){
     return temp_individual2;
 }
 // --------------------------------------------------
-/*void Map_Elites::fill_Map(){           // take in fit and pheno from simulation
-    for(int f=0; f<fill_generation; f++){
-        I.build_individuals();
-        // pass individual vectors to controller          // TODO
-        // take fitness rating and set phenotypes       // TODO
-        place_individual_in_map(I);
-    }
-        cout << endl << "Fill Generation Complete" << endl;
-}
-// --------------------------------------------------
-
-*/
 
 
 

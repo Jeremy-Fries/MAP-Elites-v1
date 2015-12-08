@@ -94,8 +94,10 @@ display_individual_size2();
 }
 // --------------------------------------------------
 // Builds 2 vector of doubles for weights of the NN layers.
+// TODO - int sim_hidden_layer_size
+
             // Build Individuals
-void Individual::build_individuals(){
+void Individual::build_individual(){
     for (int s = 0; s < individual_size1; s++)
     {
         genome1.push_back(rand01());	// random 0 - 1

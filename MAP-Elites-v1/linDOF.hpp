@@ -1,13 +1,13 @@
 //
-//  State.hpp
+//  linDOF.hpp
 //  Mapping_Elites v1
 //
 //  Created by Jeremy Fries on 12/2/15.
 //  Copyright © 2015 Jeremy Fries. All rights reserved.
 //
 
-#ifndef State_hpp
-#define State_hpp
+#ifndef linDOF_hpp
+#define linDOF_hpp
 
 #include <stdio.h>
 #include <iostream>
@@ -16,25 +16,19 @@
 #include <string>
 #include <cmath>
 #include <iomanip>
-#include "Craft.hpp"
 
 using namespace std;
 
+//declare linear degrees of freedom parameters
 
-class State{
+class linDOF{
     friend class Craft;
 public:
-    double time, timestep, xpos, xvel;
-    double zpos, zvel, phi, phivel, KEx, KEz, KEp;
+    double s, sdot, sdotdot;
+    double target;      // TODO - Move target to sim
     
-    void get_state(craft l, double t, double ts);
-    void printheader();
-    void printround(ofstream & file);
-    
+    void initialize();
 };
 
 
-
-
-
-#endif /* State_hpp */
+#endif /* linDOF_hpp */

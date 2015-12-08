@@ -57,7 +57,7 @@ public:
     void display_individual_params();
 // --------------------------------------------------
             // individual
-    void build_individuals();
+    void build_individual();
             // Return individual1
     vector <double>& get_individual1();
             // Display individual1
