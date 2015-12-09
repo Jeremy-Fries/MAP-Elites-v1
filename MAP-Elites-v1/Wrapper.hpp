@@ -46,6 +46,7 @@ public:
     void wrapper_runs_sim(vector<double>,vector<double>);
     void fill_MAP();
     void mutate_MAP();
+    void run_single_individual();
 // --------------------------------------------------
         // Interactions between - MAP and NN
     

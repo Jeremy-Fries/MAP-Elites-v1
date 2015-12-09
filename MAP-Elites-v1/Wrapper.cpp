@@ -12,7 +12,7 @@
 // Run sim loop
 //  sim.initialize_sim();
 //  sim.run_sim();
-//  sim.end_sim();
+//  sim.end_sim();      // only closes txt file and couts
 
 // --------------------------------------------------
 // Run NN loop
@@ -102,6 +102,37 @@ void Wrapper::mutate_MAP(){
     }
 }
 // --------------------------------------------------
+// Run single test, modifiable weights of NN, recieve fit_rating and phenotypes.
+
+void Wrapper::run_single_individual(){
+    Individual I;
+    Simulator Sim;
+    Neural_Network NN;
+    I.set_individual_params(isize_1, isize_2, imutate_mag_1, imutate_mag_2, imutate_amount_1, imutate_amount_2);
+    
+    // TODO - User inputs all weights.
+    // TODO -Able to change how weights are generated, access to different random functions.
+    
+    I.build_individual(); // TODO - change
+    
+    NN.communication_from_EA(I.get_individual1(), I.get_individual2());
+    Sim.initialize_sim();
+    while (Sim.t<Sim.tmax || Sim.lander.frame.at(1).s > Sim.lander.frame.at(1).target){
+        NN.communication_from_simulator(Sim.currentstate.translate_function(), Sim.currentstate.state_variables_UpLimit, Sim.currentstate.state_variables_LowLimit, hidden_layer_size, Sim.currentstate.num_of_controls, Sim.currentstate.control_UpLimits, Sim.currentstate.control_LowLimits);
+        Sim.run_sim(NN.communication_to_simulator());
+        NN.reset_neural_network();                      // Do we want this??
+    }
+    // fitness function from Sim
+    // I.set_fit_rating( double );
+    // get phenotypes from Sim
+    // I.set_phenotypes( double , double );
+    // ME.place_individual_in_map(I);
+}
+// --------------------------------------------------
+
+
+
+
 
 
 
