@@ -8,6 +8,8 @@
 
 using namespace std;
 
+#include "Craft.hpp"
+
 #ifndef anglemath_h
 #define anglemath_h
 

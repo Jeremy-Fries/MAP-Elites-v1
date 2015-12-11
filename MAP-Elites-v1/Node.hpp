@@ -6,6 +6,8 @@
 //  Copyright © 2015 Scott Forer. All rights reserved.
 //
 
+class Node;
+
 #ifndef Node_hpp
 #define Node_hpp
 
@@ -18,6 +20,7 @@
 #include <algorithm>
 #include <fstream>
 #include <iomanip>
+
 using namespace std;
 
 class Node

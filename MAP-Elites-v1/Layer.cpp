@@ -10,14 +10,3 @@
 
 //-----------------------------------------------------------------------------------------------------------------------------
 //Node generator
-void Layer::create_nodes(int layer_size)
-{
-    for(int i=0; i<layer_size; i++)
-    {
-        Node N;
-        Nodes.push_back(N);
-    }
-    ////cout << "Number of nodes" << endl;
-    ////cout << Nodes.size() << endl;
-    ////cout << "\n" << endl;
-}

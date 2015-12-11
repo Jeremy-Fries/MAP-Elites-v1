@@ -6,6 +6,8 @@
 //  Copyright © 2015 Jeremy Fries. All rights reserved.
 //
 
+class rotDOF;
+
 #ifndef rotDOF_hpp
 #define rotDOF_hpp
 
@@ -30,5 +32,13 @@ public:
     
     void initialize();
 };
+
+void rotDOF::initialize(){
+    q = (rand()%60)*4*atan(1)/180; //Initializing orientation between 0 and 60 degrees with respect to the negative x-axis and converting to radians
+    qdot = 0;
+    qdotdot = 0; //Initializing angular velocity and acceleration to 0 for simplicity.
+    target = 0;
+}
+
 
 #endif /* rotDOF_hpp */

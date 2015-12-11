@@ -6,8 +6,11 @@
 //  Copyright © 2015 Sierra Adibi. All rights reserved.
 //
 
-#include "anglemath.h"
+//#include "anglemath.h"
 using namespace std;
+
+#include "Craft.hpp"
+#include "anglemath.h"
 
 #ifndef dynamics_h
 #define dynamics_h

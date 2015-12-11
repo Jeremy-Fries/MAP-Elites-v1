@@ -6,6 +6,8 @@
 //  Copyright © 2015 Jeremy Fries. All rights reserved.
 //
 
+class linDOF;
+
 #ifndef linDOF_hpp
 #define linDOF_hpp
 
@@ -30,5 +32,15 @@ public:
     void initialize();
 };
 
+
+//declare initializations of degree of freedom parameters
+void linDOF::initialize(){
+    s = rand()%100;     //linear position
+    sdot = rand()%5;    //linear velocity
+    sdotdot = 0;        //linear acceleration
+    target = 0;         //target position
+    
+    //cout << s<<"\t\t"<<sdot<<"\t\t"<<endl;
+}
 
 #endif /* linDOF_hpp */

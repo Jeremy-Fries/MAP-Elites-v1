@@ -8,18 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		8DCC951A1C10CF410030D596 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8DCC95191C10CF410030D596 /* main.cpp */; };
-		8DCC953C1C10CFE40030D596 /* Craft.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8DCC95211C10CFE40030D596 /* Craft.cpp */; };
-		8DCC953E1C10CFE40030D596 /* Individual.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8DCC95261C10CFE40030D596 /* Individual.cpp */; };
-		8DCC953F1C10CFE40030D596 /* Layer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8DCC95281C10CFE40030D596 /* Layer.cpp */; };
-		8DCC95401C10CFE40030D596 /* linDOF.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8DCC952A1C10CFE40030D596 /* linDOF.cpp */; };
-		8DCC95411C10CFE40030D596 /* Map_Elites.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8DCC952C1C10CFE40030D596 /* Map_Elites.cpp */; };
-		8DCC95421C10CFE40030D596 /* Map_space.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8DCC952E1C10CFE40030D596 /* Map_space.cpp */; };
-		8DCC95431C10CFE40030D596 /* Neural Network.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8DCC95301C10CFE40030D596 /* Neural Network.cpp */; };
-		8DCC95441C10CFE40030D596 /* Node.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8DCC95321C10CFE40030D596 /* Node.cpp */; };
-		8DCC95451C10CFE40030D596 /* rotDOF.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8DCC95341C10CFE40030D596 /* rotDOF.cpp */; };
-		8DCC95461C10CFE40030D596 /* Simulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8DCC95361C10CFE40030D596 /* Simulator.cpp */; };
-		8DCC95471C10CFE40030D596 /* State.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8DCC95381C10CFE40030D596 /* State.cpp */; };
-		8DCC95481C10CFE40030D596 /* Wrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8DCC953A1C10CFE40030D596 /* Wrapper.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -38,30 +26,18 @@
 		8DCC95161C10CF410030D596 /* Map-Elites-v1 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Map-Elites-v1"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8DCC95191C10CF410030D596 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		8DCC95201C10CFE40030D596 /* anglemath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = anglemath.h; path = "MAP-Elites-v1/anglemath.h"; sourceTree = SOURCE_ROOT; };
-		8DCC95211C10CFE40030D596 /* Craft.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Craft.cpp; path = "MAP-Elites-v1/Craft.cpp"; sourceTree = SOURCE_ROOT; };
 		8DCC95221C10CFE40030D596 /* Craft.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Craft.hpp; path = "MAP-Elites-v1/Craft.hpp"; sourceTree = SOURCE_ROOT; };
 		8DCC95231C10CFE40030D596 /* dynamics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = dynamics.h; path = "MAP-Elites-v1/dynamics.h"; sourceTree = SOURCE_ROOT; };
-		8DCC95261C10CFE40030D596 /* Individual.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Individual.cpp; path = "MAP-Elites-v1/Individual.cpp"; sourceTree = SOURCE_ROOT; };
 		8DCC95271C10CFE40030D596 /* Individual.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Individual.hpp; path = "MAP-Elites-v1/Individual.hpp"; sourceTree = SOURCE_ROOT; };
-		8DCC95281C10CFE40030D596 /* Layer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Layer.cpp; path = "MAP-Elites-v1/Layer.cpp"; sourceTree = SOURCE_ROOT; };
 		8DCC95291C10CFE40030D596 /* Layer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Layer.hpp; path = "MAP-Elites-v1/Layer.hpp"; sourceTree = SOURCE_ROOT; };
-		8DCC952A1C10CFE40030D596 /* linDOF.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = linDOF.cpp; path = "MAP-Elites-v1/linDOF.cpp"; sourceTree = SOURCE_ROOT; };
 		8DCC952B1C10CFE40030D596 /* linDOF.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = linDOF.hpp; path = "MAP-Elites-v1/linDOF.hpp"; sourceTree = SOURCE_ROOT; };
-		8DCC952C1C10CFE40030D596 /* Map_Elites.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Map_Elites.cpp; path = "MAP-Elites-v1/Map_Elites.cpp"; sourceTree = SOURCE_ROOT; };
 		8DCC952D1C10CFE40030D596 /* Map_Elites.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Map_Elites.hpp; path = "MAP-Elites-v1/Map_Elites.hpp"; sourceTree = SOURCE_ROOT; };
-		8DCC952E1C10CFE40030D596 /* Map_space.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Map_space.cpp; path = "MAP-Elites-v1/Map_space.cpp"; sourceTree = SOURCE_ROOT; };
 		8DCC952F1C10CFE40030D596 /* Map_space.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Map_space.hpp; path = "MAP-Elites-v1/Map_space.hpp"; sourceTree = SOURCE_ROOT; };
-		8DCC95301C10CFE40030D596 /* Neural Network.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "Neural Network.cpp"; path = "MAP-Elites-v1/Neural Network.cpp"; sourceTree = SOURCE_ROOT; };
 		8DCC95311C10CFE40030D596 /* Neural Network.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = "Neural Network.hpp"; path = "MAP-Elites-v1/Neural Network.hpp"; sourceTree = SOURCE_ROOT; };
-		8DCC95321C10CFE40030D596 /* Node.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Node.cpp; path = "MAP-Elites-v1/Node.cpp"; sourceTree = SOURCE_ROOT; };
 		8DCC95331C10CFE40030D596 /* Node.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Node.hpp; path = "MAP-Elites-v1/Node.hpp"; sourceTree = SOURCE_ROOT; };
-		8DCC95341C10CFE40030D596 /* rotDOF.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = rotDOF.cpp; path = "MAP-Elites-v1/rotDOF.cpp"; sourceTree = SOURCE_ROOT; };
 		8DCC95351C10CFE40030D596 /* rotDOF.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = rotDOF.hpp; path = "MAP-Elites-v1/rotDOF.hpp"; sourceTree = SOURCE_ROOT; };
-		8DCC95361C10CFE40030D596 /* Simulator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Simulator.cpp; path = "MAP-Elites-v1/Simulator.cpp"; sourceTree = SOURCE_ROOT; };
 		8DCC95371C10CFE40030D596 /* Simulator.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Simulator.hpp; path = "MAP-Elites-v1/Simulator.hpp"; sourceTree = SOURCE_ROOT; };
-		8DCC95381C10CFE40030D596 /* State.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = State.cpp; path = "MAP-Elites-v1/State.cpp"; sourceTree = SOURCE_ROOT; };
 		8DCC95391C10CFE40030D596 /* State.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = State.hpp; path = "MAP-Elites-v1/State.hpp"; sourceTree = SOURCE_ROOT; };
-		8DCC953A1C10CFE40030D596 /* Wrapper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Wrapper.cpp; path = "MAP-Elites-v1/Wrapper.cpp"; sourceTree = SOURCE_ROOT; };
 		8DCC953B1C10CFE40030D596 /* Wrapper.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Wrapper.hpp; path = "MAP-Elites-v1/Wrapper.hpp"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -96,29 +72,17 @@
 			isa = PBXGroup;
 			children = (
 				8DCC95191C10CF410030D596 /* main.cpp */,
-				8DCC953A1C10CFE40030D596 /* Wrapper.cpp */,
 				8DCC953B1C10CFE40030D596 /* Wrapper.hpp */,
-				8DCC952C1C10CFE40030D596 /* Map_Elites.cpp */,
 				8DCC952D1C10CFE40030D596 /* Map_Elites.hpp */,
-				8DCC952E1C10CFE40030D596 /* Map_space.cpp */,
 				8DCC952F1C10CFE40030D596 /* Map_space.hpp */,
-				8DCC95261C10CFE40030D596 /* Individual.cpp */,
 				8DCC95271C10CFE40030D596 /* Individual.hpp */,
-				8DCC95301C10CFE40030D596 /* Neural Network.cpp */,
 				8DCC95311C10CFE40030D596 /* Neural Network.hpp */,
-				8DCC95281C10CFE40030D596 /* Layer.cpp */,
 				8DCC95291C10CFE40030D596 /* Layer.hpp */,
-				8DCC95321C10CFE40030D596 /* Node.cpp */,
 				8DCC95331C10CFE40030D596 /* Node.hpp */,
-				8DCC95361C10CFE40030D596 /* Simulator.cpp */,
 				8DCC95371C10CFE40030D596 /* Simulator.hpp */,
-				8DCC95211C10CFE40030D596 /* Craft.cpp */,
 				8DCC95221C10CFE40030D596 /* Craft.hpp */,
-				8DCC95381C10CFE40030D596 /* State.cpp */,
 				8DCC95391C10CFE40030D596 /* State.hpp */,
-				8DCC952A1C10CFE40030D596 /* linDOF.cpp */,
 				8DCC952B1C10CFE40030D596 /* linDOF.hpp */,
-				8DCC95341C10CFE40030D596 /* rotDOF.cpp */,
 				8DCC95351C10CFE40030D596 /* rotDOF.hpp */,
 				8DCC95201C10CFE40030D596 /* anglemath.h */,
 				8DCC95231C10CFE40030D596 /* dynamics.h */,
@@ -182,19 +146,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8DCC953E1C10CFE40030D596 /* Individual.cpp in Sources */,
-				8DCC95481C10CFE40030D596 /* Wrapper.cpp in Sources */,
-				8DCC953C1C10CFE40030D596 /* Craft.cpp in Sources */,
-				8DCC95461C10CFE40030D596 /* Simulator.cpp in Sources */,
 				8DCC951A1C10CF410030D596 /* main.cpp in Sources */,
-				8DCC95401C10CFE40030D596 /* linDOF.cpp in Sources */,
-				8DCC95431C10CFE40030D596 /* Neural Network.cpp in Sources */,
-				8DCC95471C10CFE40030D596 /* State.cpp in Sources */,
-				8DCC95451C10CFE40030D596 /* rotDOF.cpp in Sources */,
-				8DCC95411C10CFE40030D596 /* Map_Elites.cpp in Sources */,
-				8DCC953F1C10CFE40030D596 /* Layer.cpp in Sources */,
-				8DCC95421C10CFE40030D596 /* Map_space.cpp in Sources */,
-				8DCC95441C10CFE40030D596 /* Node.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
