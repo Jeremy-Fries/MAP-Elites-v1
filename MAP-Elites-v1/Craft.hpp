@@ -19,7 +19,6 @@ class craft;
 #include <cmath>
 #include <iomanip>
 
-//#include "State.hpp"
 #include "linDOF.hpp"
 #include "rotDOF.hpp"
 

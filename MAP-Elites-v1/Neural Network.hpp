@@ -40,18 +40,19 @@ protected:
     void create_layers();
 
 public:
+    
     //Neural Network Framework
     vector<Layer> Layers;
     vector<int> layer_size;
     int hidden_layer_size;
     int number_controls;
-    void initialize();
+    void initialize(int num_hidden, int num_controls);
 
     //Communication with Simulator
     vector<double> state_variables;
     vector<double> state_variable_upper_limits;
     vector<double> state_variable_lower_limits;
-    void communication_from_simulator(vector<double> sim_state_variable_inputs, vector<double> sim_state_variable_upper_limits, vector<double> sim_state_variable_lower_limits, int sim_hidden_layer_size, int sim_number_controls, vector<double> sim_control_upper_limits, vector<double> sim_control_lower_limits);
+    void communication_from_simulator_deprecated(vector<double> sim_state_variable_inputs, vector<double> sim_state_variable_upper_limits, vector<double> sim_state_variable_lower_limits, int sim_hidden_layer_size, int sim_number_controls, vector<double> sim_control_upper_limits, vector<double> sim_control_lower_limits);
     vector<double> control_upper_limits;
     vector<double> control_lower_limits;
     vector<double> controls_for_simulator;
@@ -69,7 +70,6 @@ public:
     
     //Input to Hidden Layer
     void input_hidden_layer_connection();
-    vector<double> bb;
     vector<double> input_to_hidden_layer_connection;
     vector<double> weighted_input_to_hidden_layer_connection;
     void input_to_hidden_layer_weight_multiplication();
@@ -80,7 +80,6 @@ public:
     
     //Hidden to Output Layer
     void hidden_output_layer_connection();
-    vector<double> cc;
     vector<double> hidden_to_output_layer_connection;
     vector<double> weighted_hidden_to_output_layer_connection;
     void hidden_to_output_layer_weight_multiplication();
@@ -96,8 +95,16 @@ public:
     double sigmoid_output;
     double sigmoid_function();
     
-    //Neruarl Network Process
-    void activation_function(vector<double> sim_state_variable_inputs, vector<double> sim_state_variable_upper_limits, vector<double> sim_state_variable_lower_limits, int sim_hidden_layer_size, int sim_number_controls, vector<double> sim_control_upper_limits, vector<double> sim_control_lower_limits, vector<double> ea_input_to_hidden_layer_weights, vector<double> ea_hidden_to_output_layer_weights, vector<double> controls_for_simulator);
+    //Neural Network Process
+    vector<double> activation_function(vector<double> state);
+    void take_input_limits(vector<double> lower, vector<double> upper);
+    void take_output_limits(vector<double> lower, vector<double> upper);
+    void take_num_hidden_units(int num_hidden);
+    void take_num_controls(int num_controls);
+    void take_weights(vector<double> in_to_hid, vector<double> hid_to_out);
+    void take_state(vector<double> S);
+    
+    void activation_function_deprecated(vector<double> sim_state_variable_inputs, vector<double> sim_state_variable_upper_limits, vector<double> sim_state_variable_lower_limits, int sim_hidden_layer_size, int sim_number_controls, vector<double> sim_control_upper_limits, vector<double> sim_control_lower_limits, vector<double> ea_input_to_hidden_layer_weights, vector<double> ea_hidden_to_output_layer_weights, vector<double> controls_for_simulator);
     
     //Text File Functions
     void write_state_variables_limits_to_text(bool display);
@@ -107,8 +114,8 @@ public:
     void write_to_text_file();
     
     //Reset Funtion
-    void reset_neural_network();
-    void total_neural_network_reset();
+    void reset_neural_network(); /// @SF need comments on why this differs from below.
+    void total_neural_network_reset(); /// @SF need comments on why this differs from above.
 
 private:
     
@@ -116,9 +123,33 @@ private:
 };
 
 
+
+void Neural_Network::take_input_limits(vector<double> low, vector<double> up){
+    state_variable_lower_limits = low;
+    state_variable_upper_limits = up;
+}
+void Neural_Network::take_output_limits(vector<double> low, vector<double> up){
+    control_upper_limits = up;
+    control_lower_limits = low;
+}
+void Neural_Network::take_num_hidden_units(int n){ /// repeated from initialize, but no harm.
+    hidden_layer_size = n;
+}
+void Neural_Network::take_num_controls(int n){ /// repeated from initialize, but to no harm.
+    number_controls = n;
+}
+void Neural_Network::take_weights(vector<double> IH, vector<double> HO){
+    input_to_hidden_layer_weights = IH;
+    hidden_to_output_layer_weights = HO;
+}
+void Neural_Network::take_state(vector<double> S){
+    state_variables=S;
+}
+
+
 //-----------------------------------------------------------------------------------------------------------------------------
 //Gets needed information from simulator
-void Neural_Network::communication_from_simulator(vector<double> sim_state_variable_inputs, vector<double> sim_state_variable_upper_limits, vector<double> sim_state_variable_lower_limits, int sim_hidden_layer_size, int sim_number_controls, vector<double> sim_control_upper_limits, vector<double> sim_control_lower_limits)
+void Neural_Network::communication_from_simulator_deprecated(vector<double> sim_state_variable_inputs, vector<double> sim_state_variable_upper_limits, vector<double> sim_state_variable_lower_limits, int sim_hidden_layer_size, int sim_number_controls, vector<double> sim_control_upper_limits, vector<double> sim_control_lower_limits)
 {
     for(int j = 0; j < sim_state_variable_inputs.size(); j++)
     {
@@ -204,13 +235,39 @@ void Neural_Network::communication_from_EA(vector<double> ea_input_to_hidden_lay
     
 }
 
+vector<double> Neural_Network::activation_function(vector<double> state){
+    
+    take_state(state);
+    //if(layer_size.empty())
+    {
+        create_layer_sizes();
+        create_layers();
+    }
+    //End NN Frame Work
+    ////cout << "Begin Neural Network Calculations" << endl;
+    create_input_layer();
+    normalization();
+    input_hidden_layer_connection();
+    input_to_hidden_layer_weight_multiplication();
+    sum_hidden_layer();
+    hidden_layer_sigmoid();
+    //sigmoid_function();
+    hidden_output_layer_connection();
+    hidden_to_output_layer_weight_multiplication();
+    sum_output_layer();
+    output_layer_sigmoid();
+    unnormalization();
+    //Begin Communication From Neural Network
+    return communication_to_simulator();
+}
+
 
 //-----------------------------------------------------------------------------------------------------------------------------
 //intitializes hidden and output layer sizes
-void Neural_Network::initialize()
+void Neural_Network::initialize(int num_hidden, int num_controls)
 {
-    hidden_layer_size = 0;
-    number_controls = 0;
+    hidden_layer_size = num_hidden;
+    number_controls = num_controls;
 }
 
 
@@ -220,6 +277,7 @@ void Neural_Network::initialize()
 //creates a vector of a layer sizes
 void Neural_Network::create_layer_sizes()
 {
+    layer_size.clear();
     layer_size.push_back(state_variables.size() + 1);
     layer_size.push_back(hidden_layer_size + 1);
     layer_size.push_back(number_controls);
@@ -274,6 +332,8 @@ void Neural_Network::normalization()
     {
         Layers.at(0).Nodes.at(j).element = (state_variables.at(j) - state_variable_lower_limits.at(j))/(state_variable_upper_limits.at(j) - state_variable_lower_limits.at(j));
     }
+    //cout << "Layers.at(0).Nodes.size() = " << Layers.at(0).Nodes.size() << endl;
+    //cout << "ELEMENT:" << state_variables.size() << endl;
     Layers.at(0).Nodes.at(state_variables.size()).element = 1;
     ////cout << "Normalized Input Layer" << endl;
     ////cout << Layers.at(0).Nodes.size() - 1 << endl;
@@ -291,6 +351,7 @@ void Neural_Network::normalization()
 //makes copies(size of hidden layer) of each element of the input layer
 void Neural_Network::input_hidden_layer_connection()
 {
+    vector<double> bb;
     for(int j = 0; j < Layers.at(0).Nodes.size(); j++)
     {
         for(int k = 0; k < Layers.at(1).Nodes.size() - 1; k++)
@@ -317,6 +378,9 @@ void Neural_Network::input_to_hidden_layer_weight_multiplication()
 {
     for(int i = 0; i < input_to_hidden_layer_connection.size(); i++)
     {
+        //cout << "EYE: " << i << "\t" << input_to_hidden_layer_connection.at(i) ;
+        //cout << "\t" << input_to_hidden_layer_weights.at(i) << endl;
+        
         weighted_input_to_hidden_layer_connection.push_back(input_to_hidden_layer_connection.at(i) * input_to_hidden_layer_weights.at(i));
     }
     ////cout << "Weighted input to hidden layer connections" << endl;
@@ -390,6 +454,7 @@ void Neural_Network::hidden_layer_sigmoid()
 //makes copies(size of output layer) of each element of the hidden layer
 void Neural_Network::hidden_output_layer_connection()
 {
+    vector<double> cc;
     for(int j = 0; j < Layers.at(1).Nodes.size(); j++)
     {
         for(int k = 0; k < Layers.at(2).Nodes.size(); k++)
@@ -523,7 +588,7 @@ double Neural_Network::sigmoid_function()
 //communication to simulator
 vector<double> Neural_Network::communication_to_simulator()
 {
-    controls_for_simulator.empty();
+    controls_for_simulator.clear();
     for(int j = 0; j < Layers.at(2).Nodes.size(); j++)
     {
         controls_for_simulator.push_back(Layers.at(2).Nodes.at(j).element);
@@ -543,10 +608,10 @@ vector<double> Neural_Network::communication_to_simulator()
 //-----------------------------------------------------------------------------------------------------------------------------
 //Activation Function
 //After the ANN structure has been made this function will execute gowing through the functions needed to get the controls then erase its contents
-void Neural_Network::activation_function(vector<double> sim_state_variable_inputs, vector<double> sim_state_variable_upper_limits, vector<double> sim_state_variable_lower_limits, int sim_hidden_layer_size, int sim_number_controls, vector<double> sim_control_upper_limits, vector<double> sim_control_lower_limits, vector<double> ea_input_to_hidden_layer_weights, vector<double> ea_hidden_to_output_layer_weights, vector<double> controls_for_simulator)
+void Neural_Network::activation_function_deprecated(vector<double> sim_state_variable_inputs, vector<double> sim_state_variable_upper_limits, vector<double> sim_state_variable_lower_limits, int sim_hidden_layer_size, int sim_number_controls, vector<double> sim_control_upper_limits, vector<double> sim_control_lower_limits, vector<double> ea_input_to_hidden_layer_weights, vector<double> ea_hidden_to_output_layer_weights, vector<double> controls_for_simulator)
 {
     //Begin Communitcation To Neural Network
-    communication_from_simulator(sim_state_variable_inputs, sim_state_variable_upper_limits, sim_state_variable_lower_limits, sim_hidden_layer_size, sim_number_controls, sim_control_upper_limits, sim_control_lower_limits);
+    communication_from_simulator_deprecated(sim_state_variable_inputs, sim_state_variable_upper_limits, sim_state_variable_lower_limits, sim_hidden_layer_size, sim_number_controls, sim_control_upper_limits, sim_control_lower_limits);
     communication_from_EA(ea_input_to_hidden_layer_weights, ea_hidden_to_output_layer_weights);
     //End Communication
     //Begin NN Frame Work
@@ -563,15 +628,15 @@ void Neural_Network::activation_function(vector<double> sim_state_variable_input
     input_to_hidden_layer_weight_multiplication();
     sum_hidden_layer();
     hidden_layer_sigmoid();
-    sigmoid_function();
+    //sigmoid_function();
     hidden_output_layer_connection();
     hidden_to_output_layer_weight_multiplication();
     sum_output_layer();
     output_layer_sigmoid();
     unnormalization();
-    //Begin Communitcation From Neural Network
+    //Begin Communication From Neural Network
     communication_to_simulator();
-    //End Communitcation From Neural Network
+    //End Communication From Neural Network
 }
 
 
@@ -675,29 +740,24 @@ void Neural_Network::reset_neural_network()
 {
     //cout << "Reset Neural Network" << endl;
     //cout << "Input Layer Size" << endl;
-    Layers.at(0).Nodes.clear();
+    //Layers.at(0).Nodes.clear();
     //cout << Layers.at(0).Nodes.size() << endl;
     //cout << "Hidden Layer Size" << endl;
-    Layers.at(1).Nodes.clear();
+    //Layers.at(1).Nodes.clear();
     //cout << Layers.at(1).Nodes.size() << endl;
     //cout << "Output Layer Size" << endl;
-    Layers.at(2).Nodes.clear();
+    //Layers.at(2).Nodes.clear();
     //cout << Layers.at(1).Nodes.size() << endl;
+    Layers.clear();
     //cout << "State Variable Size" << endl;
     state_variables.clear();
     //cout << state_variables.size() << endl;
-    //cout << "BB Place Holder Size" << endl;
-    bb.clear();
-    //cout << bb.size() << endl;
     //cout << "Input To Hidden Layer Connection Size" << endl;
     input_to_hidden_layer_connection.clear();
     //cout << input_to_hidden_layer_connection.size() << endl;
     //cout << "Weighted Input To Hidden Layer Connection Size" << endl;
     weighted_input_to_hidden_layer_connection.clear();
     //cout << weighted_input_to_hidden_layer_connection.size() << endl;
-    //cout << "CC Place Holder Size" << endl;
-    cc.clear();
-    //cout << cc.size() << endl;
     //cout << "Hidden To Output Layer Connection Size" << endl;
     hidden_to_output_layer_connection.clear();
     //cout << hidden_to_output_layer_connection.size() << endl;
@@ -748,7 +808,7 @@ void Neural_Network::total_neural_network_reset()
     hidden_to_output_layer_weights.clear();
     //cout << hidden_to_output_layer_weights.size() << endl;
     //cout << "BB Place Holder Size" << endl;
-    bb.clear();
+    //bb.clear();
     //cout << bb.size() << endl;
     //cout << "Input To Hidden Layer Connection Size" << endl;
     input_to_hidden_layer_connection.clear();
@@ -757,7 +817,7 @@ void Neural_Network::total_neural_network_reset()
     weighted_input_to_hidden_layer_connection.clear();
     //cout << weighted_input_to_hidden_layer_connection.size() << endl;
     //cout << "CC Place Holder Size" << endl;
-    cc.clear();
+    //cc.clear();
     //cout << cc.size() << endl;
     //cout << "Hidden To Output Layer Connection Size" << endl;
     hidden_to_output_layer_connection.clear();

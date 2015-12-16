@@ -96,7 +96,7 @@ private:
     int individual_size1, individual_size2;
     double mutation_magnitude1, mutation_magnitude2;
     int mutation_amount1, mutation_amount2;
-    vector<double> genome1, genome2;        // TODO genome
+    vector<double> genome1, genome2;        // TODO genome @JF ? 
     vector<double> phenotype;
     
     // vector <double> movement;

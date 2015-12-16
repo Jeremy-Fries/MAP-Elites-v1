@@ -19,7 +19,6 @@ class State;
 #include <cmath>
 #include <iomanip>
 #include "Craft.hpp"
-//#include "State.cpp"
 
 using namespace std;
 
@@ -71,21 +70,28 @@ void State::get_state(craft l, double t, double ts){
 // Initiailize limits for state variables and controls
 void State::initialize_translate_limits(){
     num_of_controls=2;
+    
+    /// clear all vectors.
+    state_variables_LowLimit.clear();
+    state_variables_UpLimit.clear();
+    control_LowLimits.clear();
+    control_UpLimits.clear();
+    
     // state variable upper limits
     state_variables_UpLimit.push_back(500.0);   // xpos [m]
     state_variables_UpLimit.push_back(100.0);   // xvel [m/s]
     state_variables_UpLimit.push_back(500.0);   // zpos [m]
     state_variables_UpLimit.push_back(100.0);   // zvel [m/s]
-    state_variables_UpLimit.push_back(3.14);    // sin(phi) [rad]
-    state_variables_UpLimit.push_back(3.14);    // cos(phi) [rad]
+    state_variables_UpLimit.push_back(1);    // sin(phi) [ratio of rad]
+    state_variables_UpLimit.push_back(1);    // cos(phi) [ratio of rad]
     
     // state variable lower limits
     state_variables_LowLimit.push_back(0.0);      // xpos [m]
     state_variables_LowLimit.push_back(-100.0);   // xvel [m/s]
     state_variables_LowLimit.push_back(0.0);      // zpos [m]
     state_variables_LowLimit.push_back(-100.0);   // zvel [m/s]
-    state_variables_LowLimit.push_back(-3.14);    // sin(phi) [rad]
-    state_variables_LowLimit.push_back(-3.14);    // cos(phi) [rad]
+    state_variables_LowLimit.push_back(-1);    // sin(phi) [ratio of rad]
+    state_variables_LowLimit.push_back(-1);    // cos(phi) [ratio of rad]
     
     // control upper limits
     control_UpLimits.push_back(500.0);    // thrust [N]

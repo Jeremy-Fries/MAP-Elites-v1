@@ -168,7 +168,7 @@ void Simulator::initialize_sim(){
     angleaccel.clear();
     angleke.clear();
     
-    
+    /// @JF: Why is this duplicated?
     lander.initialize(linear, rotational);
     currentstate.initialize_translate_limits();
     currentstate.printheader();
