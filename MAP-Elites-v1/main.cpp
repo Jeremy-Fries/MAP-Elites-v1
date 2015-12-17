@@ -16,8 +16,8 @@
 #include <iomanip>
 #include <cstdlib>
 
-#include "linDOF.hpp"
-#include "rotDOF.hpp"
+#include "LinDOF.hpp"
+#include "RotDOF.hpp"
 #include "anglemath.h"
 #include "dynamics.h"
 #include "Craft.hpp"

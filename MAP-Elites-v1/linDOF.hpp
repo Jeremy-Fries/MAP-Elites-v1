@@ -1,15 +1,15 @@
 //
-//  linDOF.hpp
+//  LinDOF.hpp
 //  Mapping_Elites v1
 //
 //  Created by Jeremy Fries on 12/2/15.
 //  Copyright © 2015 Jeremy Fries. All rights reserved.
 //
 
-class linDOF;
+class LinDOF;
 
-#ifndef linDOF_hpp
-#define linDOF_hpp
+#ifndef LinDOF_hpp
+#define LinDOF_hpp
 
 #include <stdio.h>
 #include <iostream>
@@ -23,7 +23,7 @@ using namespace std;
 
 //declare linear degrees of freedom parameters
 
-class linDOF{
+class LinDOF{
     friend class Craft;
 public:
     double s, sdot, sdotdot;
@@ -34,7 +34,7 @@ public:
 
 
 //declare initializations of degree of freedom parameters
-void linDOF::initialize(){
+void LinDOF::initialize(){
     s = rand()%100;     //linear position
     sdot = rand()%5;    //linear velocity
     sdotdot = 0;        //linear acceleration
@@ -43,4 +43,4 @@ void linDOF::initialize(){
     //cout << s<<"\t\t"<<sdot<<"\t\t"<<endl;
 }
 
-#endif /* linDOF_hpp */
+#endif /* LinDOF_hpp */

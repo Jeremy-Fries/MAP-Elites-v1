@@ -19,8 +19,8 @@ class craft;
 #include <cmath>
 #include <iomanip>
 
-#include "linDOF.hpp"
-#include "rotDOF.hpp"
+#include "LinDOF.hpp"
+#include "RotDOF.hpp"
 
 using namespace std;
 // --------------------------------------------------
@@ -28,11 +28,11 @@ using namespace std;
 class craft{
     friend class State;
     friend class Simulator;
-    friend class linDOF;
-    friend class rotDOF;
+    friend class LinDOF;
+    friend class RotDOF;
 public:
-    vector<linDOF> frame;
-    vector<rotDOF> orientation;
+    vector<LinDOF> frame;
+    vector<RotDOF> orientation;
     double mass, inertia, KEinitial;
     double sref;
 // --------------------------------------------------
@@ -48,7 +48,7 @@ void craft::initialize(int dl, int dr){
     
     //Set up Linear DOFs
     for(int i=0;i<dl;i++){
-        linDOF lin;
+        LinDOF lin;
         lin.initialize();
         KEinitial = KEinitial + 0.5*mass*pow(lin.sdot,2);
         frame.push_back(lin);
@@ -56,7 +56,7 @@ void craft::initialize(int dl, int dr){
     
     //Set up Rotational DOFs
     for(int i=0;i<dr;i++){
-        rotDOF rot;
+        RotDOF rot;
         rot.initialize();
         KEinitial = KEinitial + 0.5*inertia*pow(rot.qdot,2);
         orientation.push_back(rot);
