@@ -18,7 +18,7 @@ using namespace std;
 // calc controls to forces in newtonian directions
 // theta describes the angle of the velocity with respect to the x-axis, negative or positive
 // phi describes the angle of the body with respect to the negative x-axis
-vector<double> forcecalc(vector<double> controller, craft c, double rho, vector<vector<double> > ae) {
+vector<double> forcecalc(vector<double> controller, Craft c, double rho, vector<vector<double> > ae) {
     vector<double> forcevec;                        // vector to be returned
     double phi = c.orientation.at(0).q;             //renaming pitch for ease of use
     double lift, drag, lx, lz, dx, dz, tx, tz;      //newtonian force components
@@ -75,7 +75,7 @@ vector<double> forcecalc(vector<double> controller, craft c, double rho, vector<
 
 
 // calculate new position, velocity, and acceleration for each direction.
-double dynamicscalc(craft & ref, vector<double> forcevec, double ts, int lincount, int rotcount){
+double dynamicscalc(Craft & ref, vector<double> forcevec, double ts, int lincount, int rotcount){
     double prevphi = ref.orientation.at(0).q;
     
     //linear calculations using trapezoidal integration

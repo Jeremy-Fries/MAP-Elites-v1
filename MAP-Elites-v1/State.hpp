@@ -39,7 +39,7 @@ protected:
     vector<double> control_LowLimits;
 // --------------------------------------------------
 public:
-    void get_state(class craft, double t, double ts);
+    void get_state(class Craft, double t, double ts);
         // 12/7 - changed to class craft from craft l.
     void initialize_translate_limits();
     vector<double> translate_function();
@@ -52,7 +52,7 @@ public:
 };
 
 
-void State::get_state(craft l, double t, double ts){
+void State::get_state(Craft l, double t, double ts){
     time = t;
     timestep = ts;
     xpos = l.frame.at(0).s;

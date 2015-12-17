@@ -6,7 +6,7 @@
 //  Copyright © 2015 Jeremy Fries. All rights reserved.
 //
 
-class craft;
+class Craft;
 
 #ifndef Craft_hpp
 #define Craft_hpp
@@ -25,7 +25,7 @@ class craft;
 using namespace std;
 // --------------------------------------------------
 //declare a craft with a reference frame and values for mass and moment of inertia
-class craft{
+class Craft{
     friend class State;
     friend class Simulator;
     friend class LinDOF;
@@ -40,7 +40,7 @@ public:
 };
 ///////////
 
-void craft::initialize(int dl, int dr){
+void Craft::initialize(int dl, int dr){
     mass = 20;
     inertia = 20;
     KEinitial = 0;

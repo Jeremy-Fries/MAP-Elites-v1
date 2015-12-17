@@ -83,7 +83,7 @@ protected:
     vector<vector<double> > aero;
     
     // Single craft parameters
-    craft lander;
+    Craft lander;
     State currentstate;
     ofstream myfile;
 public:

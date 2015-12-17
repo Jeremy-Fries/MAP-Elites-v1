@@ -32,7 +32,7 @@ double reset_angle(double angle){
 }
 
 // check which quadrant the velocity vector and aircraft x vector are in
-vector<int> checkquadrant(craft land){
+vector<int> checkquadrant(Craft land){
     int direction;
     vector<int> quadrants;
     double phi;
