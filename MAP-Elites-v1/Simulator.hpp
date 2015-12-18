@@ -168,21 +168,14 @@ void Simulator::initialize_sim(){
     angleaccel.clear();
     angleke.clear();
     
-    /// @JF: Why is this duplicated?
-    lander.initialize(linear, rotational);
+    
+    lander.initialize(linear, rotational);          //Initialize Craft
     currentstate.initialize_translate_limits();
-    currentstate.printheader();
-    currentstate.get_state(lander, t, tstep);
-    currentstate.printround(myfile);
-    stateholder.push_back(currentstate);
-    
-    lander.initialize(linear, rotational);      //Initialize Craft
-    currentstate.printheader();                 //Output Header in XCode Screen
-    currentstate.get_state(lander, t, tstep);   //Modify current state based on simulator outputs
-    currentstate.printround(myfile);            //Output simulator outputs to screen and file
-    stateholder.push_back(currentstate);        //Pushback currentstate into vector for tracking
-    
-    
+    currentstate.printheader();                     //Output Header in XCode Screen
+    currentstate.get_state(lander, t, tstep);       //Modify current state based on simulator outputs
+    currentstate.printround(myfile);                //Output simulator outputs to screen and file
+    stateholder.push_back(currentstate);            //Pushback currentstate into vector for tracking
+        
     fitnessvector();             //Put current data into vectors for later calculating fitness
 }
 // --------------------------------------------------

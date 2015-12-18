@@ -35,8 +35,6 @@ class Wrapper;
 #include "Individual.hpp"
 #include "Map_space.hpp"
 #include "Map_Elites.hpp"
-//#include "Wrapper.hpp"
-
 
 
 using namespace std;
@@ -96,29 +94,6 @@ private:
 
     
 };
-
-
-
-// --------------------------------------------------
-// Run sim loop
-//  sim.initialize_sim();
-//  sim.run_sim();
-//  sim.end_sim();      // only closes txt file and couts
-
-// --------------------------------------------------
-// Run NN loop
-
-//// Loop - Start
-//NN.activation_function(DS.sim_state_variable_inputs, DS.sim_state_variable_upper_limits, DS.sim_state_variable_lower_limits, DS.sim_hidden_layer_size, DS.sim_number_controls, DS.sim_control_upper_limits, DS.sim_control_lower_limits, EA.ea_input_to_hidden_layer_weights, EA.ea_hidden_to_output_layer_weights, DS.controls_for_simulator);
-//NN.write_to_text_file();
-
-//NN.reset_neural_network();      // Not ran at last
-// Loop - end
-
-//second iteration test
-//    NN.activation_function(DS.sim_state_variable_inputs, DS.sim_state_variable_upper_limits, DS.sim_state_variable_lower_limits, DS.sim_hidden_layer_size, DS.sim_number_controls, DS.sim_control_upper_limits, DS.sim_control_lower_limits, EA.ea_input_to_hidden_layer_weights, EA.ea_hidden_to_output_layer_weights, DS.controls_for_simulator);
-//cout << "controled solution" << endl;
-//cout << "8.76773	8.61136" << endl;
 
 // --------------------------------------------------
 void Wrapper::initialize_wrapper(){
