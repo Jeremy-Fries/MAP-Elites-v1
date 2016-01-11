@@ -61,7 +61,7 @@ vector<double> forcecalc(vector<double> controller, Craft c, double rho, vector<
     lx = lift*coefficients.at(3);
     lz = lift*coefficients.at(4);
     dx = drag*coefficients.at(5);
-    dz = -drag*coefficients.at(6);
+    dz = drag*coefficients.at(6);
     
     
     // calculate total forces in x and z, return along with moment.

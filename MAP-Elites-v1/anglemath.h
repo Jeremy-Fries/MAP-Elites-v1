@@ -9,7 +9,6 @@
 using namespace std;
 
 #include "Craft.hpp"
-
 #ifndef anglemath_h
 #define anglemath_h
 
@@ -174,7 +173,6 @@ vector<double> coeffcalc(vector<int> directions, double q, double t){
             txm = cos(q);
             tzm = sin(q);
             lxm = -sin(t);
-            lzm = cos(t);
             dxm = cos(t);
             dzm = -sin(t);
             
@@ -230,7 +228,6 @@ vector<double> coeffcalc(vector<int> directions, double q, double t){
             txm = cos(q);
             tzm = sin(q);
             lxm = sin(t);
-            lzm = cos(t);
             dxm = cos(t);
             dzm = sin(t);
             
@@ -243,7 +240,6 @@ vector<double> coeffcalc(vector<int> directions, double q, double t){
             txm = cos(q);
             tzm = sin(q);
             lxm = sin(t);
-            lzm = cos(t);
             dxm = cos(t);
             dzm = sin(t);
             
@@ -299,7 +295,6 @@ vector<double> coeffcalc(vector<int> directions, double q, double t){
             txm = cos(q);
             tzm = sin(q);
             lxm = -sin(t);
-            lzm = cos(t);
             dxm = -cos(t);
             dzm = sin(t);
             
