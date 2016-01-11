@@ -73,6 +73,7 @@ vector<int> checkquadrant(Craft land){
     return quadrants;
 }
 
+
 // calculate coefficients for force directions
 vector<double> coeffcalc(vector<int> directions, double q, double t){
     double aoa;     //determine angle of attack
@@ -130,7 +131,7 @@ vector<double> coeffcalc(vector<int> directions, double q, double t){
             txm = cos(q);
             tzm = sin(q);
             lxm = sin(t);
-            lzm = cos(t);
+            lzm = -cos(t);
             dxm = -cos(t);
             dzm = -sin(t);
             
@@ -173,6 +174,7 @@ vector<double> coeffcalc(vector<int> directions, double q, double t){
             txm = cos(q);
             tzm = sin(q);
             lxm = -sin(t);
+            lzm = -cos(t);
             dxm = cos(t);
             dzm = -sin(t);
             
@@ -228,6 +230,7 @@ vector<double> coeffcalc(vector<int> directions, double q, double t){
             txm = cos(q);
             tzm = sin(q);
             lxm = sin(t);
+            lzm = -cos(t);
             dxm = cos(t);
             dzm = sin(t);
             
@@ -240,6 +243,7 @@ vector<double> coeffcalc(vector<int> directions, double q, double t){
             txm = cos(q);
             tzm = sin(q);
             lxm = sin(t);
+            lzm = -cos(t);
             dxm = cos(t);
             dzm = sin(t);
             
@@ -295,6 +299,7 @@ vector<double> coeffcalc(vector<int> directions, double q, double t){
             txm = cos(q);
             tzm = sin(q);
             lxm = -sin(t);
+            lzm = -cos(t);
             dxm = -cos(t);
             dzm = sin(t);
             
