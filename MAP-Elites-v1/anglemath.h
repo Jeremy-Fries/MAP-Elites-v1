@@ -130,8 +130,8 @@ vector<double> coeffcalc(vector<int> directions, double q, double t){
             aoa = q-t;
             txm = cos(q);
             tzm = sin(q);
-            lxm = sin(t);
-            lzm = -cos(t);
+            lxm = -sin(t);
+            lzm = cos(t);
             dxm = -cos(t);
             dzm = -sin(t);
             
@@ -173,8 +173,8 @@ vector<double> coeffcalc(vector<int> directions, double q, double t){
             aoa = q+t+pi;
             txm = cos(q);
             tzm = sin(q);
-            lxm = -sin(t);
-            lzm = -cos(t);
+            lxm = sin(t);
+            lzm = cos(t);
             dxm = cos(t);
             dzm = -sin(t);
             
@@ -229,8 +229,8 @@ vector<double> coeffcalc(vector<int> directions, double q, double t){
             aoa = pi+q-t;
             txm = cos(q);
             tzm = sin(q);
-            lxm = sin(t);
-            lzm = -cos(t);
+            lxm = -sin(t);
+            lzm = cos(t);
             dxm = cos(t);
             dzm = sin(t);
             
@@ -298,8 +298,8 @@ vector<double> coeffcalc(vector<int> directions, double q, double t){
             aoa = q+t;
             txm = cos(q);
             tzm = sin(q);
-            lxm = -sin(t);
-            lzm = -cos(t);
+            lxm = sin(t);
+            lzm = cos(t);
             dxm = -cos(t);
             dzm = sin(t);
             
