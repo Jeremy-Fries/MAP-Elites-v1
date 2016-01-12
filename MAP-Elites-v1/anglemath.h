@@ -57,7 +57,7 @@ vector<int> checkquadrant(Craft land){
     phi = reset_angle(land.orientation.at(0).q);
     double pi = 4*atan(1);
     
-    if(0>=phi && phi<=(pi/2)){
+    if(0<=phi && phi<=(pi/2)){
         direction = 1;
     }else if((pi/2)<phi&& phi <=pi){
         direction = 2;
