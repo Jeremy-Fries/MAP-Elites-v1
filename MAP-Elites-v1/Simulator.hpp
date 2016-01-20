@@ -51,6 +51,7 @@ class Simulator{
     friend class Craft;
     friend class State;
     friend class Wrapper;
+    
 protected:
     int linear, rotational, numalf;     //number of linear and rotational DOFs, number of AOAs with CL and CD values
     double t, anglechange, fitness;     //time, rotational tracker, fitness value(likely to change)
@@ -91,7 +92,8 @@ public:
     int loadaero();
     void fitnessvector();
     void initialize_sim();
-    void run_sim(vector<double>);
+    void run_sim();
+    void run_timestep(vector<double>);
     void end_sim();
 // --------------------------------------------------
     
@@ -179,17 +181,34 @@ void Simulator::initialize_sim(){
     fitnessvector();             //Put current data into vectors for later calculating fitness
 }
 // --------------------------------------------------
-void Simulator::run_sim(vector<double> controls){
+void Simulator::run_sim(){ /// AVOID
     // TODO - move target out of linDOF
-    
+//    vector<double> controls;
+//    
+//    NN.activation_function(this->currentstate.translate_function());
+//    controls = NN.communication_to_simulator();
+//    
+//    forces = forcecalc(controls, lander, rhoair, aero);
+//    anglechange = anglechange + dynamicscalc(lander, forces, tstep, linear, rotational);
+//    t = t+tstep;
+//    currentstate.get_state(lander, t, tstep);       //update current state
+//    stateholder.push_back(currentstate);            //pushback current state into vector
+//    currentstate.printround(myfile);                //Output simulator outputs to screen and file
+//    fitnessvector();    // potentially comment out // potential tag/ searchable
+//    
+//    NN.Neural_Network_Reset();
+}
+
+void Simulator::run_timestep(vector<double> controls){
     forces = forcecalc(controls, lander, rhoair, aero);
     anglechange = anglechange + dynamicscalc(lander, forces, tstep, linear, rotational);
     t = t+tstep;
     currentstate.get_state(lander, t, tstep);       //update current state
     stateholder.push_back(currentstate);            //pushback current state into vector
-    currentstate.printround(myfile);                //Output simulator outputs to screen and file
+    //currentstate.printround(myfile);                //Output simulator outputs to screen and file
     fitnessvector();    // potentially comment out // potential tag/ searchable
 }
+
 // Runs the simulator while time is less than max time and lander is above ground
 // --------------------------------------------------
 void Simulator::end_sim(){

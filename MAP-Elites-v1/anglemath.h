@@ -80,6 +80,7 @@ vector<double> coeffcalc(vector<int> directions, double q, double t){
     double pi = 4*atan(1);
     double lxm, lzm, dxm, dzm, txm, tzm;    //lift in X, lift in Z, drag in X, drag in Z, thrust in X, thrust in Z
     vector<double> coefficients;
+    coefficients.reserve(10);
     int CaseDisplay = 0; // Change this variable to output cases to screen.
     
     

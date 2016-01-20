@@ -215,6 +215,7 @@ void Neural_Network::initialize(int num_hidden, int num_controls)
 //creates a vector of a layer sizes
 void Neural_Network::create_layer_sizes()
 {
+    layer_size.clear();
     layer_size.push_back(state_variables.size() + 1);
     layer_size.push_back(hidden_layer_size + 1);
     layer_size.push_back(number_controls);
@@ -578,7 +579,7 @@ void Neural_Network::Neural_Network_Reset()
 
 
 //Total reset function
-//Resets the enitre ANN
+//Resets the entire ANN
 //Use after each experimental run to reset the ANN state variables and weights
 void Neural_Network::Experimental_Reset()
 {

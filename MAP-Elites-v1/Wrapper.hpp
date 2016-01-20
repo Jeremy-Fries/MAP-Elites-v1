@@ -38,6 +38,8 @@ using namespace std;
 
 class Wrapper{
     
+    //friend class Neural_Network;
+    
 // --------------------------------------------------
 protected:
     Map_Elites ME;
@@ -53,7 +55,7 @@ protected:
    
 // --------------------------------------------------
 public:
-    const int hidden_layer_size = 3;
+    int hidden_layer_size;
     vector<double> best_fit;
 // --------------------------------------------------
     void initialize_wrapper();
@@ -89,7 +91,9 @@ void Wrapper::initialize_wrapper(){
     int states = 6;
     int outs = 2;
     
-    pME->set_map_params(0, 100, 0, 100, 10, 10, 100, 1000000);
+    hidden_layer_size = 3;
+    
+    pME->set_map_params(0, 100, 0, 100, 1, 1, 100, 1000000);
     // (dim1_min, dim1_max, dim2_min, dim2_max, resolution1,2, fill generation, mutate generation)
     
     //pME->display_Map_params();
@@ -121,22 +125,34 @@ void Wrapper::fitness_calculation(){
     fit_rating=0;
     
     
-    calc_fit_rating -= abs(real_func() - approx_func());
-}
-fit_rating=calc_fit_rating;
+    //// LANDING FITNESS CALCULATION
+    /// must land (0)
+    /// minimize x kinetic energy (1); z kinetic energy (2); rotational kinetic energy (3)
+    cout << endl << endl;
+    cout << Sim.zpositions.size() << endl;
+    
+    if(Sim.currentstate.zpos > 0){ /// still in air. (0)
+        fit_rating = -9999999999999; /// TODO MAX_INT
+    }
+    fit_rating -= Sim.currentstate.KEx; // (1)
+    fit_rating -= Sim.currentstate.KEz; // (2)
+    fit_rating -= Sim.currentstate.KEp; // (3)
 }
 // ----------------------------------------------------------------------------------- TODO - change
 // Phenotypes
 void Wrapper::find_phenotypes(){
-    phenotype_1=0;
-    phenotype_2=0;
+    /// x position at final time step
+    phenotype_1=Sim.currentstate.xvel; /// LYJF
+    /// angular orientation at final time step
+    phenotype_2=Sim.currentstate.phi; /// LYJF
+
     
+    /// for a binary selection parallel simulated annealing.....
+    //double r1 = ((double)rand() / RAND_MAX);
+    //double r2 = ((double)rand() / RAND_MAX);
+    //phenotype_1=r1*100;
+    //phenotype_2=r2*100;
     
-    
-    double r1 = ((double)rand() / RAND_MAX);
-    double r2 = ((double)rand() / RAND_MAX);
-    phenotype_1=r1*100;
-    phenotype_2=r2*100;
     //cout << a << " , " << b << endl;
 }
 // --------------------------------------------------------------------------------------------------------
@@ -158,14 +174,13 @@ void Wrapper::rand_bin(){
 void Wrapper::fill_MAP(){
     int fill_gen = ME.get_fill_generation();
     int fill_round=0;
-    build_real_set();
     
     for (int g=0; g<fill_gen; g++){
         //cout << "fill round is: " << g << endl;
         
         Individual I;
         Simulator Sim;
-        Neural_Network NN;
+        //Neural_Network NN;
         
         I.set_individual_params(isize_1, isize_2, imutate_mag_1, imutate_mag_2, imutate_amount_1, imutate_amount_2);
         //I.display_individual_params();
@@ -177,14 +192,13 @@ void Wrapper::fill_MAP(){
         /// initialize NN.
         NN.initialize(this->hidden_layer_size, Sim.currentstate.num_of_controls);
         
-        NN.communication_from_EA(I.get_individual1(), I.get_individual2());
         Sim.initialize_sim();
     
         NN.take_input_limits(Sim.currentstate.state_variables_LowLimit, Sim.currentstate.state_variables_UpLimit);
         NN.take_output_limits(Sim.currentstate.control_LowLimits, Sim.currentstate.control_UpLimits);
         NN.take_num_hidden_units(this->hidden_layer_size); /// repeated from initialize, but no harm.
         NN.take_num_controls(Sim.currentstate.num_of_controls); /// repeated from initialize, but to no harm.
-        NN.take_weights(I.get_individual1(), I.get_individual2()); /// repeated from communication_from_EA, but to no harm.
+        NN.take_weights(I.get_individual1(), I.get_individual2());
         
         /// %%% /// %%% BEGIN SIMULATION LOOP %%% /// %%% ///
         
@@ -209,7 +223,7 @@ void Wrapper::fill_MAP(){
         //                                   );
                     //cout << "Time: " << Sim.t << endl;
         
-            vector<double> action = NN.activation_function(Sim.currentstate.translate_function());
+           
         
             //vector<double> activation_function(vector<double> state);
             //void take_input_limits(vector<double> lower, vector<double> upper);
@@ -217,11 +231,11 @@ void Wrapper::fill_MAP(){
             //void take_num_hidden_units(int num_hidden);
             //void take_num_controls(int num_controls);
             //void take_weights(vector<double> in_to_hid, vector<double> hid_to_out);
-        
-            Sim.run_sim(action);
-        
-        
-            NN.reset_neural_network();                      // Do we want this??
+            NN.activation_function(Sim.currentstate.state_variables_vec);
+            
+            Sim.run_timestep(NN.communication_to_simulator());
+            
+            NN.Neural_Network_Reset();
         }
         /// %%% /// %%% END SIMULATION LOOP %%% /// %%% ///
       
@@ -260,20 +274,27 @@ void Wrapper::mutate_MAP(){                         // TODO - Remove Comments fo
         /// %%% /// %%% BEGIN SIMULATION LOOP %%% /// %%% ///
         
         Simulator Sim;
-        Neural_Network NN;
+        Sim.initialize_sim();
+        //Neural_Network NN;
         
         //ME.individual_from_map(p1, p2);
-        NN.communication_from_EA(ME.get_temp_individual1(), ME.get_temp_individual2());
-        Sim.initialize_sim();
+        NN.take_weights(ME.challenger.get_individual1(), ME.challenger.get_individual2());
+        
+        NN.take_input_limits(Sim.currentstate.state_variables_LowLimit, Sim.currentstate.state_variables_UpLimit);
+        NN.take_output_limits(Sim.currentstate.control_LowLimits,Sim.currentstate.control_UpLimits);
+        
+
         /// %%% /// %%% BEGIN SIMULATION LOOP %%% /// %%% ///
         while (Sim.t<Sim.tmax && Sim.lander.frame.at(1).s > Sim.lander.frame.at(1).target){
             /// while the simulator still has time left on the clock
             /// AND
             /// the craft is above ground level:
             
-            NN.communication_from_simulator_deprecated(Sim.currentstate.translate_function(), Sim.currentstate.state_variables_UpLimit, Sim.currentstate.state_variables_LowLimit, hidden_layer_size, Sim.currentstate.num_of_controls, Sim.currentstate.control_UpLimits, Sim.currentstate.control_LowLimits);
-            Sim.run_sim(NN.communication_to_simulator());
-            NN.reset_neural_network();                      // Do we want this??
+            NN.activation_function(Sim.currentstate.state_variables_vec);
+            
+            //NN.communication_from_simulator_deprecated(Sim.currentstate.translate_function(), Sim.currentstate.state_variables_UpLimit, Sim.currentstate.state_variables_LowLimit, hidden_layer_size, Sim.currentstate.num_of_controls, Sim.currentstate.control_UpLimits, Sim.currentstate.control_LowLimits);
+            Sim.run_timestep(NN.communication_to_simulator());
+            NN.Neural_Network_Reset();                      // Do we want this??
         }
         /// %%% /// %%% END SIMULATION LOOP %%% /// %%% ///
         

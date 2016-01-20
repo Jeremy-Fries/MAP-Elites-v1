@@ -220,6 +220,10 @@ double Map_space::get_best_fit(){
 // Can be used to sort Individuals if more than one is allowed.
 // LATER - can have multiple individuals in vector and sorts based on best fit_rating, possible diversity in Map_space?
 void Map_space::compare_new_individual(Individual challenger){
+    
+    cout << "COMPARE IN" << endl;
+    
+    
     if(current_individual.size()>1){
         counter++;
         // compare individual fit_ratings and delete worst
@@ -227,7 +231,7 @@ void Map_space::compare_new_individual(Individual challenger){
         f1=current_individual.at(0).get_fit_rating();
         f2=current_individual.at(1).get_fit_rating();
         
-        if (f1>f2){             //new Individual erased
+        if (f1>=f2){             //new Individual erased
             new_counter++;
             current_individual.erase(current_individual.begin()+1);
             //cout << endl << "new Individual erased" << endl;
@@ -246,7 +250,7 @@ void Map_space::compare_new_individual(Individual challenger){
             
         }
         else {
-            cout << endl << "error 567321: compare new individual error." << endl;
+            cout << endl << "error 567321: compare new individual error.\t" << current_individual.size() << endl;
         }
     }       // LYJF
     else{
