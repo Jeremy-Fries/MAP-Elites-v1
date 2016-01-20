@@ -24,8 +24,6 @@
 #include "State.hpp"
 #include "Simulator.hpp"
 
-#include "Node.hpp"
-#include "Layer.hpp"
 #include "Neural Network.hpp"
 
 #include "Individual.hpp"
