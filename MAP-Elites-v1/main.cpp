@@ -37,18 +37,18 @@ using namespace std;
 
 int submain(){
     cout << "IN submain()" << endl;
-    
-    
+  
     Wrapper W;
-    
-    //double d1_min,d1_max,d2_min,d2_max;
-    //int res1,res2,fill_gen,mutate_gen;
     
     W.initialize_wrapper();
     
     W.fill_MAP();
-    //W.mutate_MAP();
     
+    //W.run_single_individual();
+    
+    W.mutate_MAP();
+    
+    W.print_stuff();
     
     cout << "OUT submain()" << endl;
     return 0;
