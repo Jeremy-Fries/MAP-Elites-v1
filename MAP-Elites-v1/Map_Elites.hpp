@@ -26,103 +26,128 @@ class Map_Elites;
 //#include "Map_Elites.hpp"
 
 ///
-#include "Simulator.hpp"
-#include "State.hpp"
-#include "dynamics.h"
-#include "anglemath.h"
-#include "Craft.hpp"
-
-///
-#include "Neural Network.hpp"
-#include "Layer.hpp"
-#include "Node.hpp"
+//#include "Simulator.hpp"
+//#include "State.hpp"
+//#include "dynamics.h"
+//#include "anglemath.h"
+//#include "Craft.hpp"
+//
+/////
+//#include "Neural Network.hpp"
+//#include "Layer.hpp"
+//#include "Node.hpp"
 
 
 using namespace std;
 
 class Map_Elites{
+    friend class Wrapper;
     friend class Map_space;
-    
+    // --------------------------------------------------
 protected:
     int resolution1, resolution2;
-    double dim1_min, dim2_min, dim3_min,
-    dim1_max, dim2_max, dim3_max;
+    double dim1_min, dim2_min, dim3_min;
+    double dim1_max, dim2_max, dim3_max;
     int num_spacing1, num_spacing2, num_spacing3;
     double spacing1,  spacing2, spacing3;
-    Individual I;
     int fill_generation, mutate_generation;
-    double out_scope1, out_scope2;
-    
-// --------------------------------------------------
+    //double center_bin1, center_bin2;
+    double center_dist;
+    int best_fit_index;
+    vector<Map_space> full_bins;
+    vector<double> distance_between_centerbin_phenotype;
+    vector<double> fit_ratings_in_map;
+    vector<double> best_individual1, best_individual2;
+    // --------------------------------------------------
 public:
-// --------------------------------------------------
-            // Min of dim1
+    // Dimensions of Map
+    // Min of dim1
     void set_min_dim1(double);
     double get_min_dim1();
     void display_min_dim1();
-            // Min of dim2
+    // Min of dim2
     void set_min_dim2(double);
     double get_min_dim2();
     void display_min_dim2();
-            // Min of dim3
+    // Min of dim3
     void set_min_dim3(double);
     double get_min_dim3();
     void display_min_dim3();
-            // Max of dim1
+    // Max of dim1
     void set_max_dim1(double);
     double get_max_dim1();
     void display_max_dim1();
-            // Max of dim2
+    // Max of dim2
     void set_max_dim2(double);
     double get_max_dim2();
     void display_max_dim2();
-            // Max of dim3
+    // Max of dim3
     void set_max_dim3(double);
     double get_max_dim3();
     void display_max_dim3();
-// --------------------------------------------------
-            // Resolution
+    // --------------------------------------------------
+    // Resolution
     void set_resolution(int,int);
     int get_resolution1();
     void display_resolution1();
     int get_resolution2();
     void display_resolution2();
-// --------------------------------------------------
-        // Fill Generation
+    // --------------------------------------------------
+    // Fill Generation
     void set_fill_generation(int);
     int get_fill_generation();
     void display_fill_generation();
-// --------------------------------------------------
-            // Mutate Generation
+    // --------------------------------------------------
+    // Mutate Generation
     void set_mutate_generation(int);
     int get_mutate_generation();
     void display_mutate_generation();
     // --------------------------------------------------
-                // Map Parameters
+    // Map Parameters
     void set_map_params(double dim1_min,double dim1_max,double dim2_min,double dim2_max,int resolution1,int resolution2, int fill_generation, int mutate_generation);
     void display_Map_params();
-    void set_out_scope_magnitude();
-// --------------------------------------------------
-            // Makes Map
+    
+    // TODO - write map_prams to txt file
+    
+    // --------------------------------------------------
+    // Makes Map
     void initialize_map();
-    void place_individual_in_map(Individual Passed_I);
-    void individual_from_map(double p1, double p2);
-    vector<double>& get_temp_individual1();
-    vector<double>& get_temp_individual2();
-// --------------------------------------------------
-    void fill_Map();
+    void place_individual_in_map();
+    void individual_from_map(int p1, int p2);
+    // --------------------------------------------------
+    // Create full bin vector
+    void create_full_bin();
+    void find_center_bin(int p1,int p2);
+    void find_pheno_dist_to_center_bin(int p1, int p2, int cb1, int cb2);
+    // --------------------------------------------------
+    // To text file
+    void print_fit_ratings_of_map();
+    void print_best_occupants_fitness();
+    void best_fit_bin();
+    void print_all_occupants();
+    void print_best_parents_id();
+    void print_best_parents_fitness();
+    void print_best_full_trace();
+    void print_heat_map();
+    // --------------------------------------------------
+    // how many bins are full?
+    void how_many_full_bins();
+    // --------------------------------------------------
+    // Get Best Individuals
+    vector<double>& get_best_individual1();
+    vector<double>& get_best_individual2();
+    // --------------------------------------------------
+    /// LYLY Tracking
+    Individual challenger;
     
-// --------------------------------------------------
 private:
-    vector<Map_space> Row;
     vector< vector<Map_space> > Map;
-    
-    vector<double> temp_individual1, temp_individual2;
-    
-    
-    
+    int current_bin1, current_bin2;
 };
-
+// ------------------------------------------------------------------------------------------------ ^^ Declarations
+// ------------------------------------------------------------------------------------------------ vv Definitions
+// Dimensions of Map
+// Min of dim1
 void Map_Elites::set_min_dim1(double min1){
     dim1_min = min1;
 }
@@ -183,8 +208,8 @@ void Map_Elites::display_max_dim3(){
     cout << endl << "Max of dim3 is: " << dim3_max << endl;
 }
 // --------------------------------------------------
-// Sets resolution of Map, will determine size of Map_space and how many.
-// Resolution
+// Set Resolution
+// determines size of Map_space and how many bins.
 void Map_Elites::set_resolution(int r1, int r2) {
     resolution1=r1;
     resolution2=r2;
@@ -208,7 +233,8 @@ void Map_Elites::display_resolution2(){
     cout << endl << "Resolution 2 is: " << resolution2 << endl;
 }
 // --------------------------------------------------
-// Fill Generation, fills Map with individuals for desired amount.
+// Fill Generation
+// fills Map with individuals for desired amount.
 void Map_Elites::set_fill_generation(int f){
     fill_generation=f;
 }
@@ -219,7 +245,8 @@ void Map_Elites::display_fill_generation(){
     cout << endl << "Fill generation is: " << fill_generation << endl;
 }
 // --------------------------------------------------
-// Mutate Generation, muatates individuals in Map for desired amount.
+// Mutate Generation
+// muatates individuals in Map for desired amount.
 void Map_Elites::set_mutate_generation(int m){
     mutate_generation=m;
 }
@@ -230,8 +257,8 @@ void Map_Elites::display_mutate_generation(){
     cout << endl << "Mutate generation is: " << mutate_generation << endl;
 }
 // --------------------------------------------------
-// Itialization function used outside of class.
 // Set Map Parameters
+// Itialization function used outside of class.
 void Map_Elites::set_map_params(double d1_min, double d1_max, double d2_min, double d2_max, int res1, int res2, int fill_gen, int mutate_gen){
     set_min_dim1(d1_min);
     set_max_dim1(d1_max);
@@ -241,11 +268,11 @@ void Map_Elites::set_map_params(double d1_min, double d1_max, double d2_min, dou
     set_fill_generation(fill_gen);
     set_mutate_generation(mutate_gen);
     initialize_map();
-    //set_out_scope_magnitude();
 }
 // --------------------------------------------------
 // Display Map Parameters
 void Map_Elites::display_Map_params(){
+    cout << endl << "------------------------------- Map Parameters" << endl;
     display_min_dim1();
     display_max_dim1();
     display_min_dim2();
@@ -254,82 +281,77 @@ void Map_Elites::display_Map_params(){
     display_resolution2();
     display_fill_generation();
     display_mutate_generation();
+    cout << endl << "-------------------------------" << endl;
 }
 // --------------------------------------------------
-// TODO - Make dynamic
-// Check out of scope magnitude
-void Map_Elites::set_out_scope_magnitude(){
-    // auto set scope magnitude relative to dims min and max
-}
-// --------------------------------------------------
+// Initialze Map
 // Builds Map based on parameters, ALSO creates and sets Map_space LB and UB
 void Map_Elites::initialize_map(){
-    // PEIC - if min/max dims are on the same magnitude as out_scope_num, increase out_scope_num
-    int out_scope_num=100000;       // TODO - Make dynamic
     double pre_LB1=dim1_min;
     double pre_LB2=dim2_min;
-    //int row_in_Map=1;
+    int id_number=0;
     for(int d1=0; d1<num_spacing1; d1++){
-        //int num_in_row=1;
+        vector<Map_space> Row;
         for(int d2=0; d2<num_spacing2; d2++){
             Map_space M;
-            if (d1==0){
-                M.set_LB1(-out_scope_num);
-            }
-            else{
-                M.set_LB1(pre_LB1);
-            }
-            if (d2==0){
-                M.set_LB2(-out_scope_num);
-            }
-            else{
-                M.set_LB2(pre_LB2);
-            }
-            if(d1==num_spacing1){
-                double calc_UB1= out_scope_num;
-                M.set_UB1(calc_UB1);
-            }
-            else {
-                double calc_UB1= pre_LB1+spacing1;
-                M.set_UB1(calc_UB1);
-            }
-            if (d2==num_spacing2){
-                double calc_UB2= out_scope_num;
-                M.set_UB2(calc_UB2);
-            }
-            else {
-                double calc_UB2= pre_LB2+spacing2;
-                M.set_UB2(calc_UB2);
-            }
+            M.previous_genome1.clear();  // clears occupant vector
+            M.previous_genome2.clear();  // clears occupant vector
+            M.set_id(id_number);
+            M.bin1=d1;
+            M.bin2=d2;
+            M.set_LB1(pre_LB1);
+            M.set_LB2(pre_LB2);
+            M.set_center_bin1(pre_LB1+(spacing1/2));            // Sets center of Bin
+            M.set_center_bin2(pre_LB2+(spacing2/2));
+            double calc_UB1= pre_LB1+spacing1;
+            M.set_UB1(calc_UB1);
+            double calc_UB2= pre_LB2+spacing2;
+            M.set_UB2(calc_UB2);
             M.build_map_space();
             Row.push_back(M);
             pre_LB2+=spacing2;
-            //cout << endl << "number in row is: "<< num_in_row << endl;
-            //num_in_row++;
+            id_number++;
         }
         Map.push_back(Row);
         pre_LB1+=spacing1;
-        //cout << endl << "rows in Map is: "<< row_in_Map << endl;
-        //row_in_Map++;
+        pre_LB2=dim2_min;
     }
     cout << endl << "Map is made" << endl;
 }
 // --------------------------------------------------
-// Places individual into corresponding map_space in Map
-void Map_Elites::place_individual_in_map(Individual Passed_I){
-    double p1=Passed_I.get_phenotype1();
-    double p2=Passed_I.get_phenotype2();
+// Place individual
+// places into corresponding map_space in Map
+void Map_Elites::place_individual_in_map(){
+    double p1=challenger.get_phenotype1();
+    double p2=challenger.get_phenotype2();
+    
+    // out of bounds check
+    double p1_lower=dim1_min;
+    double p2_lower=dim2_min;
+    double p1_upper=dim1_max;
+    double p2_upper=dim2_max;
+    
     double pLB1=dim1_min;
     double pLB2=dim2_min;
     int row_value=0;
     int element_value=0;
+    
     // to find which row phenotype belongs in
     for(int d1=0; d1<num_spacing1; d1++){
-        // TODO - dex 0 and dex end special case handling in bin not this one
         double pUB1= pLB1+spacing1;
+        // under bounds
+        if (p1<p1_lower){
+            row_value=0;
+            break;
+        }
+        else if (p1>=p1_upper){
+            row_value=resolution1-1;
+            break;
+        }
         // between range of LB1 and UB1
-        if (pLB1<p1 && p1<pUB1){
+        else if (pLB1<p1 && p1<=pUB1){
             row_value=d1;
+            break;
         }
         else {
             pLB1+=spacing1;
@@ -338,70 +360,259 @@ void Map_Elites::place_individual_in_map(Individual Passed_I){
     // to find which element in row phenotype beolongs in
     for(int d2=0; d2<num_spacing2; d2++){
         double pUB2= pLB2+spacing2;
+        // under bounds
+        if (p2<p2_lower){
+            element_value=0;
+            break;
+        }
+        else if (p2>=p2_upper){
+            element_value=resolution2-1;
+            break;
+        }
         // between range of LB2 and UB2
-        if (pLB2<p2 && p2<pUB2){
+        else if (pLB2<p2 && p2<=pUB2){
             element_value=d2;
+            break;
         }
         else {
             pLB2+=spacing2;
         }
     }
-    Map.at(row_value).at(element_value).current_individual.push_back(Passed_I);
+    
+    Map.at(row_value).at(element_value).current_individual.push_back(this->challenger);
+    
+    //cout << endl << "Placed in row "<< row_value << " column " <<element_value << endl;
+    
     // compare new individual in map space and erase worse
-    Map.at(row_value).at(element_value).compare_new_individual();
+    Map.at(row_value).at(element_value).compare_new_individual(this->challenger);
 }
 // --------------------------------------------------
-// Get individual from a map_space in Map
-void Map_Elites::individual_from_map(double p1, double p2){
-    temp_individual1.clear();
-    temp_individual2.clear();
-    double pLB1=dim1_min;
-    double pLB2=dim2_min;
+// Individual from Map
+// gets an individual from a map_space in Map.
+void Map_Elites::individual_from_map(int p1, int p2){
     int row_value=0;
     int element_value=0;
-    // to find which row phenotype belongs in
-    for(int d1=0; d1<num_spacing1; d1++){
-        double pUB1= pLB1+spacing1;
-        // between range of LB1 and UB1
-        if (pLB1<p1 && p1<pUB1){
-            row_value=d1;
-        }
-        else {
-            pLB1+=spacing1;
-        }
-    }
-    // to find which element in row phenotype beolongs in
-    for(int d2=0; d2<num_spacing2; d2++){
-        double pUB2= pLB2+spacing2;
-        // between range of LB2 and UB2
-        if (pLB2<p2 && p2<pUB2){
-            element_value=d2;
-        }
-        else {
-            pLB2+=spacing2;
-        }
-    }
+    row_value = p1;
+    element_value = p2;
+    current_bin1=p1;
+    current_bin2=p2;
     if (Map.at(row_value).at(element_value).current_individual.size()>0){
-        temp_individual1 = Map.at(row_value).at(element_value).current_individual.at(0).get_individual1();
+        challenger = Map.at(row_value).at(element_value).current_individual.at(0);
+        challenger.home_id = Map.at(row_value).at(element_value).id;
         
-        temp_individual2 = Map.at(row_value).at(element_value).current_individual.at(0).get_individual2();
-        cout << endl << "individuals passed to temp" << endl;
-        get_temp_individual1();     // TODO - check to see if works !!!!!!!!!!
-        get_temp_individual2();
+        Map.at(row_value).at(element_value).mutate_counter++;           // counter on bin pulled for mutation.
+        Map.at(row_value).at(element_value).current_individual.at(0).mutate_counter_individual++;      // counter on Individual pulled for mutation.
     }
     else {
-        cout << endl << "No individual in: " << p1 << p2 << endl;
-        // closest filled map_space function?
+        // TODO - FIX Always Zero
+        //----------------------------------------------------------------     YL fix to check ----- VVV
+        //while(Map.at(row_value).at(element_value).current_individual.size()<=0){
+        
+        //            int b1_min=0;
+        //            int b2_min=0;
+        //            int b1_max=get_resolution1();
+        //            int b2_max=get_resolution2();
+        //            row_value=rand()%(b1_max-b1_min)+b1_min;
+        //            element_value=rand()%(b2_max-b2_min)+b2_min;
+        //            //cout << "bin to mutate is: (" << bin1 << "," << bin2 << ")" << endl;
+        //
+        //        }
+        //        challenger = Map.at(row_value).at(element_value).current_individual.at(0);
+        //        challenger.home_id = Map.at(row_value).at(element_value).id;
+        //----------------------------------------------------------------------
+        
+        //cout << endl << "Full_bin vector before has  " << full_bins.size() << endl;
+        //cout << "Trying to Place in  (" << p1 << " , " << p2 << ")  Bin ID is: " << Map.at(row_value).at(element_value).id << endl;
+        
+        create_full_bin();          // Error probably here
+        //cout << endl << "Full_bin vector before has  " << full_bins.size() << endl;
+        
+        int min_index = min_element(distance_between_centerbin_phenotype.begin(), distance_between_centerbin_phenotype.end()) - distance_between_centerbin_phenotype.begin();
+        
+        //cout << "min distance is in bin: " << min_index << endl;
+        
+        challenger = full_bins.at(min_index).current_individual.at(0);
+        challenger.home_id = full_bins.at(min_index).id;
+        
+        full_bins.at(min_index).mutate_counter++;               // counter on bin pulled for mutation.
+        full_bins.at(min_index).current_individual.at(0).mutate_counter_individual++;       // counter on Individual pulled for mutation.
     }
 }
-// Get temp_individuals
-vector<double>& Map_Elites::get_temp_individual1(){
-    return temp_individual1;
-}
-vector<double>& Map_Elites::get_temp_individual2(){
-    return temp_individual2;
+// --------------------------------------------------
+// Create Full Bin
+// creates a vector of all bins that contain an Individual.
+void Map_Elites::create_full_bin(){
+    full_bins.clear();
+    distance_between_centerbin_phenotype.clear();
+    for(int row_value=0; row_value<num_spacing1; row_value++){
+        for(int element_value=0; element_value<num_spacing2; element_value++){
+            if (Map.at(row_value).at(element_value).full_bin_check()==0){ // look for enum
+                full_bins.push_back(Map.at(row_value).at(element_value));       // push_back Map_space that is full
+                find_pheno_dist_to_center_bin(row_value, element_value, current_bin1, current_bin2);        // calculates distance from phenotype to center of desired bin
+                distance_between_centerbin_phenotype.push_back(center_dist);
+                //cout << "-----------------------Bin is: " << full_bins.size() << "  Center distance is: " << center_dist << endl;
+                // "  Fit is: " << Map.at(row_value).at(element_value).current_individual.at(0).fit_rating << endl;
+            }
+        }
+    }
+    //cout << endl << "Full_bin vector has  " << full_bins.size() << endl;
+    //cout << endl << "Distance vector has  " << distance_between_centerbin_phenotype.size() << endl;
 }
 // --------------------------------------------------
-
+// Find Phenotype distance to Center of Bin
+// find distance from Individual in a bin to center of desired bin.
+void Map_Elites::find_pheno_dist_to_center_bin(int p1, int p2, int cb1, int cb2){
+    center_dist = 0;
+    double d1 = Map.at(p1).at(p2).current_individual.at(0).get_phenotype1();
+    double d2 = Map.at(p1).at(p2).current_individual.at(0).get_phenotype2();
+    //cout << endl << "Pheno 1 is:  " << Map.at(p1).at(p2).current_individual.at(0).get_phenotype1() << " , Pheno 2 is:  " << Map.at(p1).at(p2).current_individual.at(0).get_phenotype2() << endl;
+    
+    double d1c = Map.at(cb1).at(cb2).center_bin1;
+    double d2c = Map.at(cb1).at(cb2).center_bin2;
+    //cout << "Center bin 1 is:  " << Map.at(cb1).at(cb2).center_bin1 << " , Center bin 2 is:  " << Map.at(cb1).at(cb2).center_bin2 << endl;
+    double d1_sq = (d1c-d1)*(d1c-d1);
+    double d2_sq= (d2c-d2)*(d2c-d2);
+    center_dist = sqrt(d1_sq + d2_sq);
+}
+// --------------------------------------------------
+// How many bins are full?
+void Map_Elites::how_many_full_bins(){
+    int num_of_full_bins=0;
+    for(int row_value=0; row_value<num_spacing1; row_value++){
+        for(int element_value=0; element_value<num_spacing2; element_value++){
+            if (Map.at(row_value).at(element_value).full_bin_check()==0){
+                num_of_full_bins++;
+            }
+        }
+    }
+    cout << endl << "Final number of full bins: " << num_of_full_bins << endl;
+}
+// --------------------------------------------------
+// Print fit_ratings of Map
+void Map_Elites::print_fit_ratings_of_map(){
+    ofstream myfile;
+    myfile.open ("fit_ratings_of_map.txt");
+    for(int row_value=0; row_value<num_spacing1; row_value++){
+        for(int element_value=0; element_value<num_spacing2; element_value++){
+            if (Map.at(row_value).at(element_value).full_bin_check()==0){
+                myfile << Map.at(row_value).at(element_value).current_individual.at(0).get_fit_rating() << '\n';
+            }
+        }
+    }
+    myfile.close();
+    cout << endl << "fit_ratings_of_map.txt file created." << endl;
+}// --------------------------------------------------
+// Get Best Individuals
+vector<double>& Map_Elites::get_best_individual1(){
+    return best_individual1;
+}
+vector<double>& Map_Elites::get_best_individual2(){
+    return best_individual2;
+}
+// --------------------------------------------------
+// Best Fit Genome
+void Map_Elites::best_fit_bin(){
+    full_bins.clear();
+    fit_ratings_in_map.clear();
+    best_fit_index=0;
+    for(int row_value=0; row_value<num_spacing1; row_value++){
+        for(int element_value=0; element_value<num_spacing2; element_value++){
+            if (Map.at(row_value).at(element_value).full_bin_check()==0){
+                full_bins.push_back(Map.at(row_value).at(element_value));       // push_back Map_space that is full
+                fit_ratings_in_map.push_back(Map.at(row_value).at(element_value).current_individual.at(0).get_fit_rating());
+            }
+        }
+    }
+    best_fit_index = max_element(fit_ratings_in_map.begin(), fit_ratings_in_map.end()) - fit_ratings_in_map.begin();
+    
+    best_individual1=  full_bins.at(best_fit_index).current_individual.at(0).get_individual1();
+    //best_individual2=  full_bins.at(best_fit_index).current_individual.at(0).get_individual2();           // TODO - Remove Comments for main program--------------------
+    
+    //full_bins.at(best_fit_index).current_individual.at(0).display_individual1();
+    
+    cout << endl << "best fit bin is: " << best_fit_index << " with a fitness of " << full_bins.at(best_fit_index).current_individual.at(0).fit_rating << endl;
+    //cout << endl << "best fit bin has been accessed: " << full_bins.at(best_fit_index).get_counter() << " times." << endl;
+    //cout << endl << "best fit has " << full_bins.at(best_fit_index).previous_fit_rating.size() << " different occupants." << endl;
+    //cout << endl << "best fit has deleted " << full_bins.at(best_fit_index).old_counter << " past occupants." << endl;
+    //cout << endl << "best fit has deleted " << full_bins.at(best_fit_index).new_counter << " potential occupants." << endl;
+}
+// --------------------------------------------------
+// Print Best Bin Occupants fit_ratings
+void Map_Elites::print_best_occupants_fitness(){
+    ofstream myfile;
+    myfile.open ("best_occupant_fit_ratings.txt");
+    for(int occupant=0; occupant < full_bins.at(best_fit_index).previous_fit_rating.size(); occupant++){
+        myfile << full_bins.at(best_fit_index).previous_fit_rating.at(occupant) << '\n';
+    }
+    myfile.close();
+    cout << "best_occupant_fit_ratings.txt file created." << endl;
+}
+// --------------------------------------------------
+// Print All Occupants
+void Map_Elites::print_all_occupants(){
+    ofstream myfile;
+    myfile.open ("all_occupants_with_fit_ratings.txt");
+    for(int element=0; element<full_bins.size();element++){
+        myfile << "occupant for bin: " << element << "\t accessed count: " << full_bins.at(element).counter << '\n';
+        for(int occupant=0; occupant < full_bins.at(element).previous_fit_rating.size(); occupant++){
+            myfile << full_bins.at(element).previous_fit_rating.at(occupant) << '\n';
+        }
+    }
+    myfile.close();
+    cout << "all_occupants_with_fit_ratings.txt file created." << endl;
+}
+// --------------------------------------------------
+// Print Best Parents fitness
+void Map_Elites::print_best_parents_fitness(){
+    //cout << endl << "Parent fitness vector has " << full_bins.at(best_fit_index).current_individual.at(0).parents_fitness.size() << endl;
+    ofstream myfile;
+    myfile.open ("best_parents_fitness.txt");
+    for(int parent=0; parent < full_bins.at(best_fit_index).current_individual.at(0).parents_fitness.size(); parent++){
+        myfile << full_bins.at(best_fit_index).current_individual.at(0).parents_fitness.at(parent) << '\n';
+    }
+    myfile.close();
+    cout << "best_parents_fitness.txt file created." << endl;
+}
+//--------------------------------------------------
+// Print Best Parents ID
+void Map_Elites::print_best_parents_id(){
+    //cout << endl << "Parent id vector has " << full_bins.at(best_fit_index).current_individual.at(0).parents_id.size() << endl;
+    ofstream myfile;
+    myfile.open ("best_parents_id.txt");
+    for(int parent=0; parent < full_bins.at(best_fit_index).current_individual.at(0).parents_id.size(); parent++){
+        myfile << full_bins.at(best_fit_index).current_individual.at(0).parents_id.at(parent) << '\n';
+    }
+    myfile.close();
+    cout << "best_parents_id.txt file created." << endl;
+}
+// --------------------------------------------------
+void Map_Elites::print_best_full_trace(){
+    ofstream myfile;
+    myfile.open ("best_tracer.txt");
+    for(int parent=0; parent < full_bins.at(best_fit_index).current_individual.at(0).parents_id.size(); parent++){
+        myfile << full_bins.at(best_fit_index).current_individual.at(0).parents_id.at(parent) << '\t';
+        myfile << full_bins.at(best_fit_index).current_individual.at(0).parents_fitness.at(parent) << '\n';
+    }
+    myfile.close();
+    cout << "best_tracer.txt file created" << endl;
+}
+// --------------------------------------------------
+void Map_Elites::print_heat_map(){
+    ofstream myfile;
+    myfile.open ("heat_map.txt");
+    for(int element=0; element<full_bins.size();element++){
+        myfile << full_bins.at(element).id << '\t';                             // ID of Bin
+        myfile << full_bins.at(element).bin1 << '\t';                           // Bin X
+        myfile << full_bins.at(element).bin2 << '\t';                           // Bin X
+        myfile << full_bins.at(element).best_fit_rating  << '\t';               // Current fit rating in Bin
+        myfile << full_bins.at(element).get_counter()  << '\t';                 // Times accessed
+        myfile << full_bins.at(element).get_old_deleted_counter()  << '\t';     // Times new Individual is better
+        myfile << full_bins.at(element).get_mutation_counter()  << '\t';        // Times bin has been selected for mutation
+        myfile << full_bins.at(element).current_individual.at(0).mutate_counter_individual  << '\n';        // Times Individual has been selected for mutation
+    }
+    myfile.close();
+    cout << "heat_map.txt file created." << endl;
+}
+// --------------------------------------------------
 
 #endif /* Map_Elites_hpp */

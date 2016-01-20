@@ -87,7 +87,7 @@ class Neural_Network
 protected:
     void create_layer_sizes();
     void create_layers();
-
+    
 public:
     //Neural Network Framework
     vector<Layer> Layers;
@@ -111,7 +111,7 @@ public:
     vector<double> hidden_to_output_layer_weights;
     void take_state(vector<double> S);
     vector<double> state_variables;
-
+    
     //Communication to Simulator
     vector<double> controls_for_simulator;
     vector<double> communication_to_simulator();
@@ -158,7 +158,7 @@ public:
     //Reset Funtions
     void Neural_Network_Reset(); //Use after each time step to reset the ANN and state variables
     void Experimental_Reset(); //Use after each experimental run to reset the ANN state variables and weights
-
+    
 private:
     
 };
