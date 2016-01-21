@@ -91,7 +91,7 @@ void Wrapper::initialize_wrapper(){
     
     hidden_layer_size = 3;
     
-    pME->set_map_params(0, 6.5, 0, 100000, 5, 5, 10, 10);                                                   //-------- To Change Map Settings
+    pME->set_map_params(0, 6.5, 0, 100000, 5, 5, 10, 0);                                                   //-------- To Change Map Settings
     // (dim1_min, dim1_max, dim2_min, dim2_max, resolution 1,2, fill generation, mutate generation)
     //pME->display_Map_params();        // TODO - delete and add print()
     
@@ -161,8 +161,8 @@ void Wrapper::fill_MAP(){
         
         I.set_individual_params(isize_1, isize_2, imutate_mag_1, imutate_mag_2, imutate_amount_1, imutate_amount_2);
         I.build_individual();
-        I.display_individual1();    // comment out
-        I.display_individual2();    // comment out
+        //I.display_individual1();    // comment out
+        //I.display_individual2();    // comment out
 
         // NN.initialize(this->hidden_layer_size, Sim.currentstate.num_of_controls);       // TODO - Why is this here? Moved to initialize_wrapper().
         

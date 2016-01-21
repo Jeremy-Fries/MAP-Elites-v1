@@ -1,3 +1,2 @@
 occupant for bin: 0	 accessed count: 9
-1189.13
-1377.06
+4364.03
