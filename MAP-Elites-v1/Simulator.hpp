@@ -56,7 +56,7 @@ protected:
     int linear, rotational, numalf;     //number of linear and rotational DOFs, number of AOAs with CL and CD values
     double t, anglechange, fitness;     //time, rotational tracker, fitness value(likely to change)
     double tstep;                       //simulation calculates values every 0.1 seconds set in initialize
-    double const tmax = 600;             //Maximum time that simulation will run for
+    double const tmax = 60;             //Maximum time that simulation will run for
     double const rhoair = 1.2;          //Density of air, used for aerodynamic calculations
     
     
@@ -172,6 +172,22 @@ void Simulator::initialize_sim(){
     angleke.clear();
     
     
+    /// reserve enough space for each vector in class.
+    int buffer = 3;
+    xpositions.reserve(tmax - t + buffer);
+    zpositions.reserve(tmax - t + buffer);
+    xvels.reserve(tmax + buffer);
+    zvels.reserve(tmax + buffer);
+    xke.reserve(tmax + buffer);
+    zke.reserve(tmax + buffer);
+    xaccels.reserve(tmax + buffer);
+    zaccels.reserve(tmax + buffer);
+    anglepos.reserve(tmax + buffer);
+    anglevel.reserve(tmax + buffer);
+    angleaccel.reserve(tmax + buffer);
+    angleke.reserve(tmax + buffer);
+    stateholder.reserve(tmax + buffer);
+    
     lander.initialize(linear, rotational);          //Initialize Craft
     currentstate.initialize_translate_limits();
     //currentstate.printheader();                     //Output Header in XCode Screen
@@ -208,7 +224,7 @@ void Simulator::run_timestep(vector<double> controls){
     stateholder.push_back(currentstate);            //pushback current state into vector
     currentstate.translate_function();
     
-    //currentstate.printround(myfile,controls.at(0));                //Output simulator outputs to screen and file
+    currentstate.printround(myfile,controls.at(0));                //Output simulator outputs to screen and file
     //fitnessvector();    // potentially comment out // potential tag/ searchable
 }
 

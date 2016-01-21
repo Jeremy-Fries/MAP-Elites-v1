@@ -15,6 +15,7 @@
 #include <string>
 #include <iomanip>
 #include <cstdlib>
+#include <map>
 
 #include "LinDOF.hpp"
 #include "RotDOF.hpp"
@@ -34,6 +35,37 @@
 // TODO - include any other files?
 
 using namespace std;
+
+#define TRIG_GRANULARITY 1000
+double sine(double inp){
+    //return sin(inp);
+    
+    double out;
+    static map< int, double > sine_iomap;
+    int input_int = inp*TRIG_GRANULARITY;
+    if(sine_iomap.count(input_int) == 1)
+    {out = sine_iomap.find(input_int)->second;}
+    else{
+        out = sin(inp);
+        sine_iomap.insert(pair <int,double> (input_int,out));
+    }
+    return out;
+}
+double cosine(double inp){
+    //return cos(inp);
+    
+    double out;
+    static map< int, double > sine_iomap;
+    int input_int = inp*TRIG_GRANULARITY;
+    if(sine_iomap.count(input_int) == 1)
+    {out = sine_iomap.find(input_int)->second;}
+    else{
+        out = cos(inp);
+        sine_iomap.insert(pair <int,double> (input_int,out));
+    }
+    return out;
+}
+
 
 int submain(){
     cout << "IN submain()" << endl;

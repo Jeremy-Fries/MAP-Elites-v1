@@ -231,6 +231,8 @@
 		8DCC951E1C10CF410030D596 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				GCC_OPTIMIZATION_LEVEL = 1;
+				"OTHER_CPLUSPLUSFLAGS[arch=*]" = "-g";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;

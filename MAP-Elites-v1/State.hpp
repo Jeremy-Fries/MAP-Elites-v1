@@ -46,8 +46,6 @@ public:
 // --------------------------------------------------
     void printheader();
     void printround(ofstream & file, double);
-  
-    
     
 };
 
@@ -76,6 +74,12 @@ void State::initialize_translate_limits(){
     state_variables_UpLimit.clear();
     control_LowLimits.clear();
     control_UpLimits.clear();
+    
+    state_variables_LowLimit.reserve(6);
+    state_variables_UpLimit.reserve(6);
+    control_LowLimits.reserve(2);
+    control_UpLimits.reserve(2);
+
     
     // state variable upper limits
     state_variables_UpLimit.push_back(1000.0);   // xpos [m]
@@ -109,6 +113,7 @@ void State::initialize_translate_limits(){
 // Translate function() takes information of craft and target, pushes into vector to go to NN. May need to be in simulator to have access to target.
 vector<double> State::translate_function(){
     state_variables_vec.clear();
+    state_variables_vec.reserve(6);
     state_variables_vec.push_back(xpos);
     state_variables_vec.push_back(xvel);
     state_variables_vec.push_back(zpos);

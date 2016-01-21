@@ -91,7 +91,7 @@ void Wrapper::initialize_wrapper(){
     
     hidden_layer_size = 3;
     
-    pME->set_map_params(0, 6.5, 0, 100000, 5, 5, 10, 0);                                                   //-------- To Change Map Settings
+    pME->set_map_params(0, 6.5, 0, 100000, 5, 5, 10, 1000);                                                   //-------- To Change Map Settings
     // (dim1_min, dim1_max, dim2_min, dim2_max, resolution 1,2, fill generation, mutate generation)
     //pME->display_Map_params();        // TODO - delete and add print()
     
@@ -176,7 +176,7 @@ void Wrapper::fill_MAP(){
         
             /// %%% /// %%% BEGIN SIMULATION LOOP %%% /// %%% ///
         while (Sim.t<Sim.tmax && Sim.lander.frame.at(1).s > Sim.lander.frame.at(1).target){
-                /// while Sim still has time AND the Craft above ground level.
+                /// while Sim still has time AND the Craft is above ground level.
             NN.activation_function(Sim.currentstate.translate_function());
             Sim.run_timestep(NN.communication_to_simulator());
             NN.Neural_Network_Reset();
