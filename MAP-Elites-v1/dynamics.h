@@ -20,12 +20,12 @@ using namespace std;
 // phi describes the angle of the body with respect to the negative x-axis
 vector<double> forcecalc(vector<double> controller, Craft c, double rho, vector<vector<double> > ae) {
     vector<double> forcevec;                        // vector to be returned
-    double phi = c.orientation.at(0).q;             //renaming pitch for ease of use
+    double phi = reset_angle(c.orientation.at(0).q);             //renaming pitch for ease of use
     double lift, drag, lx, lz, dx, dz, tx, tz;      //newtonian force components
     double g = -9.81;                               //gravitational component
     double velsqr = pow(c.frame.at(0).sdot,2)+pow(c.frame.at(1).sdot,2);    //square of total velocity
     double vel = sqrt(velsqr);                      //total velocity
-    double theta = asin(abs(c.frame.at(1).sdot)/vel);       //orientation of velocity vector
+    double theta = asin(abs(c.frame.at(1).sdot)/vel)*45/atan(1);       //orientation of velocity vector
     
     // initialize coefficients of lift and drag to 0
     double cl = 0;
@@ -42,7 +42,7 @@ vector<double> forcecalc(vector<double> controller, Craft c, double rho, vector<
     
     // determine if coefficients of lift and drag are known, assign if possible
     for(int i=0;i<ae.size();i++){
-        if(ae.at(i).at(0)==alpha){
+        if(ae.at(i).at(0)==round(alpha)){
             cl = ae.at(i).at(1);
             cd = ae.at(i).at(2);
             break;
@@ -54,6 +54,10 @@ vector<double> forcecalc(vector<double> controller, Craft c, double rho, vector<
     //Calculate forces of lift and drag, will be 0 if cl and cd not available from file.
     lift = cl*rho*velsqr*c.sref*0.5;
     drag = cd*rho*velsqr*c.sref*0.5;
+    
+    //cout << "LIFT IS: " << lift << " AND DRAG: " << drag << endl;
+    //cout << "COEF:::: " << cl << "\t" << cd << endl;
+    //cout << "ALPHA IS: " << alpha << endl;
     
     //calculate newtonian components of force, lift, drag, and thrust
     tx = controller.at(0)*coefficients.at(1);

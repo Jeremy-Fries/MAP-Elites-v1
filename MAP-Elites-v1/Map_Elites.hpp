@@ -381,7 +381,7 @@ void Map_Elites::place_individual_in_map(){
     
     Map.at(row_value).at(element_value).current_individual.push_back(this->challenger);
     
-    //cout << endl << "Placed in row "<< row_value << " column " <<element_value << endl;
+    cout << endl << endl << endl << "Placed in row "<< row_value << " column " <<element_value << endl;
     
     // compare new individual in map space and erase worse
     Map.at(row_value).at(element_value).compare_new_individual(this->challenger);

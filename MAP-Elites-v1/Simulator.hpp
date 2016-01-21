@@ -56,7 +56,7 @@ protected:
     int linear, rotational, numalf;     //number of linear and rotational DOFs, number of AOAs with CL and CD values
     double t, anglechange, fitness;     //time, rotational tracker, fitness value(likely to change)
     double tstep;                       //simulation calculates values every 0.1 seconds set in initialize
-    double const tmax = 60;             //Maximum time that simulation will run for
+    double const tmax = 600;             //Maximum time that simulation will run for
     double const rhoair = 1.2;          //Density of air, used for aerodynamic calculations
     
     
@@ -87,6 +87,7 @@ protected:
     Craft lander;
     State currentstate;
     ofstream myfile;
+    
 public:
 // --------------------------------------------------
     int loadaero();
@@ -148,7 +149,7 @@ void Simulator::initialize_sim(){
     t = 0;
     tstep = 0.1;
     anglechange = 0;
-    myfile.open("SimulatorData.txt"); //Open output file for data
+    //myfile.open("SimulatorData.txt",ofstream::app); //Open output file for data
     numalf = loadaero();              //Return the number of angles we have CL and CD values for
     fitness = 0;
     
@@ -175,7 +176,7 @@ void Simulator::initialize_sim(){
     currentstate.initialize_translate_limits();
     currentstate.printheader();                     //Output Header in XCode Screen
     currentstate.get_state(lander, t, tstep);       //Modify current state based on simulator outputs
-    currentstate.printround(myfile);                //Output simulator outputs to screen and file
+    currentstate.printround(myfile, 0);                //Output simulator outputs to screen and file
     stateholder.push_back(currentstate);            //Pushback currentstate into vector for tracking
         
     fitnessvector();             //Put current data into vectors for later calculating fitness
@@ -205,15 +206,17 @@ void Simulator::run_timestep(vector<double> controls){
     t = t+tstep;
     currentstate.get_state(lander, t, tstep);       //update current state
     stateholder.push_back(currentstate);            //pushback current state into vector
-    //currentstate.printround(myfile);                //Output simulator outputs to screen and file
-    fitnessvector();    // potentially comment out // potential tag/ searchable
+    currentstate.translate_function();
+    
+    //currentstate.printround(myfile,controls.at(0));                //Output simulator outputs to screen and file
+    //fitnessvector();    // potentially comment out // potential tag/ searchable
 }
 
 // Runs the simulator while time is less than max time and lander is above ground
 // --------------------------------------------------
 void Simulator::end_sim(){
     cout << "\t Angle Change: \t"<< anglechange << endl;    //Output total rotation of craft throughout the the simulation
-    myfile.close();
+    //myfile.close();
     
 }
 

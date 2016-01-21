@@ -35,8 +35,9 @@ public:
 
 //declare initializations of degree of freedom parameters
 void LinDOF::initialize(){
-    s = rand()%100;     //linear position
-    sdot = rand()%5;    //linear velocity
+    s = 100;     //linear position
+    sdot = rand()%50+20;    //linear velocity
+    //sdot = 100;
     sdotdot = 0;        //linear acceleration
     target = 0;         //target position
     

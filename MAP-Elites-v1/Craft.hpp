@@ -62,9 +62,8 @@ void Craft::initialize(int dl, int dr){
         orientation.push_back(rot);
     }
     
+    frame.at(1).sdot = 0;
     
-    //Force x-component of velocity into negative direction
-    frame.at(0).sdot = frame.at(0).sdot*-1;
 }
 
 #endif /* Craft_hpp */

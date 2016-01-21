@@ -45,7 +45,7 @@ public:
     vector<double> translate_function();
 // --------------------------------------------------
     void printheader();
-    void printround(ofstream & file);
+    void printround(ofstream & file, double);
   
     
     
@@ -78,9 +78,9 @@ void State::initialize_translate_limits(){
     control_UpLimits.clear();
     
     // state variable upper limits
-    state_variables_UpLimit.push_back(500.0);   // xpos [m]
-    state_variables_UpLimit.push_back(100.0);   // xvel [m/s]
-    state_variables_UpLimit.push_back(500.0);   // zpos [m]
+    state_variables_UpLimit.push_back(1000.0);   // xpos [m]
+    state_variables_UpLimit.push_back(200.0);   // xvel [m/s]
+    state_variables_UpLimit.push_back(1000.0);   // zpos [m]
     state_variables_UpLimit.push_back(100.0);   // zvel [m/s]
     state_variables_UpLimit.push_back(1);    // sin(phi) [ratio of rad]
     state_variables_UpLimit.push_back(1);    // cos(phi) [ratio of rad]
@@ -94,14 +94,18 @@ void State::initialize_translate_limits(){
     state_variables_LowLimit.push_back(-1);    // cos(phi) [ratio of rad]
     
     // control upper limits
-    control_UpLimits.push_back(500.0);    // thrust [N]
-    control_UpLimits.push_back(50.0);     // torque [Nm]
+    control_UpLimits.push_back(0.0);    // thrust [N] /// previously 500
+    control_UpLimits.push_back(10.0);     // torque [Nm]
     
     // control lower limits
     control_LowLimits.push_back(0.0);       // thrust [N]
-    control_LowLimits.push_back(-50.0);     // torque [Nm]
+    control_LowLimits.push_back(-10.0);     // torque [Nm]
 }
 // --------------------------------------------------
+
+// TODO - 
+
+
 // Translate function() takes information of craft and target, pushes into vector to go to NN. May need to be in simulator to have access to target.
 vector<double> State::translate_function(){
     state_variables_vec.clear();
@@ -122,12 +126,14 @@ void State::printheader(){
 // --------------------------------------------------
 //print values for each round
 //file is the output file to be read by MatLab
-void State::printround(ofstream & file){
+void State::printround(ofstream & file, double thrust){
     
-    cout << time << "\t\t\t" << timestep << "\t\t\t" << xpos << "\t\t\t" << xvel << "\t\t\t" << zpos << "\t\t\t";
-    cout << zvel << "\t\t\t" << phi << "\t\t\t" << phivel << "\t\t\t" << KEx << "\t\t\t" << KEz << "\t\t\t" << KEp << endl;
-    file << time << "\t\t\t" << timestep << "\t\t\t" << xpos << "\t\t\t" << xvel << "\t\t\t" << zpos << "\t\t\t";
-    file << zvel << "\t\t\t" << phi << "\t\t\t" << phivel << "\t\t\t" << KEx << "\t\t\t" << KEz << "\t\t\t" << KEp << endl;
+    //cout << time << "\t\t\t" << timestep << "\t\t\t" << xpos << "\t\t\t" << xvel << "\t\t\t" << zpos << "\t\t\t";
+    //cout << zvel << "\t\t\t" << phi << "\t\t\t" << phivel << "\t\t\t" << KEx << "\t\t\t" << KEz << "\t\t\t" << KEp << endl;
+    //file << time << "\t\t\t" << timestep << "\t\t\t" << xpos << "\t\t\t" << xvel << "\t\t\t" << zpos << "\t\t\t";
+    file << time << "\t\t" << thrust << "\t\t" << xpos << "\t\t" << xvel << "\t\t" << zpos << "\t\t";
+    file << zvel << "\t\t" << phi << "\t\t" << phivel << "\t\t" << KEx << "\t\t" << KEz << "\t\t" << KEp << endl;
+    
 }
 
 

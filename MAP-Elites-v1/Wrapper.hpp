@@ -64,12 +64,15 @@ public:
             // Main Wrapper functions
     void wrapper_runs_sim(vector<double>,vector<double>);
     void find_phenotypes();
-    void fitness_calculation();
+    void fitness_calculation(State);
     void rand_bin();
     void fill_MAP();
     void mutate_MAP();
     void run_single_individual();
     void print_stuff();
+    void print_entire_map_solution();
+    
+    
 // --------------------------------------------------
     // Phenotypes: min, max,            integral output, range, calc d", # of pts d' is + or -, sum of average slopes,
 // --------------------------------------------------
@@ -78,7 +81,6 @@ private:
     double imutate_mag_1,imutate_mag_2;
     int bin1, bin2;
     
-    double calc_fit_rating;
     double fit_rating;
     double phenotype_1, phenotype_2;
 };
@@ -93,13 +95,15 @@ void Wrapper::initialize_wrapper(){
     
     hidden_layer_size = 3;
     
-    pME->set_map_params(0, 100, 0, 100, 1, 1, 100, 1000000);
+    pME->set_map_params(0, 6.5, 0, 100000, 5, 5, 10, 1000);
     // (dim1_min, dim1_max, dim2_min, dim2_max, resolution1,2, fill generation, mutate generation)
     
     //pME->display_Map_params();
     
     wrapper_sets_I_params((states+1)*hidden_layer_size, (hidden_layer_size+1)*outs, 0.1, 0.1, 4, 2);
     // individual_size 1,2, mutate_magnitude 1,2, mutation_amount 1,2)
+    
+    Sim.myfile.open("SimulatorData.txt");
     
 }
 // --------------------------------------------------------------------------------------------------------
@@ -120,10 +124,10 @@ void Wrapper::wrapper_sets_I_params(int size1, int size2, double mut_mag1, doubl
 
 // ----------------------------------------------------------------------------------- TODO - change calculation
 // Fitness Function
-void Wrapper::fitness_calculation(){
-    calc_fit_rating=0;
+void Wrapper::fitness_calculation(State current){
     fit_rating=0;
     
+    cout << endl << "Fitness in " << fit_rating << endl;
     
     //// LANDING FITNESS CALCULATION
     /// must land (0)
@@ -131,12 +135,22 @@ void Wrapper::fitness_calculation(){
     cout << endl << endl;
     cout << Sim.zpositions.size() << endl;
     
-    if(Sim.currentstate.zpos > 0){ /// still in air. (0)
-        fit_rating = -9999999999999; /// TODO MAX_INT
-    }
-    fit_rating -= Sim.currentstate.KEx; // (1)
-    fit_rating -= Sim.currentstate.KEz; // (2)
-    fit_rating -= Sim.currentstate.KEp; // (3)
+    //if(current.zpos > 0){ /// still in air. (0)
+    //    fit_rating = -9999999999999; /// TODO MAX_INT
+    //}
+    
+    cout << endl << "KEx IS: " << current.KEx << endl;
+    cout << endl << "KEz IS: " << current.KEz << endl;
+    cout << endl << "KEp IS: " << current.KEp << endl;
+    //fit_rating -= current.KEx; // (1)
+    //fit_rating -= current.KEz; // (2)
+    //fit_rating -= current.KEp; // (3)
+    //fit_rating -= current.zpos * current.zpos;
+    
+    fit_rating += current.xpos;
+    
+    cout << endl << "fitness is; " << fit_rating << endl;
+    cout << endl << "Fitness OUT!? " << fit_rating << endl;
 }
 // ----------------------------------------------------------------------------------- TODO - change
 // Phenotypes
@@ -179,7 +193,7 @@ void Wrapper::fill_MAP(){
         //cout << "fill round is: " << g << endl;
         
         Individual I;
-        Simulator Sim;
+        //Simulator Sim;
         //Neural_Network NN;
         
         I.set_individual_params(isize_1, isize_2, imutate_mag_1, imutate_mag_2, imutate_amount_1, imutate_amount_2);
@@ -231,15 +245,18 @@ void Wrapper::fill_MAP(){
             //void take_num_hidden_units(int num_hidden);
             //void take_num_controls(int num_controls);
             //void take_weights(vector<double> in_to_hid, vector<double> hid_to_out);
-            NN.activation_function(Sim.currentstate.state_variables_vec);
+            NN.activation_function(Sim.currentstate.translate_function());
             
             Sim.run_timestep(NN.communication_to_simulator());
             
             NN.Neural_Network_Reset();
         }
         /// %%% /// %%% END SIMULATION LOOP %%% /// %%% ///
+        
+        State current;
+        current = Sim.currentstate;
       
-        fitness_calculation();
+        fitness_calculation(current);
         I.set_fit_rating(fit_rating);
         //I.display_fit_rating();
 
@@ -273,7 +290,7 @@ void Wrapper::mutate_MAP(){                         // TODO - Remove Comments fo
         
         /// %%% /// %%% BEGIN SIMULATION LOOP %%% /// %%% ///
         
-        Simulator Sim;
+        //Simulator Sim;
         Sim.initialize_sim();
         //Neural_Network NN;
         
@@ -298,9 +315,10 @@ void Wrapper::mutate_MAP(){                         // TODO - Remove Comments fo
         }
         /// %%% /// %%% END SIMULATION LOOP %%% /// %%% ///
         
+        State current;
+        current = Sim.currentstate;
         
-        
-        fitness_calculation();                           // fitness for new Individual
+        fitness_calculation(current);                           // fitness for new Individual
         ME.challenger.set_fit_rating(fit_rating);
         //ME.challenger.display_fit_rating();
         
@@ -326,8 +344,41 @@ void Wrapper::print_stuff(){
     ME.print_best_parents_id();
     ME.print_best_full_trace();
     ME.print_heat_map();
+    Sim.myfile.close();
 }
 // --------------------------------------------------
+
+void Wrapper::print_entire_map_solution(){
+    for(int element=0; element<full_bins.size();element++){
+
+        /// %%% /// %%% BEGIN SIMULATION LOOP %%% /// %%% ///
+    
+        Sim.initialize_sim();
+        NN.take_weights(ME.full_bins.at(element).get_individual1, ME.full_bins.at(element).get_individual2);
+    
+        NN.take_input_limits(Sim.currentstate.state_variables_LowLimit, Sim.currentstate.state_variables_UpLimit);
+        NN.take_output_limits(Sim.currentstate.control_LowLimits,Sim.currentstate.control_UpLimits);
+    
+    
+        /// %%% /// %%% BEGIN SIMULATION LOOP %%% /// %%% ///
+        while (Sim.t<Sim.tmax && Sim.lander.frame.at(1).s > Sim.lander.frame.at(1).target){
+            /// while the simulator still has time left on the clock
+            /// AND
+            /// the craft is above ground level:
+        
+            NN.activation_function(Sim.currentstate.state_variables_vec);
+        
+            //NN.communication_from_simulator_deprecated(Sim.currentstate.translate_function(), Sim.currentstate.state_variables_UpLimit, Sim.currentstate.state_variables_LowLimit, hidden_layer_size, Sim.currentstate.num_of_controls, Sim.currentstate.control_UpLimits, Sim.currentstate.control_LowLimits);
+            Sim.run_timestep(NN.communication_to_simulator());
+            Sim.currentstate.printround(myfile,controls.at(0));
+        
+            NN.Neural_Network_Reset();                      
+        }
+        /// %%% /// %%% END SIMULATION LOOP %%% /// %%% ///
+    }
+}
+
+
 // Run single test, modifiable weights of NN, recieve fit_rating and phenotypes.
 // TODO - User inputs all weights.
 // TODO - Able to change how weights are generated, access to different random functions.

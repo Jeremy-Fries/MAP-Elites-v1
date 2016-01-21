@@ -55,7 +55,7 @@ int submain(){
 }
 
 int main() {
-    //srand(time(NULL));
+    srand(time(NULL));
 // --------------------------------------------------
     submain();
 
