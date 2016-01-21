@@ -50,6 +50,8 @@ int submain(){
     
     W.print_stuff();
     
+    W.print_entire_map_solution();
+    
     cout << "OUT submain()" << endl;
     return 0;
 }

@@ -174,7 +174,7 @@ void Simulator::initialize_sim(){
     
     lander.initialize(linear, rotational);          //Initialize Craft
     currentstate.initialize_translate_limits();
-    currentstate.printheader();                     //Output Header in XCode Screen
+    //currentstate.printheader();                     //Output Header in XCode Screen
     currentstate.get_state(lander, t, tstep);       //Modify current state based on simulator outputs
     currentstate.printround(myfile, 0);                //Output simulator outputs to screen and file
     stateholder.push_back(currentstate);            //Pushback currentstate into vector for tracking

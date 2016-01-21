@@ -1,7 +1,3 @@
-occupant for bin: 0	 accessed count: 109
-660.306
-1287.46
-1504.7
-2137.43
-4985.19
-5728.11
+occupant for bin: 0	 accessed count: 9
+1189.13
+1377.06

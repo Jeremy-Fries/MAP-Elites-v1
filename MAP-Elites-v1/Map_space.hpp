@@ -23,6 +23,7 @@ class Map_space;
 using namespace std;
 
 class Map_space{
+    friend class Wrapper;
     friend class Map_Elites;
     friend class Individual;
 protected:
@@ -104,6 +105,7 @@ private:
     vector <double> previous_fit_rating;
 };
 // ------------------------------------------------------------------------------------------------ ^^ Declarations
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // ------------------------------------------------------------------------------------------------ vv Definitions
 // Display bounds of Map_space
 void Map_space::display_space(){
@@ -221,8 +223,7 @@ double Map_space::get_best_fit(){
 // LATER - can have multiple individuals in vector and sorts based on best fit_rating, possible diversity in Map_space?
 void Map_space::compare_new_individual(Individual challenger){
     
-    cout << "COMPARE IN" << endl;
-    
+    //cout << "COMPARE IN" << endl;
     
     if(current_individual.size()>1){
         counter++;

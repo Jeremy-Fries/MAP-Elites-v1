@@ -298,6 +298,7 @@ void Neural_Network::normalization()
 void Neural_Network::input_hidden_layer_connection()
 {
     vector<double> bb;
+    bb.reserve(Layers.at(0).Nodes.size() * Layers.at(1).Nodes.size() + 10);
     for(int j = 0; j < Layers.at(0).Nodes.size(); j++)
     {
         for(int k = 0; k < Layers.at(1).Nodes.size() - 1; k++)
@@ -398,6 +399,7 @@ void Neural_Network::hidden_layer_sigmoid()
 void Neural_Network::hidden_output_layer_connection()
 {
     vector<double> cc;
+    cc.reserve(Layers.at(1).Nodes.size() * Layers.at(2).Nodes.size() + 10);
     for(int j = 0; j < Layers.at(1).Nodes.size(); j++)
     {
         for(int k = 0; k < Layers.at(2).Nodes.size(); k++)

@@ -43,7 +43,7 @@ using namespace std;
 class Map_Elites{
     friend class Wrapper;
     friend class Map_space;
-    // --------------------------------------------------
+// --------------------------------------------------
 protected:
     int resolution1, resolution2;
     double dim1_min, dim2_min, dim3_min;
@@ -51,75 +51,74 @@ protected:
     int num_spacing1, num_spacing2, num_spacing3;
     double spacing1,  spacing2, spacing3;
     int fill_generation, mutate_generation;
-    //double center_bin1, center_bin2;
     double center_dist;
     int best_fit_index;
     vector<Map_space> full_bins;
     vector<double> distance_between_centerbin_phenotype;
     vector<double> fit_ratings_in_map;
     vector<double> best_individual1, best_individual2;
-    // --------------------------------------------------
+// --------------------------------------------------
 public:
-    // Dimensions of Map
-    // Min of dim1
+            // Dimensions of Map
+// Min of dim1
     void set_min_dim1(double);
     double get_min_dim1();
     void display_min_dim1();
-    // Min of dim2
+// Min of dim2
     void set_min_dim2(double);
     double get_min_dim2();
     void display_min_dim2();
-    // Min of dim3
+// Min of dim3
     void set_min_dim3(double);
     double get_min_dim3();
     void display_min_dim3();
-    // Max of dim1
+// Max of dim1
     void set_max_dim1(double);
     double get_max_dim1();
     void display_max_dim1();
-    // Max of dim2
+// Max of dim2
     void set_max_dim2(double);
     double get_max_dim2();
     void display_max_dim2();
-    // Max of dim3
+// Max of dim3
     void set_max_dim3(double);
     double get_max_dim3();
     void display_max_dim3();
-    // --------------------------------------------------
-    // Resolution
+// --------------------------------------------------
+            // Resolution
     void set_resolution(int,int);
     int get_resolution1();
     void display_resolution1();
     int get_resolution2();
     void display_resolution2();
-    // --------------------------------------------------
-    // Fill Generation
+// --------------------------------------------------
+            // Fill Generation
     void set_fill_generation(int);
     int get_fill_generation();
     void display_fill_generation();
-    // --------------------------------------------------
-    // Mutate Generation
+// --------------------------------------------------
+            // Mutate Generation
     void set_mutate_generation(int);
     int get_mutate_generation();
     void display_mutate_generation();
-    // --------------------------------------------------
-    // Map Parameters
+// --------------------------------------------------
+            // Map Parameters
     void set_map_params(double dim1_min,double dim1_max,double dim2_min,double dim2_max,int resolution1,int resolution2, int fill_generation, int mutate_generation);
     void display_Map_params();
     
     // TODO - write map_prams to txt file
     
-    // --------------------------------------------------
+// --------------------------------------------------
     // Makes Map
     void initialize_map();
     void place_individual_in_map();
     void individual_from_map(int p1, int p2);
-    // --------------------------------------------------
+// --------------------------------------------------
     // Create full bin vector
     void create_full_bin();
     void find_center_bin(int p1,int p2);
     void find_pheno_dist_to_center_bin(int p1, int p2, int cb1, int cb2);
-    // --------------------------------------------------
+// --------------------------------------------------
     // To text file
     void print_fit_ratings_of_map();
     void print_best_occupants_fitness();
@@ -129,14 +128,14 @@ public:
     void print_best_parents_fitness();
     void print_best_full_trace();
     void print_heat_map();
-    // --------------------------------------------------
+// --------------------------------------------------
     // how many bins are full?
     void how_many_full_bins();
-    // --------------------------------------------------
+// --------------------------------------------------
     // Get Best Individuals
     vector<double>& get_best_individual1();
     vector<double>& get_best_individual2();
-    // --------------------------------------------------
+// --------------------------------------------------
     /// LYLY Tracking
     Individual challenger;
     
@@ -145,6 +144,7 @@ private:
     int current_bin1, current_bin2;
 };
 // ------------------------------------------------------------------------------------------------ ^^ Declarations
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // ------------------------------------------------------------------------------------------------ vv Definitions
 // Dimensions of Map
 // Min of dim1
@@ -381,7 +381,7 @@ void Map_Elites::place_individual_in_map(){
     
     Map.at(row_value).at(element_value).current_individual.push_back(this->challenger);
     
-    cout << endl << endl << endl << "Placed in row "<< row_value << " column " <<element_value << endl;
+    //cout << endl << endl << endl << "Placed in row "<< row_value << " column " <<element_value << endl;
     
     // compare new individual in map space and erase worse
     Map.at(row_value).at(element_value).compare_new_individual(this->challenger);
@@ -609,6 +609,15 @@ void Map_Elites::print_heat_map(){
         myfile << full_bins.at(element).get_old_deleted_counter()  << '\t';     // Times new Individual is better
         myfile << full_bins.at(element).get_mutation_counter()  << '\t';        // Times bin has been selected for mutation
         myfile << full_bins.at(element).current_individual.at(0).mutate_counter_individual  << '\n';        // Times Individual has been selected for mutation
+//        
+//        for (int i = 0; i<full_bins.at(element).current_individual.at(0).genome1.size(); i++){
+//        myfile << full_bins.at(element).current_individual.at(0).genome1.at(i) << '
+//            
+//            /// you can also get the current date and time to go in that file as well.
+//        
+//        
+//        
+//        myfile << full_bins.at(element).current_individual.at(0).display_individual2() << '\n';
     }
     myfile.close();
     cout << "heat_map.txt file created." << endl;
