@@ -39,16 +39,22 @@ vector<double> forcecalc(vector<double> controller, Craft& c, double rho, vector
     vector<double> coefficients = coeffcalc(quad, phi, theta);
     
     double alpha = coefficients.at(0);
+    //cout << "ALPHA IS: " << alpha << endl;
     
     
-    // determine if coefficients of lift and drag are known, assign if possible
+    // determine if coefficients of lift and drag are known, assign if possible {{DEGREES}}
+    double alpha_degrees = alpha * 180 / 4*atan(1);
+    //cout << "ALPHA DEGREES:" << alpha_degrees << endl;
     for(int i=0;i<ae.size();i++){
-        if(ae.at(i).at(0)==round(alpha)){
+        if(ae.at(i).at(0)==round(alpha_degrees)){
             cl = ae.at(i).at(1);
             cd = ae.at(i).at(2);
             break;
         }
     }
+    
+    //cout << "cl = " << cl;
+    //cout << "\tcd = " << cd << endl;
     
     //cout << "AoA is " << alpha << "\t Cl is " << cl << "\t Cd is " << cd << "\n";
     

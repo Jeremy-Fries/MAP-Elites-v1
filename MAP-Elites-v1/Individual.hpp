@@ -210,13 +210,18 @@ void Individual::display_individual_params(){
 // Build Individuals
 // Builds 2 vector of doubles for weights of the NN layers.
 void Individual::build_individual(){
+    double a;
     for (int s = 0; s < individual_size1; s++)
     {
-        genome1.push_back(rand01()-rand01());	// random triangular -1:1
+        a = rand01()-rand01();
+        a *= 0.001;
+        genome1.push_back(a);	// random triangular -1:1
     }
     for (int s = 0; s < individual_size2; s++)
     {
-        genome2.push_back(rand01()-rand01());	// random triangular -1:1
+        a = rand01()-rand01();
+        a *= 0.001;
+        genome2.push_back(a);	// random triangular -1:1
     }
     home_id = -1;
 }

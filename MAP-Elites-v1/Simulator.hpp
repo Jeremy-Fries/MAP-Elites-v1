@@ -225,7 +225,7 @@ void Simulator::run_timestep(vector<double> controls){
     stateholder.push_back(currentstate);            //pushback current state into vector
     currentstate.translate_function();
     
-    currentstate.printround(myfile,controls.at(0));                //Output simulator outputs to screen and file
+    //currentstate.printround(myfile,controls.at(0));                //Output simulator outputs to screen and file
     //fitnessvector();    // potentially comment out // potential tag/ searchable
 }
 

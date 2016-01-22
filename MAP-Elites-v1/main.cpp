@@ -72,7 +72,7 @@ int submain(){
   
     Wrapper W;
     
-    W.initialize_wrapper(10,1000);
+    W.initialize_wrapper(10,10);
     
     W.fill_MAP();
     
