@@ -214,13 +214,13 @@ void Individual::build_individual(){
     for (int s = 0; s < individual_size1; s++)
     {
         a = rand01()-rand01();
-        a *= 0.001;
+        a *= 0.1;
         genome1.push_back(a);	// random triangular -1:1
     }
     for (int s = 0; s < individual_size2; s++)
     {
         a = rand01()-rand01();
-        a *= 0.001;
+        a *= 0.1;
         genome2.push_back(a);	// random triangular -1:1
     }
     home_id = -1;

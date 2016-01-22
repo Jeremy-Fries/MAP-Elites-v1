@@ -39,6 +39,7 @@ vector<double> forcecalc(vector<double> controller, Craft& c, double rho, vector
     vector<double> coefficients = coeffcalc(quad, phi, theta);
     
     double alpha = coefficients.at(0);
+    alpha = reset_angle(alpha);
     //cout << "ALPHA IS: " << alpha << endl;
     
     

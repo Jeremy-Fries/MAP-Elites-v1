@@ -97,9 +97,10 @@ void Wrapper::initialize_wrapper(int FILL, int MUTATE){
     int states = 6;
     int outs = 2;
     
-    hidden_layer_size = 3;
+    hidden_layer_size = 5;
     
-    pME->set_map_params(-3.2, 3.2, 0, 981, 5, 5, FILL, MUTATE);                                                   //-------- To Change Map Settings
+    /// PHENOTYPE LIMITS
+    pME->set_map_params(20, 50, -3.2, 3.2, 10, 10, FILL, MUTATE);                                                   //-------- To Change Map Settings
     // (dim1_min, dim1_max, dim2_min, dim2_max, resolution 1,2, fill generation, mutate generation)
     //pME->display_Map_params();        // TODO - delete and add print()
     
@@ -117,14 +118,11 @@ void Wrapper::initialize_wrapper(int FILL, int MUTATE){
 
 // ----------------------------------------------------------------------------------- TODO - change
             // Fitness Function
+/// LYLY
 void Wrapper::fitness_calculation(State current){
     fit_rating=0;
     
     //cout << Sim.zpositions.size() << endl;
-    
-    //if(current.zpos > 0){ /// still in air. (0)
-    //    fit_rating = -9999999999999; /// TODO MAX_INT
-    //}
     
     //cout << endl << "KEx IS: " << current.KEx << endl;
     //cout << endl << "KEz IS: " << current.KEz << endl;
@@ -140,24 +138,34 @@ void Wrapper::fitness_calculation(State current){
     //fit_rating -= current.zpos * current.zpos;
     
     /// GLIDING FITNESS CALCULATION
-    fit_rating += current.xpos;
+    //fit_rating += current.xpos;
     
+    
+    /// SOFT LANDING FITNESS:
+    fit_rating -=current.KEz;
+    
+    if(current.zpos > 0){ /// still in air. (0)
+        fit_rating = -9999999999999; /// TODO MAX_INT
+    }
 }
 // ----------------------------------------------------------------------------------- TODO - change
             // Phenotypes
 void Wrapper::find_phenotypes(){
+    /// PHENOTYPE CALCULATION
     
-        /// x position at final time step
-    //phenotype_1=Sim.currentstate.xvel; /// LYJF
+        /// x velocity at final time step
+    phenotype_1=Sim.currentstate.xvel;
     
         /// angular orientation at final time step
-    //phenotype_2=Sim.currentstate.phi; /// LYJF
+    phenotype_2=Sim.currentstate.phi; /// LYJF
+    
 //----------------------------------------------------
         /// pheno 1 is time in air
-    phenotype_1=Sim.currentstate.time;
+    //phenotype_1=Sim.currentstate.time;
     
     /// pheno 2 is
-    phenotype_2=Sim.currentstate.KEz;
+    //phenotype_2=Sim.currentstate.KEx;
+    
         // ----------------------------------------------------
     /// for a Binary Selection Parallel Simulated Annealing.....
     //double r1 = ((double)rand() / RAND_MAX);
