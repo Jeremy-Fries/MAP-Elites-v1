@@ -37,20 +37,20 @@ class Wrapper;
 using namespace std;
 
 class Wrapper{
-    
+    friend class Map_Elites;
 // --------------------------------------------------
 protected:
     Map_Elites ME;
     Map_Elites* pME = &ME;
     Map_space mspace;
     Map_space* pMspace =  &mspace;
-//  Individual individual1;
-//  Individual* pI = &individual1;
     Neural_Network NN;
     Neural_Network* pN = &NN;
     Simulator Sim;
     Simulator* pS = &Sim;
-   
+    
+    int size_of_genome1, size_of_genome2;
+    
 // --------------------------------------------------
 public:
     int hidden_layer_size;
@@ -69,6 +69,11 @@ public:
     void run_single_individual();
     void print_stuff();
     void print_entire_map_solution();
+    void always_last();
+    void load_genome1();
+    void load_genome2();
+    void read_from_old_genomes();
+    void write_from_old_genomes();
 // --------------------------------------------------
 private:
     int isize_1, isize_2, imutate_amount_1, imutate_amount_2;
@@ -76,6 +81,9 @@ private:
     int bin1, bin2;
     double fit_rating;
     double phenotype_1, phenotype_2;
+    int map_solutions;
+    vector < vector <double> > Map_of_genome1;
+    vector < vector <double> > Map_of_genome2;
 };
 // ------------------------------------------------------------------------------------------------ ^^ Declarations
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -95,8 +103,8 @@ void Wrapper::initialize_wrapper(int FILL, int MUTATE){
     // (dim1_min, dim1_max, dim2_min, dim2_max, resolution 1,2, fill generation, mutate generation)
     //pME->display_Map_params();        // TODO - delete and add print()
     
-    
     wrapper_sets_I_params((states+1)*hidden_layer_size, (hidden_layer_size+1)*outs, 0.5, 0.5, 4, 2);        //-------- To Change Individual Settings
+
     // individual_size 1,2, mutate_magnitude 1,2, mutation_amount 1,2)
     // int size1, int size2, double mut_mag1, double mut_mag2, int mut_amo1, int mut_amo2
     
@@ -140,11 +148,16 @@ void Wrapper::fitness_calculation(State current){
 void Wrapper::find_phenotypes(){
     
         /// x position at final time step
-    phenotype_1=Sim.currentstate.xvel; /// LYJF
+    //phenotype_1=Sim.currentstate.xvel; /// LYJF
     
         /// angular orientation at final time step
-    phenotype_2=Sim.currentstate.phi; /// LYJF
-
+    //phenotype_2=Sim.currentstate.phi; /// LYJF
+//----------------------------------------------------
+        /// pheno 1 is time in air
+    phenotype_1=Sim.currentstate.time;
+    
+    /// pheno 2 is
+    phenotype_2=Sim.currentstate.KEz;
         // ----------------------------------------------------
     /// for a Binary Selection Parallel Simulated Annealing.....
     //double r1 = ((double)rand() / RAND_MAX);
@@ -264,18 +277,27 @@ void Wrapper::print_stuff(){
     ME.print_best_parents_id();
     ME.print_best_full_trace();
     ME.print_heat_map();
-    Sim.myfile.close();
+    ME.print_corresponding_genome1();
+    ME.print_corresponding_genome2();
 }
 // --------------------------------------------------
 
 void Wrapper::print_entire_map_solution(){
+    map_solutions=0;
+    
     for(int element=0; element<ME.full_bins.size();element++){
-
-        /// %%% /// %%% BEGIN SIMULATION LOOP %%% /// %%% ///
+        cout << endl << "Bin ID: " << ME.full_bins.at(element).id << endl;
     
         Sim.initialize_sim();
+        
+        // --------------------------------------------- Display
+//        cout << endl << "Genome 1 is:  " << endl;
+//        ME.full_bins.at(element).current_individual.at(0).display_individual1();
+//        cout << endl << endl << "Genome 2 is:  " << endl;
+//        ME.full_bins.at(element).current_individual.at(0).display_individual2();
+        // ---------------------------------------------
+        
         NN.take_weights(ME.full_bins.at(element).current_individual.at(0).get_individual1() , ME.full_bins.at(element).current_individual.at(0).get_individual2());
-    
         NN.take_input_limits(Sim.currentstate.state_variables_LowLimit, Sim.currentstate.state_variables_UpLimit);
         NN.take_output_limits(Sim.currentstate.control_LowLimits,Sim.currentstate.control_UpLimits);
     
@@ -284,17 +306,74 @@ void Wrapper::print_entire_map_solution(){
         while (Sim.t<Sim.tmax && Sim.lander.frame.at(1).s > Sim.lander.frame.at(1).target){
                 /// while Sim still has time AND the Craft above ground level.
             NN.activation_function(Sim.currentstate.state_variables_vec);
-            Sim.run_timestep(NN.communication_to_simulator());
+            Sim.run_final_timestep(NN.communication_to_simulator());
             vector<double> CC = NN.communication_to_simulator();
-            Sim.currentstate.printround(Sim.myfile, CC.at(0));      // Print Round
             NN.Neural_Network_Reset();                      
         }
         /// %%% /// %%% END SIMULATION LOOP %%% /// %%% ///
+        map_solutions++;
+    }
+    cout << endl << endl << "Number of Solutions OUTPUTTED: " << map_solutions << endl;
+    cout << endl << "Number of Solutions is: " << ME.full_bins.size()  << endl;
+}
+// --------------------------------------------------
+void Wrapper::load_genome1(){
+    ifstream co("print_corresponding_genome1.txt");
+    
+    double read;
+    vector<double> apush;
+    
+    while(co >> read){
+        apush.push_back(read);
+        
+        if(apush.size()>=size_of_genome1){
+            Map_of_genome1.push_back(apush);
+            apush.clear();
+        }
     }
 }
 // --------------------------------------------------
+void Wrapper::load_genome2(){
+    ifstream co("print_corresponding_genome2.txt");
+    
+    double read;
+    vector<double> apush;
+    
+    while(co >> read){
+        apush.push_back(read);
+        
+        if(apush.size()>=size_of_genome2){
+            Map_of_genome2.push_back(apush);
+            apush.clear();
+        }
+    }
+}
+// --------------------------------------------------
+// read from txt file
+void Wrapper::read_from_old_genomes(){
+    load_genome1();
+    load_genome2();
+}
+// write
+void Wrapper::write_from_old_genomes(){
+    // build map from old genomes, needs to be Map_Elites function takes in vector of doubles and size of map.
+    
+    
+}
+
+// run
+
+
+
+
+
+
+// --------------------------------------------------
             // Wrapper sets Individual
 void Wrapper::wrapper_sets_I_params(int size1, int size2, double mut_mag1, double mut_mag2, int mut_amo1, int mut_amo2){
+    cout << endl << " size of first layer is: " << size1 << endl;
+    cout << endl << " size of last layer is: " << size2 << endl;
+    
     isize_1=size1;
     isize_2=size2;
     imutate_mag_1=mut_mag1;
@@ -302,6 +381,9 @@ void Wrapper::wrapper_sets_I_params(int size1, int size2, double mut_mag1, doubl
     imutate_amount_1=mut_amo1;
     imutate_amount_2=mut_amo2;
     /// assigns values to actual individual.
+    
+    size_of_genome1=size1;  // For ME input_genome()
+    size_of_genome2=size2;
 }
 // --------------------------------------------------
             // Random Bin
@@ -317,6 +399,15 @@ void Wrapper::rand_bin(){
     //cout << "bin to mutate is: (" << bin1 << "," << bin2 << ")" << endl;
 }
 // --------------------------------------------------
+void Wrapper::always_last(){
+    Sim.myfile.close();
+}
+// --------------------------------------------------
+
+
+
+
+
 // Run single test, modifiable weights of NN, recieve fit_rating and phenotypes.
 // TODO - User inputs all weights.
 // TODO - Able to change how weights are generated, access to different random functions.

@@ -84,7 +84,9 @@ int submain(){
     
     W.print_entire_map_solution();
     
-    cout << "OUT submain()" << endl;
+    W.always_last();
+    
+    cout << endl << "OUT submain()" << endl;
     return 0;
 }
 

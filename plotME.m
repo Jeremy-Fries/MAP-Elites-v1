@@ -2,6 +2,7 @@ clc
 clear all
 close all
 
+% Jeremy Was HERE
 data = load('SimulatorData.txt');
 
 data2 = data(20000:end,:);
@@ -17,6 +18,16 @@ angularvel = data(:,8);
 kex = data(:,9);
 kez = data(:,10);
 kea = data(:,11);
+
+simcount = 0;
+
+for i=1;i<size(time)
+    if time(i) == 0
+        simcount=simcount+1;
+    end
+end
+
+simcount
 
 figure(1)
 hold on

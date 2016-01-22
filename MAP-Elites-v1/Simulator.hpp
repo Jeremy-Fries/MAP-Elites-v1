@@ -95,6 +95,7 @@ public:
     void initialize_sim();
     void run_sim();
     void run_timestep(vector<double>);
+    void run_final_timestep(vector<double>);
     void end_sim();
 // --------------------------------------------------
     
@@ -228,6 +229,17 @@ void Simulator::run_timestep(vector<double> controls){
     //fitnessvector();    // potentially comment out // potential tag/ searchable
 }
 
+void Simulator::run_final_timestep(vector<double> controls){
+    forces = forcecalc(controls, lander, rhoair, aero);
+    anglechange = anglechange + dynamicscalc(lander, forces, tstep, linear, rotational);
+    t = t+tstep;
+    currentstate.get_state(lander, t, tstep);       //update current state
+    stateholder.push_back(currentstate);            //pushback current state into vector
+    currentstate.translate_function();
+    
+    currentstate.printround(myfile,controls.at(0));                //Output simulator outputs to screen and file
+    //fitnessvector();    // potentially comment out // potential tag/ searchable
+}
 // Runs the simulator while time is less than max time and lander is above ground
 // --------------------------------------------------
 void Simulator::end_sim(){
