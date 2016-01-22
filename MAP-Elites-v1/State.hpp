@@ -82,28 +82,28 @@ void State::initialize_translate_limits(){
 
     
     // state variable upper limits
-    state_variables_UpLimit.push_back(1000.0);   // xpos [m]
-    state_variables_UpLimit.push_back(200.0);   // xvel [m/s]
-    state_variables_UpLimit.push_back(1000.0);   // zpos [m]
+    state_variables_UpLimit.push_back(5000.0);   // xpos [m]
+    state_variables_UpLimit.push_back(100.0);   // xvel [m/s]
+    state_variables_UpLimit.push_back(150.0);   // zpos [m]
     state_variables_UpLimit.push_back(100.0);   // zvel [m/s]
-    state_variables_UpLimit.push_back(1);    // sin(phi) [ratio of rad]
-    state_variables_UpLimit.push_back(1);    // cos(phi) [ratio of rad]
+    state_variables_UpLimit.push_back(1.0);    // sin(phi) [ratio of rad]
+    state_variables_UpLimit.push_back(1.0);    // cos(phi) [ratio of rad]
     
     // state variable lower limits
     state_variables_LowLimit.push_back(0.0);      // xpos [m]
-    state_variables_LowLimit.push_back(-100.0);   // xvel [m/s]
+    state_variables_LowLimit.push_back(0.0);   // xvel [m/s]
     state_variables_LowLimit.push_back(0.0);      // zpos [m]
-    state_variables_LowLimit.push_back(-100.0);   // zvel [m/s]
-    state_variables_LowLimit.push_back(-1);    // sin(phi) [ratio of rad]
-    state_variables_LowLimit.push_back(-1);    // cos(phi) [ratio of rad]
+    state_variables_LowLimit.push_back(-10.0);   // zvel [m/s]
+    state_variables_LowLimit.push_back(-1.0);    // sin(phi) [ratio of rad]
+    state_variables_LowLimit.push_back(-1.0);    // cos(phi) [ratio of rad]
     
     // control upper limits
     control_UpLimits.push_back(0.0);    // thrust [N] /// previously 500
-    control_UpLimits.push_back(10.0);     // torque [Nm]
+    control_UpLimits.push_back(0.5);     // torque [Nm]
     
     // control lower limits
     control_LowLimits.push_back(0.0);       // thrust [N]
-    control_LowLimits.push_back(-10.0);     // torque [Nm]
+    control_LowLimits.push_back(-0.5);     // torque [Nm]
 }
 // --------------------------------------------------
 

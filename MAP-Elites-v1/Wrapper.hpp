@@ -56,7 +56,7 @@ public:
     int hidden_layer_size;
     vector<double> best_fit;
 // --------------------------------------------------
-    void initialize_wrapper();
+    void initialize_wrapper(int,int);
     void wrapper_sets_I_params(int size1, int size2, double mut_mag1, double mut_mag2, int mut_amo1, int mut_amo2);
 // --------------------------------------------------
             // Main Wrapper functions
@@ -84,19 +84,21 @@ private:
 // -------------------------------------------------------------------------------------------------------------------------------------------------    SETTINGS
 // -------------------------------------------------------------------------------------------------------------------------------------------------
             // Initialize Wrapper
-void Wrapper::initialize_wrapper(){
+void Wrapper::initialize_wrapper(int FILL, int MUTATE){
     
     int states = 6;
     int outs = 2;
     
     hidden_layer_size = 3;
     
-    pME->set_map_params(0, 6.5, 0, 100000, 5, 5, 10, 1000);                                                   //-------- To Change Map Settings
+    pME->set_map_params(-3.2, 3.2, 0, 981, 5, 5, FILL, MUTATE);                                                   //-------- To Change Map Settings
     // (dim1_min, dim1_max, dim2_min, dim2_max, resolution 1,2, fill generation, mutate generation)
     //pME->display_Map_params();        // TODO - delete and add print()
     
-    wrapper_sets_I_params((states+1)*hidden_layer_size, (hidden_layer_size+1)*outs, 0.1, 0.1, 4, 2);        //-------- To Change Individual Settings
+    
+    wrapper_sets_I_params((states+1)*hidden_layer_size, (hidden_layer_size+1)*outs, 0.5, 0.5, 4, 2);        //-------- To Change Individual Settings
     // individual_size 1,2, mutate_magnitude 1,2, mutation_amount 1,2)
+    // int size1, int size2, double mut_mag1, double mut_mag2, int mut_amo1, int mut_amo2
     
     Sim.myfile.open("SimulatorData.txt");
 
@@ -129,6 +131,7 @@ void Wrapper::fitness_calculation(State current){
     //fit_rating -= current.KEp; // (3)
     //fit_rating -= current.zpos * current.zpos;
     
+    /// GLIDING FITNESS CALCULATION
     fit_rating += current.xpos;
     
 }

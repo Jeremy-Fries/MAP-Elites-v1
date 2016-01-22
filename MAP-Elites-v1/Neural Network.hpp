@@ -198,7 +198,6 @@ void Neural_Network::take_weights(vector<double> IH, vector<double> HO)
 void Neural_Network::take_state(vector<double> S)
 {
     state_variables=S;
-    
 }
 
 

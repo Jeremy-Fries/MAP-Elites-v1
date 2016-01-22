@@ -14,7 +14,18 @@ using namespace std;
 
 //make sure the angle is between pi and negative pi
 double reset_angle(double angle){
-    double pi = 4*atan(1);
+    bool rad=true;
+    bool deg=false;
+    
+    double pi=0;
+    
+    if(rad){
+        pi = 4*atan(1);
+    }
+    
+    if(deg){
+        cout << "Degrees?" << endl;
+    }
     
     if(angle>pi){
         while(angle>pi){
@@ -27,6 +38,7 @@ double reset_angle(double angle){
     }else if((-1*pi)<=angle && angle <=pi){
         angle = angle;
     }
+    
     return angle;
 }
 

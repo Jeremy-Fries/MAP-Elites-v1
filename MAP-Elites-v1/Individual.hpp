@@ -212,11 +212,11 @@ void Individual::display_individual_params(){
 void Individual::build_individual(){
     for (int s = 0; s < individual_size1; s++)
     {
-        genome1.push_back(rand01());	// random 0 - 1
+        genome1.push_back(rand01()-rand01());	// random triangular -1:1
     }
     for (int s = 0; s < individual_size2; s++)
     {
-        genome2.push_back(rand01());	// random 0 - 1
+        genome2.push_back(rand01()-rand01());	// random triangular -1:1
     }
     home_id = -1;
 }
