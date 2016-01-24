@@ -100,7 +100,7 @@ void Wrapper::initialize_wrapper(int FILL, int MUTATE){
     hidden_layer_size = 5;
     
     /// PHENOTYPE LIMITS
-    pME->set_map_params(20, 50, -3.2, 3.2, 10, 10, FILL, MUTATE);                                                   //-------- To Change Map Settings
+    pME->set_map_params(20, 60, 0, 100, 10, 10, FILL, MUTATE);                                                   //-------- To Change Map Settings
     // (dim1_min, dim1_max, dim2_min, dim2_max, resolution 1,2, fill generation, mutate generation)
     //pME->display_Map_params();        // TODO - delete and add print()
     
@@ -121,7 +121,7 @@ void Wrapper::initialize_wrapper(int FILL, int MUTATE){
 /// LYLY
 void Wrapper::fitness_calculation(State current){
     fit_rating=0;
-    
+        //cout << "FIT0: " << fit_rating << endl;
     //cout << Sim.zpositions.size() << endl;
     
     //cout << endl << "KEx IS: " << current.KEx << endl;
@@ -140,13 +140,46 @@ void Wrapper::fitness_calculation(State current){
     /// GLIDING FITNESS CALCULATION
     //fit_rating += current.xpos;
     
+        //cout << "FIT1: " << fit_rating << endl;
+    if(current.zpos > 0){ /// still in air. (0)
+        fit_rating = -99999999999999; /// TODO MAX_INT
+    }
+    
+        //cout << "FIT2: " << fit_rating << endl;
+    /// MINKE FITNESS CALCULATION
+    double mass = 20.0;
+    double gravity = 9.81;
+    /// stay in air.
+    //fit_rating += Sim.stateholder.size() * 1000;
+    for(int i=0; i<Sim.stateholder.size(); i++){
+        fit_rating -= Sim.stateholder.at(i).KEz;
+        //cout << "FIT2.1: " << fit_rating << endl;
+        fit_rating -= Sim.stateholder.at(i).KEx;
+        //cout << "FIT2.2: " << fit_rating << endl;
+        fit_rating -= Sim.stateholder.at(i).KEp;
+        //cout << "FIT2.3: " << fit_rating << endl;
+        fit_rating -= 1000 * Sim.stateholder.at(i).zpos * mass * gravity;
+        //cout << "FIT2.4: " << fit_rating << endl;
+    }
+        
+    
+    //cout << "FIT3: " << fit_rating << endl;
+        
+    /// Hang Fitness Calculation
+    //double tar1=0;
+    //double tar2=0;
+    
+    //tar1 = fabs(current.phi - atan(1)*4/2);
+    //tar1 = abs(current.KEz);
+    //tar2 = abs(current.KEx);
+    
+    //fit_rating -=tar1;
+    //fit_rating -=tar2;
     
     /// SOFT LANDING FITNESS:
-    fit_rating -=current.KEz;
+    //fit_rating -=current.KEz;
     
-    if(current.zpos > 0){ /// still in air. (0)
-        fit_rating = -9999999999999; /// TODO MAX_INT
-    }
+
 }
 // ----------------------------------------------------------------------------------- TODO - change
             // Phenotypes
@@ -154,14 +187,15 @@ void Wrapper::find_phenotypes(){
     /// PHENOTYPE CALCULATION
     
         /// x velocity at final time step
-    phenotype_1=Sim.currentstate.xvel;
+    //phenotype_1=Sim.currentstate.xvel;
     
         /// angular orientation at final time step
-    phenotype_2=Sim.currentstate.phi; /// LYJF
+    //phenotype_2=Sim.currentstate.phi;
     
 //----------------------------------------------------
         /// pheno 1 is time in air
-    //phenotype_1=Sim.currentstate.time;
+    phenotype_1=Sim.currentstate.time;
+    phenotype_2=Sim.currentstate.KEz;
     
     /// pheno 2 is
     //phenotype_2=Sim.currentstate.KEx;

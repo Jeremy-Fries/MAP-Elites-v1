@@ -193,7 +193,7 @@ void Simulator::initialize_sim(){
     currentstate.initialize_translate_limits();
     //currentstate.printheader();                     //Output Header in XCode Screen
     currentstate.get_state(lander, t, tstep);       //Modify current state based on simulator outputs
-    currentstate.printround(myfile, 0);                //Output simulator outputs to screen and file
+    //currentstate.printround(myfile, 0);                //Output simulator outputs to screen and file
     stateholder.push_back(currentstate);            //Pushback currentstate into vector for tracking
         
     fitnessvector();             //Put current data into vectors for later calculating fitness
@@ -237,7 +237,7 @@ void Simulator::run_final_timestep(vector<double> controls){
     stateholder.push_back(currentstate);            //pushback current state into vector
     currentstate.translate_function();
     
-    currentstate.printround(myfile,controls.at(0));                //Output simulator outputs to screen and file
+    currentstate.printround_LY(myfile,controls.at(0));                //Output simulator outputs to screen and file
     //fitnessvector();    // potentially comment out // potential tag/ searchable
 }
 // Runs the simulator while time is less than max time and lander is above ground

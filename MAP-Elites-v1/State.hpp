@@ -46,7 +46,7 @@ public:
 // --------------------------------------------------
     void printheader();
     void printround(ofstream & file, double);
-    
+    void printround_LY(ofstream &file, double);
 };
 
 
@@ -82,23 +82,25 @@ void State::initialize_translate_limits(){
 
     
     // state variable upper limits
-    state_variables_UpLimit.push_back(2500.0);   // xpos [m]
+    //state_variables_UpLimit.push_back(2500.0);   // xpos [m]
+    state_variables_UpLimit.push_back(60.0);   // time [s]
     state_variables_UpLimit.push_back(60.0);   // xvel [m/s]
-    state_variables_UpLimit.push_back(25.0);   // zpos [m]
-    state_variables_UpLimit.push_back(10.0);   // zvel [m/s]
+    state_variables_UpLimit.push_back(50.0);   // zpos [m]
+    state_variables_UpLimit.push_back(30.0);   // zvel [m/s]
     state_variables_UpLimit.push_back(1.0);    // sin(phi) [ratio of rad]
     state_variables_UpLimit.push_back(1.0);    // cos(phi) [ratio of rad]
     
     // state variable lower limits
-    state_variables_LowLimit.push_back(0.0);      // xpos [m]
+    //state_variables_LowLimit.push_back(0.0);      // xpos [m]
+    state_variables_LowLimit.push_back(0.0);    // time [s]
     state_variables_LowLimit.push_back(0.0);   // xvel [m/s]
     state_variables_LowLimit.push_back(0.0);      // zpos [m]
-    state_variables_LowLimit.push_back(-10.0);   // zvel [m/s]
+    state_variables_LowLimit.push_back(-30.0);   // zvel [m/s]
     state_variables_LowLimit.push_back(-1.0);    // sin(phi) [ratio of rad]
     state_variables_LowLimit.push_back(-1.0);    // cos(phi) [ratio of rad]
     
     // control upper limits
-    control_UpLimits.push_back(0.0);    // thrust [N] /// previously 500
+    control_UpLimits.push_back(400.0);    // thrust [N] /// previously 500
     control_UpLimits.push_back(5);     // torque [Nm]
     
     // control lower limits
@@ -114,7 +116,8 @@ void State::initialize_translate_limits(){
 vector<double> State::translate_function(){
     state_variables_vec.clear();
     state_variables_vec.reserve(6);
-    state_variables_vec.push_back(xpos);
+    //state_variables_vec.push_back(xpos);
+    state_variables_vec.push_back(time);
     state_variables_vec.push_back(xvel);
     state_variables_vec.push_back(zpos);
     state_variables_vec.push_back(zvel);
@@ -139,6 +142,10 @@ void State::printround(ofstream & file, double thrust){
     file << time << "\t\t" << thrust << "\t\t" << xpos << "\t\t" << xvel << "\t\t" << zpos << "\t\t";
     file << zvel << "\t\t" << phi << "\t\t" << phivel << "\t\t" << KEx << "\t\t" << KEz << "\t\t" << KEp << endl;
     
+}
+
+void State::printround_LY(ofstream & file, double thrust){
+    file << xpos << "\t" << zpos << endl;//<< "\t" <<  KEz << endl;
 }
 
 
