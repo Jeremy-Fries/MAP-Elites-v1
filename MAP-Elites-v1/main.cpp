@@ -17,23 +17,6 @@
 #include <cstdlib>
 #include <map>
 
-#include "LinDOF.hpp"
-#include "RotDOF.hpp"
-#include "anglemath.h"
-#include "dynamics.h"
-#include "Craft.hpp"
-#include "State.hpp"
-#include "Simulator.hpp"
-
-#include "Neural Network.hpp"
-
-#include "Individual.hpp"
-#include "Map_space.hpp"
-#include "Map_Elites.hpp"
-#include "Wrapper.hpp"
-
-// TODO - include any other files?
-
 using namespace std;
 
 #define TRIG_GRANULARITY 1000
@@ -65,6 +48,27 @@ double cosine(double inp){
     }
     return out;
 }
+
+#include "LinDOF.hpp"
+#include "RotDOF.hpp"
+#include "anglemath.h"
+#include "dynamics.h"
+#include "Craft.hpp"
+#include "State.hpp"
+#include "Simulator.hpp"
+
+#include "Neural Network.hpp"
+
+#include "Individual.hpp"
+#include "Map_space.hpp"
+#include "Map_Elites.hpp"
+#include "Wrapper.hpp"
+
+// TODO - include any other files?
+
+
+
+
 
 
 int submain(){

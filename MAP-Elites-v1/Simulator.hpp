@@ -97,6 +97,7 @@ public:
     void run_timestep(vector<double>);
     void run_final_timestep(vector<double>);
     void end_sim();
+    int check_stall(vector<State>);
 // --------------------------------------------------
     
 // --------------------------------------------------
@@ -217,6 +218,23 @@ void Simulator::run_sim(){ /// AVOID
 //    NN.Neural_Network_Reset();
 }
 
+int Simulator::check_stall(vector<State> sh){
+    int stalled;
+    
+    if (t >= (6*tstep)){
+        for(int i=0;i<5;i++){
+            if(sh.at(sh.size()-i).forceLift == 0){
+                stalled = 1;
+            }else{
+                stalled = 0;
+                break;
+            }
+        }
+    }
+    
+    return stalled;
+}
+
 void Simulator::run_timestep(vector<double> controls){
     forces = forcecalc(controls, lander, rhoair, aero);
     anglechange = anglechange + dynamicscalc(lander, forces, tstep, linear, rotational);
@@ -237,6 +255,7 @@ void Simulator::run_final_timestep(vector<double> controls){
     stateholder.push_back(currentstate);            //pushback current state into vector
     currentstate.translate_function();
     
+    currentstate.stallcheck = check_stall(stateholder);              //check to see if stall condition is met
     currentstate.printround_LY(myfile,controls.at(0));                //Output simulator outputs to screen and file
     //fitnessvector();    // potentially comment out // potential tag/ searchable
 }

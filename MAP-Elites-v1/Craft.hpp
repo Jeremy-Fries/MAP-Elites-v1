@@ -34,7 +34,8 @@ public:
     vector<LinDOF> frame;
     vector<RotDOF> orientation;
     double mass, inertia, KEinitial;
-    double sref;
+    double sref, alpha, lift, drag;
+    int stall;
 // --------------------------------------------------
     void initialize(int l, int r);
 };
@@ -45,6 +46,10 @@ void Craft::initialize(int dl, int dr){
     inertia = 20;
     KEinitial = 0;
     sref = 0.02; // wing considered roughly rectangular with 20 cm chord length, 1 m span
+    alpha = 0;
+    lift = 0;
+    drag = 0;
+    stall = 0;
     
     //Set up Linear DOFs
     for(int i=0;i<dl;i++){

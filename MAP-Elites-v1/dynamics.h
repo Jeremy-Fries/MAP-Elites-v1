@@ -22,7 +22,7 @@ vector<double> forcecalc(vector<double> controller, Craft& c, double rho, vector
     vector<double> forcevec;                        // vector to be returned
     double phi = reset_angle(c.orientation.at(0).q);             //renaming pitch for ease of use
     c.orientation.at(0).q = phi;
-    double lift, drag, lx, lz, dx, dz, tx, tz;      //newtonian force components
+    double lx, lz, dx, dz, tx, tz;      //newtonian force components
     double g = -9.81*c.mass;                               //gravitational component
     double velsqr = pow(c.frame.at(0).sdot,2)+pow(c.frame.at(1).sdot,2);    //square of total velocity
     double vel = sqrt(velsqr);                      //total velocity
@@ -38,13 +38,13 @@ vector<double> forcecalc(vector<double> controller, Craft& c, double rho, vector
     // calling functions to find coefficients
     vector<double> coefficients = coeffcalc(quad, phi, theta);
     
-    double alpha = coefficients.at(0);
-    alpha = reset_angle(alpha);
+    c.alpha = reset_angle(coefficients.at(0));
+    //c.alpha = reset_angle(c.alpha);
     //cout << "ALPHA IS: " << alpha << endl;
     
     
     // determine if coefficients of lift and drag are known, assign if possible {{DEGREES}}
-    double alpha_degrees = alpha * 180 / 4*atan(1);
+    double alpha_degrees = c.alpha * 180 / (4*atan(1));
     //cout << "ALPHA DEGREES:" << alpha_degrees << endl;
     for(int i=0;i<ae.size();i++){
         if(ae.at(i).at(0)==round(alpha_degrees)){
@@ -60,20 +60,20 @@ vector<double> forcecalc(vector<double> controller, Craft& c, double rho, vector
     //cout << "AoA is " << alpha << "\t Cl is " << cl << "\t Cd is " << cd << "\n";
     
     //Calculate forces of lift and drag, will be 0 if cl and cd not available from file.
-    lift = cl*rho*velsqr*c.sref*0.5;
-    drag = cd*rho*velsqr*c.sref*0.5;
+    c.lift = cl*rho*velsqr*c.sref*0.5;
+    c.drag = cd*rho*velsqr*c.sref*0.5;
     
-    //cout << "LIFT IS: " << lift << " AND DRAG: " << drag << endl;
+    //cout << "LIFT IS: " << c.lift << " AND DRAG: " << c.drag << endl;
     //cout << "COEF:::: " << cl << "\t" << cd << endl;
     //cout << "ALPHA IS: " << alpha << endl;
     
     //calculate newtonian components of force, lift, drag, and thrust
     tx = controller.at(0)*coefficients.at(1);
     tz = controller.at(0)*coefficients.at(2);
-    lx = lift*coefficients.at(3);
-    lz = lift*coefficients.at(4);
-    dx = drag*coefficients.at(5);
-    dz = drag*coefficients.at(6);
+    lx = c.lift*coefficients.at(3);
+    lz = c.lift*coefficients.at(4);
+    dx = c.drag*coefficients.at(5);
+    dz = c.drag*coefficients.at(6);
     
     
     // calculate total forces in x and z, return along with moment.

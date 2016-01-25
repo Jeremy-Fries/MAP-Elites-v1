@@ -30,7 +30,7 @@ class State{
     
 protected:
     double time, timestep, xpos, xvel;
-    double zpos, zvel, phi, phivel, KEx, KEz, KEp;
+    double zpos, zvel, phi, phivel, KEx, KEz, KEp, AOA, stallcheck, forceLift, forceDrag;
     vector<double> state_variables_vec;
     vector<double> state_variables_UpLimit;
     vector<double> state_variables_LowLimit;
@@ -59,6 +59,10 @@ void State::get_state(Craft l, double t, double ts){
     zvel = l.frame.at(1).sdot;
     phi = l.orientation.at(0).q;
     phivel = l.orientation.at(0).qdot;
+    AOA = l.alpha;
+    forceLift = l.lift;
+    forceDrag = l.drag;
+    
     
     KEx = 0.5*pow(xvel,2)*l.mass;
     KEz = 0.5*pow(zvel,2)*l.mass;
@@ -115,14 +119,15 @@ void State::initialize_translate_limits(){
 // Translate function() takes information of craft and target, pushes into vector to go to NN. May need to be in simulator to have access to target.
 vector<double> State::translate_function(){
     state_variables_vec.clear();
-    state_variables_vec.reserve(6);
+    state_variables_vec.reserve(7);
     //state_variables_vec.push_back(xpos);
     state_variables_vec.push_back(time);
     state_variables_vec.push_back(xvel);
     state_variables_vec.push_back(zpos);
     state_variables_vec.push_back(zvel);
-    state_variables_vec.push_back(sin(phi));
-    state_variables_vec.push_back(cos(phi));
+    state_variables_vec.push_back(sine(phi));
+    state_variables_vec.push_back(cosine(phi));
+    //state_variables_vec.push_back(AOA);
     //cout << "state_variable vector size is: " << state_variables_vec.size();
     return state_variables_vec;
 }
@@ -140,7 +145,8 @@ void State::printround(ofstream & file, double thrust){
     //cout << zvel << "\t\t\t" << phi << "\t\t\t" << phivel << "\t\t\t" << KEx << "\t\t\t" << KEz << "\t\t\t" << KEp << endl;
     //file << time << "\t\t\t" << timestep << "\t\t\t" << xpos << "\t\t\t" << xvel << "\t\t\t" << zpos << "\t\t\t";
     file << time << "\t\t" << thrust << "\t\t" << xpos << "\t\t" << xvel << "\t\t" << zpos << "\t\t";
-    file << zvel << "\t\t" << phi << "\t\t" << phivel << "\t\t" << KEx << "\t\t" << KEz << "\t\t" << KEp << endl;
+    //file << zvel << "\t\t" << phi << "\t\t" << phivel << "\t\t" << KEx << "\t\t" << KEz << "\t\t" << KEp << "\t\t" << stallcheck << endl;
+    file << stallcheck << "\t\t" << forceLift << endl;
     
 }
 

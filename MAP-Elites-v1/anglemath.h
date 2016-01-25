@@ -102,12 +102,12 @@ vector<double> coeffcalc(vector<int> directions, double q, double t){
         if(directions.at(1)==1){
             //-------Case 1----------
             aoa = q-t;
-            txm = cos(q);
-            tzm = sin(q);
-            lxm = -sin(t);
-            lzm = cos(t);
-            dxm = -cos(t);
-            dzm = -sin(t);
+            txm = cosine(q);
+            tzm = sine(q);
+            lxm = -sine(t);
+            lzm = cosine(t);
+            dxm = -cosine(t);
+            dzm = -sine(t);
             
             if(CaseDisplay !=0){
                 cout << "Case 1" << endl;
@@ -115,12 +115,12 @@ vector<double> coeffcalc(vector<int> directions, double q, double t){
         }else if(directions.at(1)==2){
             //-------Case 2----------
             aoa = q-t;
-            txm = cos(q);
-            tzm = sin(q);
-            lxm = -sin(t);
-            lzm = cos(t);
-            dxm = -cos(t);
-            dzm = -sin(t);
+            txm = cosine(q);
+            tzm = sine(q);
+            lxm = -sine(t);
+            lzm = cosine(t);
+            dxm = -cosine(t);
+            dzm = -sine(t);
             
             if(CaseDisplay !=0){
                 cout << "Case 2" << endl;
@@ -128,8 +128,8 @@ vector<double> coeffcalc(vector<int> directions, double q, double t){
         }else if(directions.at(1)==3){
             //-------Case 3----------
             aoa = pi/2;
-            txm = cos(q);
-            tzm = sin(q);
+            txm = cosine(q);
+            tzm = sine(q);
             lxm = 0;
             lzm = 0;
             dxm = 0;
@@ -141,12 +141,12 @@ vector<double> coeffcalc(vector<int> directions, double q, double t){
         }else if(directions.at(1)==4){
             //-------Case 4----------
             aoa = q-t;
-            txm = cos(q);
-            tzm = sin(q);
-            lxm = -sin(t);
-            lzm = cos(t);
-            dxm = -cos(t);
-            dzm = -sin(t);
+            txm = cosine(q);
+            tzm = sine(q);
+            lxm = -sine(t);
+            lzm = cosine(t);
+            dxm = -cosine(t);
+            dzm = -sine(t);
             
             if(CaseDisplay !=0){
                 cout << "Case 4" << endl;
@@ -158,12 +158,12 @@ vector<double> coeffcalc(vector<int> directions, double q, double t){
         if(directions.at(1)==1){
             //-------Case 5----------
             aoa = pi-q-t;
-            txm = cos(q);
-            tzm = sin(q);
-            lxm = sin(t);
-            lzm = cos(t);
-            dxm = cos(t);
-            dzm = -sin(t);
+            txm = cosine(q);
+            tzm = sine(q);
+            lxm = sine(t);
+            lzm = cosine(t);
+            dxm = cosine(t);
+            dzm = -sine(t);
             
             if(CaseDisplay !=0){
                 cout << "Case 5" << endl;
@@ -171,12 +171,12 @@ vector<double> coeffcalc(vector<int> directions, double q, double t){
         }else if(directions.at(1)==2){
             //-------Case 6----------
             aoa = pi-q-t;
-            txm = cos(q);
-            tzm = sin(q);
-            lxm = sin(t);
-            lzm = cos(t);
-            dxm = cos(t);
-            dzm = -sin(t);
+            txm = cosine(q);
+            tzm = sine(q);
+            lxm = sine(t);
+            lzm = cosine(t);
+            dxm = cosine(t);
+            dzm = -sine(t);
             
             if(CaseDisplay !=0){
                 cout << "Case 6" << endl;
@@ -184,12 +184,12 @@ vector<double> coeffcalc(vector<int> directions, double q, double t){
         }else if(directions.at(1)==3){
             //-------Case 7----------
             aoa = q+t+pi;
-            txm = cos(q);
-            tzm = sin(q);
-            lxm = sin(t);
-            lzm = cos(t);
-            dxm = cos(t);
-            dzm = -sin(t);
+            txm = cosine(q);
+            tzm = sine(q);
+            lxm = sine(t);
+            lzm = cosine(t);
+            dxm = cosine(t);
+            dzm = -sine(t);
             
             if(CaseDisplay !=0){
                 cout << "Case 7" << endl;
@@ -197,8 +197,8 @@ vector<double> coeffcalc(vector<int> directions, double q, double t){
         }else if(directions.at(1)==4){
             //-------Case 8----------
             aoa = pi/2;
-            txm = cos(q);
-            tzm = sin(q);
+            txm = cosine(q);
+            tzm = sine(q);
             lxm = 0;
             lzm = 0;
             dxm = 0;
@@ -214,8 +214,8 @@ vector<double> coeffcalc(vector<int> directions, double q, double t){
         if(directions.at(1)==1){
             //-------Case 9----------
             aoa = pi/2;
-            txm = cos(q);
-            tzm = sin(q);
+            txm = cosine(q);
+            tzm = sine(q);
             lxm = 0;
             lzm = 0;
             dxm = 0;
@@ -227,12 +227,12 @@ vector<double> coeffcalc(vector<int> directions, double q, double t){
         }else if(directions.at(1)==2){
             //-------Case 10----------
             aoa = pi-q+t;
-            txm = cos(q);
-            tzm = sin(q);
-            lxm = -sin(t);
-            lzm = cos(t);
-            dxm = cos(t);
-            dzm = sin(t);
+            txm = cosine(q);
+            tzm = sine(q);
+            lxm = -sine(t);
+            lzm = cosine(t);
+            dxm = cosine(t);
+            dzm = sine(t);
             
             if(CaseDisplay !=0){
                 cout << "Case 10" << endl;
@@ -240,12 +240,12 @@ vector<double> coeffcalc(vector<int> directions, double q, double t){
         }else if(directions.at(1)==3){
             //-------Case 11----------
             aoa = pi+q-t;
-            txm = cos(q);
-            tzm = sin(q);
-            lxm = -sin(t);
-            lzm = cos(t);
-            dxm = cos(t);
-            dzm = sin(t);
+            txm = cosine(q);
+            tzm = sine(q);
+            lxm = -sine(t);
+            lzm = cosine(t);
+            dxm = cosine(t);
+            dzm = sine(t);
             
             if(CaseDisplay !=0){
                 cout << "Case 11" << endl;
@@ -253,12 +253,12 @@ vector<double> coeffcalc(vector<int> directions, double q, double t){
         }else if(directions.at(1)==4){
             //-------Case 12----------
             aoa = pi+q-t;
-            txm = cos(q);
-            tzm = sin(q);
-            lxm = sin(t);
-            lzm = -cos(t);
-            dxm = cos(t);
-            dzm = sin(t);
+            txm = cosine(q);
+            tzm = sine(q);
+            lxm = sine(t);
+            lzm = -cosine(t);
+            dxm = cosine(t);
+            dzm = sine(t);
             
             if(CaseDisplay !=0){
                 cout << "Case 12" << endl;
@@ -270,12 +270,12 @@ vector<double> coeffcalc(vector<int> directions, double q, double t){
         if(directions.at(1)==1){
             //-------Case 13----------
             aoa = q+t;
-            txm = cos(q);
-            tzm = sin(q);
-            lxm = sin(t);
-            lzm = cos(t);
-            dxm = -cos(t);
-            dzm = sin(t);
+            txm = cosine(q);
+            tzm = sine(q);
+            lxm = sine(t);
+            lzm = cosine(t);
+            dxm = -cosine(t);
+            dzm = sine(t);
             
             if(CaseDisplay !=0){
                 cout << "Case 13" << endl;
@@ -283,8 +283,8 @@ vector<double> coeffcalc(vector<int> directions, double q, double t){
         }else if(directions.at(1)==2){
             //-------Case 14----------
             aoa = pi/2;
-            txm = cos(q);
-            tzm = sin(q);
+            txm = cosine(q);
+            tzm = sine(q);
             lxm = 0;
             lzm = 0;
             dxm = 0;
@@ -296,12 +296,12 @@ vector<double> coeffcalc(vector<int> directions, double q, double t){
         }else if(directions.at(1)==3){
             //-------Case 15----------
             aoa = q+t;
-            txm = cos(q);
-            tzm = sin(q);
-            lxm = sin(t);
-            lzm = cos(t);
-            dxm = -cos(t);
-            dzm = sin(t);
+            txm = cosine(q);
+            tzm = sine(q);
+            lxm = sine(t);
+            lzm = cosine(t);
+            dxm = -cosine(t);
+            dzm = sine(t);
             
             if(CaseDisplay !=0){
                 cout << "Case 15" << endl;
@@ -309,12 +309,12 @@ vector<double> coeffcalc(vector<int> directions, double q, double t){
         }else if(directions.at(1)==4){
             //-------Case 16----------
             aoa = q+t;
-            txm = cos(q);
-            tzm = sin(q);
-            lxm = sin(t);
-            lzm = cos(t);
-            dxm = -cos(t);
-            dzm = sin(t);
+            txm = cosine(q);
+            tzm = sine(q);
+            lxm = sine(t);
+            lzm = cosine(t);
+            dxm = -cosine(t);
+            dzm = sine(t);
             
             if(CaseDisplay !=0){
                 cout << "Case 16" << endl;
