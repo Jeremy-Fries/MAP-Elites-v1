@@ -58,6 +58,10 @@ public:
 // --------------------------------------------------
     void initialize_wrapper(int,int);
     void wrapper_sets_I_params(int size1, int size2, double mut_mag1, double mut_mag2, int mut_amo1, int mut_amo2);
+    vector<double>& get_individual_1_IH(vector<double>);
+    vector<double>& get_individual_1_HO(vector<double>);
+    vector<double>& get_individual_2_IH(vector<double>);
+    vector<double>& get_individual_2_HO(vector<double>);
 // --------------------------------------------------
             // Main Wrapper functions
     void wrapper_runs_sim(vector<double>,vector<double>);
@@ -72,8 +76,9 @@ public:
     void always_last();
     void load_genome1();
     void load_genome2();
-    void read_from_old_genomes();
+    void load_bins();
     void write_from_old_genomes();
+    void clear_map();
 // --------------------------------------------------
 private:
     int isize_1, isize_2, imutate_amount_1, imutate_amount_2;
@@ -82,8 +87,15 @@ private:
     double fit_rating;
     double phenotype_1, phenotype_2;
     int map_solutions;
+    int in_layer_size, out_layer_size;
     vector < vector <double> > Map_of_genome1;
     vector < vector <double> > Map_of_genome2;
+    vector < vector<int> > Map_of_bins;
+    
+    vector<double> igenome1_IH;
+    vector<double> igenome1_HO;
+    vector<double> igenome2_IH;
+    vector<double> igenome2_HO;
 };
 // ------------------------------------------------------------------------------------------------ ^^ Declarations
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -101,10 +113,15 @@ void Wrapper::initialize_wrapper(int FILL, int MUTATE){
     
     /// PHENOTYPE LIMITS
     pME->set_map_params(20, 60, 0, 100, 10, 10, FILL, MUTATE);                                                   //-------- To Change Map Settings
+
     // (dim1_min, dim1_max, dim2_min, dim2_max, resolution 1,2, fill generation, mutate generation)
     //pME->display_Map_params();        // TODO - delete and add print()
     
-    wrapper_sets_I_params((states+1)*hidden_layer_size, (hidden_layer_size+1)*outs, 0.5, 0.5, 4, 2);        //-------- To Change Individual Settings
+    in_layer_size=(states+1)*hidden_layer_size;
+    out_layer_size=(hidden_layer_size+1)*outs;
+    int num_weights=in_layer_size+out_layer_size;
+    
+    wrapper_sets_I_params(num_weights, num_weights, 0.5, 0.5, 4, 2);        //-------- To Change Individual Settings
 
     // individual_size 1,2, mutate_magnitude 1,2, mutation_amount 1,2)
     // int size1, int size2, double mut_mag1, double mut_mag2, int mut_amo1, int mut_amo2
@@ -208,6 +225,45 @@ void Wrapper::find_phenotypes(){
     //phenotype_2=r2*100;
         // ----------------------------------------------------
 }
+// --------------------------------------------------
+// Clear Map
+void Wrapper::clear_map(){
+    ME.Map.clear();
+}
+// -----------------------------------------------------------------------------------
+// FOR BRAINS......... input to hidden and hidden to output
+vector<double>& Wrapper::get_individual_1_IH(vector<double> igenome_1){
+    igenome1_IH.clear();
+    igenome1_IH.reserve(in_layer_size);
+    for(int i=0; i<in_layer_size; i++){
+        igenome1_IH.push_back(igenome_1.at(i));
+    }
+    return igenome1_IH;
+}
+vector<double>& Wrapper::get_individual_1_HO(vector<double> igenome_1){
+    igenome1_HO.clear();
+    igenome1_HO.reserve(out_layer_size);
+    for(int i=in_layer_size; i<out_layer_size; i++){
+        igenome1_HO.push_back(igenome_1.at(i));
+        }
+    return igenome1_HO;
+}
+vector<double>& Wrapper::get_individual_2_IH(vector<double> igenome_2){
+    igenome2_IH.clear();
+    igenome2_IH.reserve(in_layer_size);
+    for(int i=0; i<in_layer_size; i++){
+        igenome2_IH.push_back(igenome_2.at(i));
+    }
+    return igenome2_IH;
+}
+vector<double>& Wrapper::get_individual_2_HO(vector<double> igenome_2){
+    igenome2_HO.clear();
+    igenome2_HO.reserve(out_layer_size);
+    for(int i=in_layer_size; i<out_layer_size; i++){
+        igenome2_HO.push_back(igenome_2.at(i));
+    }
+    return igenome2_HO;
+}
 // -----------------------------------------------------------------------------------
             // Fill Map
 void Wrapper::fill_MAP(){
@@ -230,10 +286,20 @@ void Wrapper::fill_MAP(){
         NN.take_output_limits(Sim.currentstate.control_LowLimits, Sim.currentstate.control_UpLimits);
         NN.take_num_hidden_units(this->hidden_layer_size); /// repeated from initialize, but no harm.
         NN.take_num_controls(Sim.currentstate.num_of_controls); /// repeated from initialize, but to no harm.
-        NN.take_weights(I.get_individual1(), I.get_individual2());
+        
+        // need to change
+        //NN.take_weights(I.get_individual1(), I.get_individual2());
+        
+        NN.take_weights(get_individual_1_IH(I.get_individual1()), get_individual_1_HO(I.get_individual2()));
+        
         
             /// %%% /// %%% BEGIN SIMULATION LOOP %%% /// %%% ///
         while (Sim.t<Sim.tmax && Sim.lander.frame.at(1).s > Sim.lander.frame.at(1).target){
+            
+            // if stall() swich brain
+            //NN.take_weights(get_individual_2_IH(I.get_individual1()), get_individual_2_HO(I.get_individual2()));
+            
+            
                 /// while Sim still has time AND the Craft is above ground level.
             NN.activation_function(Sim.currentstate.translate_function());
             Sim.run_timestep(NN.communication_to_simulator());
@@ -321,6 +387,7 @@ void Wrapper::print_stuff(){
     ME.print_heat_map();
     ME.print_corresponding_genome1();
     ME.print_corresponding_genome2();
+    ME.print_corresponding_bins();
 }
 // --------------------------------------------------
 
@@ -362,17 +429,30 @@ void Wrapper::print_entire_map_solution(){
 void Wrapper::load_genome1(){
     ifstream co("print_corresponding_genome1.txt");
     
+    // Get rid of txt file location.
+    
     double read;
     vector<double> apush;
     
+    cout << "WE GET INTO THIS FUNCTION " << endl;
     while(co >> read){
         apush.push_back(read);
-        
+        cout <<"SIZE OF APUSH IS: " << apush.size() << endl;
+        cout <<"SIZE OF GENOME 1 IS: " << Map_of_genome1.size() << endl;
         if(apush.size()>=size_of_genome1){
             Map_of_genome1.push_back(apush);
+            cout << "SIZE OF APUSH IS: " << apush.size() << endl;
             apush.clear();
         }
     }
+    //cout << "GENOME ONE IS: " << endl;
+    //for(int i=0; i< Map_of_genome1.size(); i++){
+    //    cout << Map_of_genome1.at(i) << "\t";
+    //}
+    //cout << endl;
+    
+    cout << endl << "Starting size Map of old genome 1 is: " << Map_of_genome1.size() << endl;
+    cout << endl << "Starting size of old genome 1 is: " << Map_of_genome1.at(0).size() << endl;
 }
 // --------------------------------------------------
 void Wrapper::load_genome2(){
@@ -389,20 +469,126 @@ void Wrapper::load_genome2(){
             apush.clear();
         }
     }
+    cout << endl << "Starting size Map of old genome 2 is: " << Map_of_genome2.size() << endl;
+    cout << endl << "Starting size of old genome 2 is: " << Map_of_genome2.at(0).size() << endl;
 }
 // --------------------------------------------------
-// read from txt file
-void Wrapper::read_from_old_genomes(){
-    load_genome1();
-    load_genome2();
-}
-// write
+//write
 void Wrapper::write_from_old_genomes(){
-    // build map from old genomes, needs to be Map_Elites function takes in vector of doubles and size of map.
+    /// Read from txt file
+    Map_of_genome1.clear();
+    Map_of_genome2.clear();
     
+    load_genome1();
+    cout << endl << "Starting size of old genome 1 is: " << Map_of_genome1.at(0).size() << endl;
+    load_genome2();
+    cout << endl << "Starting size of old genome 2 is: " << Map_of_genome2.at(0).size() << endl;
     
+    int old_placed_counter=0;
+    if (Map_of_genome1.size()== Map_of_genome2.size()){
+        for (int i=0;i<Map_of_genome1.size();i++){
+            Individual I;
+            I.set_individual_params(Map_of_genome1.at(i).size(), Map_of_genome2.at(i).size(), imutate_mag_1, imutate_mag_2, imutate_amount_1, imutate_amount_2);
+            I.build_individual_1_from_another(Map_of_genome1.at(i));
+            I.build_individual_2_from_another(Map_of_genome2.at(i));
+    
+            Sim.initialize_sim();
+            
+            NN.take_input_limits(Sim.currentstate.state_variables_LowLimit, Sim.currentstate.state_variables_UpLimit);
+            NN.take_output_limits(Sim.currentstate.control_LowLimits, Sim.currentstate.control_UpLimits);
+            NN.take_num_hidden_units(this->hidden_layer_size); /// repeated from initialize, but no harm.
+            NN.take_num_controls(Sim.currentstate.num_of_controls); /// repeated from initialize, but to no harm.
+            NN.take_weights(I.get_individual1(), I.get_individual2());
+            
+            /// %%% /// %%% BEGIN SIMULATION LOOP %%% /// %%% ///
+            while (Sim.t<Sim.tmax && Sim.lander.frame.at(1).s > Sim.lander.frame.at(1).target){
+                /// while Sim still has time AND the Craft is above ground level.
+                NN.activation_function(Sim.currentstate.translate_function());
+                Sim.run_timestep(NN.communication_to_simulator());
+                NN.Neural_Network_Reset();
+            }
+            /// %%% /// %%% END SIMULATION LOOP %%% /// %%% ///
+            
+            State current;
+            current = Sim.currentstate;
+            
+            fitness_calculation(current);
+            I.set_fit_rating(fit_rating);
+            //I.display_fit_rating();
+            
+            find_phenotypes();
+            I.set_phenotypes(phenotype_1,phenotype_2);
+            //I.display_phenotype1();
+            //I.display_phenotype2();
+            
+            ME.challenger = I;
+            ME.place_individual_in_map();
+            old_placed_counter++;
+        }
+    }
+    else {
+        cout << endl << "Error, Genomes from txt file are NOT the same size." << endl;
+    }
+    cout << endl << "Quantity of Old Genomes Placed is: " << old_placed_counter << endl;
 }
-
+// --------------------------------------------------
+// //write
+//void Wrapper::write_from_old_genomes(){
+//        /// Read from txt file
+//    load_genome1();
+//    load_genome2();
+//    load_bins();
+//        /// build map from old map of genomes
+//    
+//    ME.build_map_from_old(Map_of_genome1,Map_of_genome2, Map_of_bins);
+//    // Sim loop to tack on fitness
+//    
+//    // ----=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-VVVVVV
+//    // get rid of bin vec,
+//    // iterate through old genome vecs running each through the sim to find fit and phenos, place into map, don't need old bins then.
+//    
+//    // for all bins go through and check if occupied, if so run sim and get fitness and phenotypes.
+//    for(int row_value=0; row_value<ME.num_spacing1; row_value++){
+//        for(int element_value=0; element_value<ME.num_spacing2; element_value++){
+//    
+//            if(ME.Map.at(row_value).at(element_value).full_bin_check()==0){
+//            
+//                // make sure can only grab an occupied bin, make another function otherwise.
+//                //ME.individual_from_map(row_value, element_value);     // copy Individual's vectors at bin location
+//        
+//                Sim.initialize_sim();
+//        
+//                NN.take_weights(ME.Map.at(row_value).at(element_value).current_individual.at(0).get_individual1(), ME.Map.at(row_value).at(element_value).current_individual.at(0).get_individual2());
+//                NN.take_input_limits(Sim.currentstate.state_variables_LowLimit, Sim.currentstate.state_variables_UpLimit);
+//                NN.take_output_limits(Sim.currentstate.control_LowLimits,Sim.currentstate.control_UpLimits);
+//        
+//                /// %%% /// %%% BEGIN SIMULATION LOOP %%% /// %%% ///
+//                while (Sim.t<Sim.tmax && Sim.lander.frame.at(1).s > Sim.lander.frame.at(1).target){
+//                    /// while Sim still has time AND the Craft above ground level.
+//                    NN.activation_function(Sim.currentstate.state_variables_vec);
+//                    Sim.run_timestep(NN.communication_to_simulator());
+//                    NN.Neural_Network_Reset();
+//                }
+//                /// %%% /// %%% END SIMULATION LOOP %%% /// %%% ///
+//        
+//                State current;
+//                current = Sim.currentstate;
+//        
+//                fitness_calculation(current);                           // fitness for new Individual
+//                ME.Map.at(row_value).at(element_value).current_individual.at(0).set_fit_rating(fit_rating);
+//                //ME.challenger.display_fit_rating();
+//        
+//                find_phenotypes();
+//                ME.Map.at(row_value).at(element_value).current_individual.at(0).set_phenotypes(phenotype_1,phenotype_2);
+//                //ME.challenger.display_phenotype1();
+//                //ME.challenger.display_phenotype2();
+//                //ME.place_individual_in_map();
+//        
+//            }
+//        }
+//    }
+//}
+//
 // run
 
 

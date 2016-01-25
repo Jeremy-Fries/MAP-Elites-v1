@@ -113,6 +113,7 @@ public:
     void initialize_map();
     void place_individual_in_map();
     void individual_from_map(int p1, int p2);
+    void build_map_from_old(vector<vector<double>>, vector<vector<double>>, vector<vector<int>>);
 // --------------------------------------------------
     // Create full bin vector
     void create_full_bin();
@@ -130,9 +131,7 @@ public:
     void print_heat_map();
     void print_corresponding_genome1();
     void print_corresponding_genome2();
-//    void load_genome1();
-//    void load_genome2();
-    void build_map_from_old(vector<double>, vector<double>, int, int);
+    void print_corresponding_bins();
 // --------------------------------------------------
     // how many bins are full?
     void how_many_full_bins();
@@ -447,6 +446,9 @@ void Map_Elites::individual_from_map(int p1, int p2){
     }
 }
 // --------------------------------------------------
+// grab individual for testing
+
+// --------------------------------------------------
             // Create Full Bin
     /// creates a vector of all bins that contain an Individual.
 void Map_Elites::create_full_bin(){
@@ -645,7 +647,7 @@ void Map_Elites::print_heat_map(){
             // Print corresponding genome1
 void Map_Elites::print_corresponding_genome1(){
     ofstream myfile;
-    myfile.open ("print_corresponding_genome1");
+    myfile.open ("print_corresponding_genome1.txt");
     for(int element=0; element<full_bins.size();element++){
         for (int i = 0; i<full_bins.at(element).current_individual.at(0).genome1.size(); i++){
              myfile << full_bins.at(element).current_individual.at(0).genome1.at(i) << '\t';
@@ -659,7 +661,7 @@ void Map_Elites::print_corresponding_genome1(){
             // Print corresponding genome1
 void Map_Elites::print_corresponding_genome2(){
     ofstream myfile;
-    myfile.open ("print_corresponding_genome2");
+    myfile.open ("print_corresponding_genome2.txt");
     for(int element=0; element<full_bins.size();element++){
         //myfile << "Bin is " << full_bins.at(element).id  << '\n';
         for (int i = 0; i<full_bins.at(element).current_individual.at(0).genome2.size(); i++){
@@ -671,46 +673,73 @@ void Map_Elites::print_corresponding_genome2(){
     cout << "print_corresponding_genome2.txt created." << endl;
 }
 // --------------------------------------------------
+// Print corresponding genome1
+void Map_Elites::print_corresponding_bins(){
+    ofstream myfile;
+    myfile.open ("print_corresponding_bins.txt");
+    for(int element=0; element<full_bins.size();element++){
+        myfile << full_bins.at(element).id  << '\n';
+    }
+    myfile.close();
+    cout << "print_corresponding_bins.txt created." << endl;
+}
+// --------------------------------------------------
+
 // Initialze Map
 /// Builds Map based on old genomes, ALSO creates and sets Map_space LB and UB
 
 // Bring in parameters from old run?? read in from txt file?
 
-//
-//void Map_Elites::build_map_from_old(vector<double> old_genome1, vector<double> old_genome2, int size_old_genome1, int size_old_genome2){
-//    double pre_LB1=dim1_min;
-//    double pre_LB2=dim2_min;
-//    int id_number=0;
-//    Map.reserve(num_spacing1);
-//    for(int d1=0; d1<num_spacing1; d1++){
-//        vector<Map_space> Row;
-//        Row.reserve(num_spacing2);
-//        for(int d2=0; d2<num_spacing2; d2++){
-//            Map_space M;
-//            M.previous_genome1.clear();  // clears occupant vector
-//            M.previous_genome2.clear();  // clears occupant vector
-//            M.set_id(id_number);
-//            M.bin1=d1;
-//            M.bin2=d2;
-//            M.set_LB1(pre_LB1);
-//            M.set_LB2(pre_LB2);
-//            M.set_center_bin1(pre_LB1+(spacing1/2));            // Sets center of Bin
-//            M.set_center_bin2(pre_LB2+(spacing2/2));
-//            double calc_UB1= pre_LB1+spacing1;
-//            M.set_UB1(calc_UB1);
-//            double calc_UB2= pre_LB2+spacing2;
-//            M.set_UB2(calc_UB2);
-//            M.build_map_space();
-//            Row.push_back(M);
-//            pre_LB2+=spacing2;
-//            id_number++;
-//        }
-//        Map.push_back(Row);
-//        pre_LB1+=spacing1;
-//        pre_LB2=dim2_min;
-//    }
-//    cout << endl << "Map is made" << endl;
-//}
+// ----------------------Map Parameters MUST BE CONSISTENT------------------
+void Map_Elites::build_map_from_old(vector<vector<double>> old_genome1_map, vector<vector<double>> old_genome2_map, vector<vector<int>> bin_id){
+    double pre_LB1=dim1_min;
+    double pre_LB2=dim2_min;
+    int id_number=0;
+    int id_equals=0;
+    Map.reserve(num_spacing1);
+    for(int d1=0; d1<num_spacing1; d1++){
+        vector<Map_space> Row;
+        Row.reserve(num_spacing2);
+        for(int d2=0; d2<num_spacing2; d2++){
+            Map_space M;
+            M.previous_genome1.clear();  // clears occupant vector
+            M.previous_genome2.clear();  // clears occupant vector
+            M.set_id(id_number);
+            M.bin1=d1;
+            M.bin2=d2;
+            M.set_LB1(pre_LB1);
+            M.set_LB2(pre_LB2);
+            double cbin1=pre_LB1+(spacing1/2);
+            double cbin2=pre_LB2+(spacing2/2);
+            M.set_center_bin1(cbin1);            // Sets center of Bin
+            M.set_center_bin2(cbin2);
+            double calc_UB1= pre_LB1+spacing1;
+            M.set_UB1(calc_UB1);
+            double calc_UB2= pre_LB2+spacing2;
+            M.set_UB2(calc_UB2);
+            M.build_map_space();
+            
+            if(id_number == bin_id.at(id_equals).at(0)){
+                Individual I;
+                I.build_individual_1_from_another(old_genome1_map.at(id_number));
+                I.build_individual_2_from_another(old_genome2_map.at(id_number));
+                /// Place Individual in center of Bin, Phenotypes are not transfered.
+                I.set_phenotypes(cbin1,cbin2);
+                M.current_individual.push_back(I);
+                id_equals++;
+            }
+            
+            Row.push_back(M);
+            pre_LB2+=spacing2;
+            id_number++;
+        }
+        Map.push_back(Row);
+        pre_LB1+=spacing1;
+        pre_LB2=dim2_min;
+    }
+    cout << endl << "Bins transfered: " << id_equals << endl;
+    cout << endl << "Map is made" << endl;
+}
 // --------------------------------------------------
 
 
