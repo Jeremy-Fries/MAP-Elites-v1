@@ -26,7 +26,7 @@ vector<double> forcecalc(vector<double> controller, Craft& c, double rho, vector
     double g = -9.81*c.mass;                               //gravitational component
     double velsqr = pow(c.frame.at(0).sdot,2)+pow(c.frame.at(1).sdot,2);    //square of total velocity
     double vel = sqrt(velsqr);                      //total velocity
-    double theta = asin(abs(c.frame.at(1).sdot)/vel)*45/atan(1);       //orientation of velocity vector
+    double theta = asin(abs(c.frame.at(1).sdot)/vel);       //orientation of velocity vector
     
     // initialize coefficients of lift and drag to 0
     double cl = 0;
