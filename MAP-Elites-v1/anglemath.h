@@ -127,7 +127,7 @@ vector<double> coeffcalc(vector<int> directions, double q, double t){
             }
         }else if(directions.at(1)==3){
             //-------Case 3----------
-            aoa = pi/2;
+            aoa = q-t;
             txm = cosine(q);
             tzm = sine(q);
             lxm = 0;
@@ -143,8 +143,8 @@ vector<double> coeffcalc(vector<int> directions, double q, double t){
             aoa = q-t;
             txm = cosine(q);
             tzm = sine(q);
-            lxm = -sine(t);
-            lzm = cosine(t);
+            lxm = -sine(t);     //SA
+            lzm = cosine(t);    //SA
             dxm = -cosine(t);
             dzm = -sine(t);
             
@@ -157,7 +157,7 @@ vector<double> coeffcalc(vector<int> directions, double q, double t){
     }else if(directions.at(0)==2){
         if(directions.at(1)==1){
             //-------Case 5----------
-            aoa = pi-q-t;
+            aoa = -pi+q+t;
             txm = cosine(q);
             tzm = sine(q);
             lxm = sine(t);
@@ -170,11 +170,11 @@ vector<double> coeffcalc(vector<int> directions, double q, double t){
             }
         }else if(directions.at(1)==2){
             //-------Case 6----------
-            aoa = pi-q-t;
+            aoa = -pi+q+t;
             txm = cosine(q);
             tzm = sine(q);
-            lxm = sine(t);
-            lzm = cosine(t);
+            lxm = -sine(t);
+            lzm = -cosine(t);
             dxm = cosine(t);
             dzm = -sine(t);
             
@@ -186,8 +186,8 @@ vector<double> coeffcalc(vector<int> directions, double q, double t){
             aoa = q+t+pi;
             txm = cosine(q);
             tzm = sine(q);
-            lxm = sine(t);
-            lzm = cosine(t);
+            lxm = -sine(t);
+            lzm = -cosine(t);
             dxm = cosine(t);
             dzm = -sine(t);
             
@@ -196,7 +196,7 @@ vector<double> coeffcalc(vector<int> directions, double q, double t){
             }
         }else if(directions.at(1)==4){
             //-------Case 8----------
-            aoa = pi/2;
+            aoa = pi+q+t;
             txm = cosine(q);
             tzm = sine(q);
             lxm = 0;
@@ -213,7 +213,7 @@ vector<double> coeffcalc(vector<int> directions, double q, double t){
     }else if(directions.at(0)==3){
         if(directions.at(1)==1){
             //-------Case 9----------
-            aoa = pi/2;
+            aoa = pi+q-t;
             txm = cosine(q);
             tzm = sine(q);
             lxm = 0;
@@ -226,11 +226,11 @@ vector<double> coeffcalc(vector<int> directions, double q, double t){
             }
         }else if(directions.at(1)==2){
             //-------Case 10----------
-            aoa = pi-q+t;
+            aoa = q-pi-t;       //AOA always negative
             txm = cosine(q);
             tzm = sine(q);
-            lxm = -sine(t);
-            lzm = cosine(t);
+            lxm = sine(t);
+            lzm = -cosine(t);
             dxm = cosine(t);
             dzm = sine(t);
             
@@ -242,8 +242,8 @@ vector<double> coeffcalc(vector<int> directions, double q, double t){
             aoa = pi+q-t;
             txm = cosine(q);
             tzm = sine(q);
-            lxm = -sine(t);
-            lzm = cosine(t);
+            lxm = sine(t);
+            lzm = -cosine(t);
             dxm = cosine(t);
             dzm = sine(t);
             
@@ -282,7 +282,7 @@ vector<double> coeffcalc(vector<int> directions, double q, double t){
             }
         }else if(directions.at(1)==2){
             //-------Case 14----------
-            aoa = pi/2;
+            aoa = q+t;
             txm = cosine(q);
             tzm = sine(q);
             lxm = 0;
