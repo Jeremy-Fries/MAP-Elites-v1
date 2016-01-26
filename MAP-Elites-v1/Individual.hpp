@@ -211,6 +211,8 @@ void Individual::display_individual_params(){
 // Builds 2 vector of doubles for weights of the NN layers.
 void Individual::build_individual(){
     double a;
+    genome1.reserve(individual_size1);
+    genome2.reserve(individual_size2);
     for (int s = 0; s < individual_size1; s++)
     {
         a = rand01()-rand01();

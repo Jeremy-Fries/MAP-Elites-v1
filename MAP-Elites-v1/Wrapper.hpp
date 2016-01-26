@@ -10,6 +10,8 @@ class Wrapper;
 #ifndef Wrapper_hpp
 #define Wrapper_hpp
 
+#define BUFFER 10
+
 #include <stdio.h>
 #include <iostream>
 #include <iterator>
@@ -234,33 +236,35 @@ void Wrapper::clear_map(){
 // FOR BRAINS......... input to hidden and hidden to output
 vector<double>& Wrapper::get_individual_1_IH(vector<double> igenome_1){
     igenome1_IH.clear();
-    igenome1_IH.reserve(in_layer_size);
-    for(int i=0; i<in_layer_size; i++){
-        igenome1_IH.push_back(igenome_1.at(i));
+    igenome1_IH.reserve(in_layer_size+BUFFER);
+    for(int ih=0; ih<in_layer_size; ih++){
+        igenome1_IH.push_back(igenome_1.at(ih));
     }
     return igenome1_IH;
 }
 vector<double>& Wrapper::get_individual_1_HO(vector<double> igenome_1){
     igenome1_HO.clear();
-    igenome1_HO.reserve(out_layer_size);
-    for(int i=in_layer_size; i<out_layer_size; i++){
-        igenome1_HO.push_back(igenome_1.at(i));
+    igenome1_HO.reserve(out_layer_size+BUFFER);
+    /// yes ho = in_layer_size, goes from in_layer_size to end of vector.
+    for(int ho=in_layer_size; ho<(in_layer_size+out_layer_size); ho++){
+        igenome1_HO.push_back(igenome_1.at(ho));
         }
     return igenome1_HO;
 }
 vector<double>& Wrapper::get_individual_2_IH(vector<double> igenome_2){
     igenome2_IH.clear();
-    igenome2_IH.reserve(in_layer_size);
-    for(int i=0; i<in_layer_size; i++){
-        igenome2_IH.push_back(igenome_2.at(i));
+    igenome2_IH.reserve(in_layer_size+BUFFER);
+    for(int ih=0; ih<in_layer_size; ih++){
+        igenome2_IH.push_back(igenome_2.at(ih));
     }
     return igenome2_IH;
 }
 vector<double>& Wrapper::get_individual_2_HO(vector<double> igenome_2){
     igenome2_HO.clear();
-    igenome2_HO.reserve(out_layer_size);
-    for(int i=in_layer_size; i<out_layer_size; i++){
-        igenome2_HO.push_back(igenome_2.at(i));
+    igenome2_HO.reserve(out_layer_size+BUFFER);
+    /// yes ho = in_layer_size, goes from in_layer_size to end of vector.
+    for(int ho=in_layer_size; ho<(in_layer_size+out_layer_size); ho++){
+        igenome2_HO.push_back(igenome_2.at(ho));
     }
     return igenome2_HO;
 }
@@ -322,6 +326,11 @@ void Wrapper::fill_MAP(){
         ME.challenger = I;
         ME.place_individual_in_map();
         fill_round++;
+        
+        if(rand()%1000 < 100){
+            cout << endl << "FILL Round is ---- " << g << " of " << fill_gen << endl;
+        }
+        
     }
     cout << "completed " << fill_round << " FILL rounds" << endl;
 }
@@ -340,7 +349,8 @@ void Wrapper::mutate_MAP(){
         
         Sim.initialize_sim();
         
-        NN.take_weights(ME.challenger.get_individual1(), ME.challenger.get_individual2());
+        //NN.take_weights(ME.challenger.get_individual1(), ME.challenger.get_individual2());
+        NN.take_weights(get_individual_1_IH(ME.challenger.get_individual1()), get_individual_1_HO(ME.challenger.get_individual2()));
         NN.take_input_limits(Sim.currentstate.state_variables_LowLimit, Sim.currentstate.state_variables_UpLimit);
         NN.take_output_limits(Sim.currentstate.control_LowLimits,Sim.currentstate.control_UpLimits);
         
@@ -368,7 +378,7 @@ void Wrapper::mutate_MAP(){
         mutation_round++;
         
         if(rand()%1000 < 100){
-            cout << endl << "MUTATION Round is ---- " << g << " of " << mut_gen << endl;
+            cout << endl << "MUTATE Round is ---- " << g << " of " << mut_gen << endl;
         }
     }
     cout << "completed " << mutation_round << " MUTATION rounds" << endl;
