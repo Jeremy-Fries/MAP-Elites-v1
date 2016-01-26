@@ -219,11 +219,12 @@ void Simulator::run_sim(){ /// AVOID
 }
 
 int Simulator::check_stall(vector<State> sh){
-    int stalled;
+    int stalled = 0;
     
     if (t >= (6*tstep)){
         for(int i=0;i<5;i++){
-            if(sh.at(sh.size()-i).forceLift == 0){
+            //cout << endl << endl << sh.at(sh.size()-(i+1)).forceLift << endl << endl;
+            if(sh.at(sh.size()-(i+1)).forceLift == 0){
                 stalled = 1;
             }else{
                 stalled = 0;
@@ -231,7 +232,7 @@ int Simulator::check_stall(vector<State> sh){
             }
         }
     }
-    
+    cout << endl << endl << stalled << endl << endl;
     return stalled;
 }
 
