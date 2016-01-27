@@ -15,6 +15,31 @@ using namespace std;
 #ifndef dynamics_h
 #define dynamics_h
 
+void getalpha(double a, double &colift, double &codrag, vector<vector<double> > aero){
+    double clLower, clUpper, cdLower, cdUpper, aLower, aUpper;
+    for(int i=0;i<(aero.size()-1);i++){
+        if(aero.at(i).at(0)==a){    //If we get an integer for the degrees, use that.
+            colift = aero.at(i).at(1);
+            codrag = aero.at(i).at(2);
+            break;
+        }else if(aero.at(i).at(0)<a && aero.at(i+1).at(0)>=a){   //Otherwise, linearly interpolate
+            //get alpha, cl and cd for the values on either side
+            clLower = aero.at(i).at(1);
+            clUpper = aero.at(i+1).at(1);
+            cdLower = aero.at(i).at(2);
+            cdUpper = aero.at(i+1).at(2);
+            aLower = aero.at(i).at(0);
+            aUpper = aero.at(i+1).at(0);
+            
+            //calculate the values of cl and cd
+            colift = clUpper - (aUpper-a)*(clUpper-clLower)/(aUpper-aLower);
+            codrag = cdUpper - (aUpper-a)*(cdUpper-cdLower)/(aUpper-aLower);
+            break;
+        }
+    }
+    
+}
+
 // calc controls to forces in newtonian directions
 // theta describes the angle of the velocity with respect to the x-axis, negative or positive
 // phi describes the angle of the body with respect to the negative x-axis
@@ -45,43 +70,21 @@ vector<double> forcecalc(vector<double> controller, Craft& c, double rho, vector
     
     // determine if coefficients of lift and drag are known, assign if possible {{DEGREES}}
     double alpha_degrees = c.alpha * 180 / (4*atan(1));
-    double alpha_degrees_lower, alpha_degrees_upper;
-    alpha_degrees_lower = floor(alpha_degrees);
-    alpha_degrees_upper = ceil(alpha_degrees);
-    //cout << "ALOWER: " << alpha_degrees_lower << endl;
-    //cout << "ALPHA:  " << alpha_degrees << endl;
-    //cout << "AUPPER: " << alpha_degrees_upper << endl;
-    //cout << "ALPHA DEGREES:" << alpha_degrees << endl;
-    double cl_lower=0, cl_upper=0, cd_lower=0, cd_upper=0;
-    for(int i=0;i<ae.size();i++){
-        if(ae.at(i).at(0)==(alpha_degrees_lower)){
-            cl_lower = ae.at(i).at(1);
-            cd_lower = ae.at(i).at(2);
-            break;
-        }
-    }
-    for(int i=0;i<ae.size();i++){
-        if(ae.at(i).at(0)==(alpha_degrees_upper)){
-            cl_upper = ae.at(i).at(1);
-            cd_upper = ae.at(i).at(2);
-            break;
-        }
-    }
-    double remainder = alpha_degrees - alpha_degrees_lower; // just the decimal.
-    cl = cl_lower * (1-remainder) + cl_upper * remainder; /// weighted avg.
     
-    cd = cd_lower * (1-remainder) + cd_upper * remainder; /// weighted avg.
-    
-    //cout << "remainder: " << remainder << endl;
-    //cout << "CL LRU " << cl_lower << "\t" << cl << "\t" << cl_upper << endl;
-    //cout << "CD LRU " << cd_lower << "\t" << cd << "\t" << cd_upper << endl;
-    
-    
+    getalpha(alpha_degrees, cl, cd, ae);
+//    for(int i=0;i<ae.size();i++){
+//        if(ae.at(i).at(0)==round(alpha_degrees)){
+//            cl = ae.at(i).at(1);
+//            cd = ae.at(i).at(2);
+//            break;
+//        }
+//    }
+
     
     //cout << "cl = " << cl;
     //cout << "\tcd = " << cd << endl;
     
-    //cout << "AoA is " << alpha << "\t Cl is " << cl << "\t Cd is " << cd << "\n";
+    //cout << "AoA is " << alpha_degrees << "\t Cl is " << cl << "\t Cd is " << cd << "\n";
     
     //Calculate forces of lift and drag, will be 0 if cl and cd not available from file.
     c.lift = cl*rho*velsqr*c.sref*0.5;

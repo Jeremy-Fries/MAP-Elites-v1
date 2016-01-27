@@ -327,6 +327,8 @@ vector<double> coeffcalc(vector<int> directions, double q, double t){
     }
     
     // pushback values into a vector
+    
+    aoa = reset_angle(aoa);
     coefficients.push_back(aoa);
     coefficients.push_back(txm);
     coefficients.push_back(tzm);

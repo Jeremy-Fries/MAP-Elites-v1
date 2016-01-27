@@ -60,8 +60,6 @@ void State::get_state(Craft l, double t, double ts){
     phi = l.orientation.at(0).q;
     phivel = l.orientation.at(0).qdot;
     AOA = l.alpha;
-    forceLift = l.lift;
-    forceDrag = l.drag;
     
     
     KEx = 0.5*pow(xvel,2)*l.mass;

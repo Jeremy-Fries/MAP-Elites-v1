@@ -220,19 +220,32 @@ void Simulator::run_sim(){ /// AVOID
 
 int Simulator::check_stall(vector<State> sh){
     int stalled = 0;
+    double AOA_degree = 6789;
+    
     
     if (t >= (6*tstep)){
-        for(int i=0;i<5;i++){
-            //cout << endl << endl << sh.at(sh.size()-(i+1)).forceLift << endl << endl;
-            if(sh.at(sh.size()-(i+1)).forceLift == 0){
-                stalled = 1;
-            }else{
-                stalled = 0;
-                break;
+        int PreviousStall = sh.at(sh.size()-2).stallcheck;
+        
+        if(PreviousStall == 1){
+            AOA_degree = sh.at(sh.size()-1).AOA*45/atan(1);
+            stalled = 1;
+            //cout << endl << endl<< "Great Job!!" << endl << endl;
+        }else{
+            for(int i=0;i<5;i++){
+                //cout << endl << endl << sh.at(sh.size()-(i+1)).forceLift << endl << endl;
+                AOA_degree = sh.at(sh.size()-(i+1)).AOA*45/atan(1);
+                if(AOA_degree < -9 || AOA_degree > 17){
+                    stalled = 1;
+                }else{
+                    stalled = 0;
+                    break;
+                }
             }
         }
+        
     }
-    //cout << endl << endl << stalled << endl << endl;
+    AOA_degree = sh.at(sh.size()-1).AOA*45/atan(1);
+    //cout << endl << endl<< "AOA:\t" << AOA_degree <<"\tStalled??\t" <<stalled << endl << endl;
     return stalled;
 }
 
