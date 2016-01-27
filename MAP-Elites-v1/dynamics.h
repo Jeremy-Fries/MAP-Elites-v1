@@ -45,14 +45,38 @@ vector<double> forcecalc(vector<double> controller, Craft& c, double rho, vector
     
     // determine if coefficients of lift and drag are known, assign if possible {{DEGREES}}
     double alpha_degrees = c.alpha * 180 / (4*atan(1));
+    double alpha_degrees_lower, alpha_degrees_upper;
+    alpha_degrees_lower = floor(alpha_degrees);
+    alpha_degrees_upper = ceil(alpha_degrees);
+    //cout << "ALOWER: " << alpha_degrees_lower << endl;
+    //cout << "ALPHA:  " << alpha_degrees << endl;
+    //cout << "AUPPER: " << alpha_degrees_upper << endl;
     //cout << "ALPHA DEGREES:" << alpha_degrees << endl;
+    double cl_lower=0, cl_upper=0, cd_lower=0, cd_upper=0;
     for(int i=0;i<ae.size();i++){
-        if(ae.at(i).at(0)==round(alpha_degrees)){
-            cl = ae.at(i).at(1);
-            cd = ae.at(i).at(2);
+        if(ae.at(i).at(0)==(alpha_degrees_lower)){
+            cl_lower = ae.at(i).at(1);
+            cd_lower = ae.at(i).at(2);
             break;
         }
     }
+    for(int i=0;i<ae.size();i++){
+        if(ae.at(i).at(0)==(alpha_degrees_upper)){
+            cl_upper = ae.at(i).at(1);
+            cd_upper = ae.at(i).at(2);
+            break;
+        }
+    }
+    double remainder = alpha_degrees - alpha_degrees_lower; // just the decimal.
+    cl = cl_lower * (1-remainder) + cl_upper * remainder; /// weighted avg.
+    
+    cd = cd_lower * (1-remainder) + cd_upper * remainder; /// weighted avg.
+    
+    //cout << "remainder: " << remainder << endl;
+    //cout << "CL LRU " << cl_lower << "\t" << cl << "\t" << cl_upper << endl;
+    //cout << "CD LRU " << cd_lower << "\t" << cd << "\t" << cd_upper << endl;
+    
+    
     
     //cout << "cl = " << cl;
     //cout << "\tcd = " << cd << endl;

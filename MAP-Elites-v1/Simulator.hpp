@@ -232,7 +232,7 @@ int Simulator::check_stall(vector<State> sh){
             }
         }
     }
-    cout << endl << endl << stalled << endl << endl;
+    //cout << endl << endl << stalled << endl << endl;
     return stalled;
 }
 
