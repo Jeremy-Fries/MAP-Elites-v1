@@ -122,6 +122,11 @@ int Simulator::loadaero(){
             counter++;
         }
     }
+    if( counter == 0) {
+        throw "Aero Coefficient File Not Loaded. Check Debug Folder.";
+    }
+    
+    
     return counter;
 }
 
