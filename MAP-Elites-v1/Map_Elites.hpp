@@ -456,7 +456,7 @@ void Map_Elites::create_full_bin(){
     distance_between_centerbin_phenotype.clear();
     for(int row_value=0; row_value<num_spacing1; row_value++){
         for(int element_value=0; element_value<num_spacing2; element_value++){
-            if (Map.at(row_value).at(element_value).full_bin_check()==0){ // look for enum
+            if (Map.at(row_value).at(element_value).full_bin_check()==0){ // 0 means full; look for enum
                 full_bins.push_back(Map.at(row_value).at(element_value));       // push_back Map_space that is full
                 find_pheno_dist_to_center_bin(row_value, element_value, current_bin1, current_bin2);        // calculates distance from phenotype to center of desired bin
                 distance_between_centerbin_phenotype.push_back(center_dist);

@@ -123,7 +123,7 @@ void Wrapper::initialize_wrapper(int FILL, int MUTATE){
     out_layer_size=(hidden_layer_size+1)*outs;
     int num_weights=in_layer_size+out_layer_size;
     
-    wrapper_sets_I_params(num_weights, num_weights, 0.5, 0.5, 8, 8);        //-------- To Change Individual Settings
+    wrapper_sets_I_params(num_weights, num_weights, 0.05, 0.05, 15, 0);        //-------- To Change Individual Settings
 
     // individual_size 1,2, mutate_magnitude 1,2, mutation_amount 1,2)
     // int size1, int size2, double mut_mag1, double mut_mag2, int mut_amo1, int mut_amo2
@@ -187,6 +187,8 @@ void Wrapper::fitness_calculation(State current){
         for(int i = ilow; i<I; i++){
             cout << i << "\t" << Sim.stateholder.at(i).xpos << "\t" << Sim.stateholder.at(i).zpos << "\t" << Sim.stateholder.at(i).zvel << endl;
         }
+        cout << "SAMPLE_IH: " <<  NN.input_to_hidden_layer_weights.at(0) << "\t" << NN.input_to_hidden_layer_weights.at(1) << "\t" <<NN.input_to_hidden_layer_weights.at(2) << "\t" << endl;
+        cout << "SAMPLE_HO: " <<  NN.hidden_to_output_layer_weights.at(0) << "\t" << NN.hidden_to_output_layer_weights.at(1) << "\t" <<NN.hidden_to_output_layer_weights.at(2) << "\t" << endl;
         cout << "END FINAL STATES " << endl;
     }
     
@@ -371,7 +373,7 @@ void Wrapper::mutate_MAP(){
         Sim.initialize_sim();
         
         //NN.take_weights(ME.challenger.get_individual1(), ME.challenger.get_individual2());
-        NN.take_weights(get_individual_1_IH(ME.challenger.get_individual1()), get_individual_1_HO(ME.challenger.get_individual2()));
+        NN.take_weights(get_individual_1_IH(ME.challenger.get_individual1()), get_individual_1_HO(ME.challenger.get_individual1()));
         NN.take_input_limits(Sim.currentstate.state_variables_LowLimit, Sim.currentstate.state_variables_UpLimit);
         NN.take_output_limits(Sim.currentstate.control_LowLimits,Sim.currentstate.control_UpLimits);
         
@@ -424,6 +426,7 @@ void Wrapper::print_stuff(){
 // --------------------------------------------------
 
 void Wrapper::print_entire_map_solution(){
+    ME.create_full_bin();
     map_solutions=0;
     
     for(int element=0; element<ME.full_bins.size();element++){
@@ -445,24 +448,32 @@ void Wrapper::print_entire_map_solution(){
         v1 = get_individual_1_IH(ME.full_bins.at(element).current_individual.at(0).get_individual1());
         v2 = get_individual_1_HO(ME.full_bins.at(element).current_individual.at(0).get_individual1());
         NN.take_weights(v1,v2);
+        cout << "WEIGHT SAMPLE: " << v1.at(0) << "\t" << v1.at(1) << "\t" << v1.at(2) << endl;
+        cout << "HO SAMPLE\t" << v2.at(0) << "\t" << v2.at(1) << "\t" << v2.at(2) << endl;
         
-        
-        NN.take_input_limits(Sim.currentstate.state_variables_LowLimit, Sim.currentstate.state_variables_UpLimit);
+        NN.take_input_limits(Sim.currentstate.state_variables_LowLimit,Sim.currentstate.state_variables_UpLimit);
         NN.take_output_limits(Sim.currentstate.control_LowLimits,Sim.currentstate.control_UpLimits);
     
     
         /// %%% /// %%% BEGIN SIMULATION LOOP %%% /// %%% ///
-        while (Sim.t<Sim.tmax && Sim.lander.frame.at(1).s > Sim.lander.frame.at(1).target){
+        int UPPERLIMIT = 1000;
+        while (Sim.t<Sim.tmax && Sim.lander.frame.at(1).s > Sim.lander.frame.at(1).target&& Sim.lander.frame.at(1).s < UPPERLIMIT){
                 /// while Sim still has time AND the Craft above ground level.
             NN.activation_function(Sim.currentstate.state_variables_vec);
             Sim.run_final_timestep(NN.communication_to_simulator());
-            vector<double> CC = NN.communication_to_simulator();
+            //vector<double> CC = NN.communication_to_simulator();
             NN.Neural_Network_Reset();                      
         }
         /// %%% /// %%% END SIMULATION LOOP %%% /// %%% ///
+        
+        State current;
+        current = Sim.currentstate;
+        
+        fitness_calculation(current);
+        
         map_solutions++;
     }
-    cout << endl << endl << "Number of Solutions OUTPUTTED: " << map_solutions << endl;
+    cout << endl << endl << "Number of Solutions OUTPUT: " << map_solutions << endl;
     cout << endl << "Number of Solutions is: " << ME.full_bins.size()  << endl;
 }
 // --------------------------------------------------

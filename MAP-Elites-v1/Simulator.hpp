@@ -263,6 +263,8 @@ void Simulator::run_timestep(vector<double> controls){
     stateholder.push_back(currentstate);            //pushback current state into vector
     currentstate.translate_function();
     
+    currentstate.stallcheck = check_stall(stateholder);
+    
     currentstate.printround_LY(verbosefile,controls.at(0));                //Output simulator outputs to screen and file
     //fitnessvector();    // potentially comment out // potential tag/ searchable
 }
@@ -276,6 +278,7 @@ void Simulator::run_final_timestep(vector<double> controls){
     currentstate.translate_function();
     
     currentstate.stallcheck = check_stall(stateholder);              //check to see if stall condition is met
+    
     currentstate.printround_LY(verbosefile,controls.at(0));                //Output simulator outputs to screen and file
     currentstate.printround_LY(myfile,controls.at(0));                //Output simulator outputs to screen and file
     //fitnessvector();    // potentially comment out // potential tag/ searchable
