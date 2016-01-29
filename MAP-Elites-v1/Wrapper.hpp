@@ -108,13 +108,13 @@ private:
             // Initialize Wrapper
 void Wrapper::initialize_wrapper(int FILL, int MUTATE){
     
-    int states = 6;
+    int states = 7;
     int outs = 2;
     
-    hidden_layer_size = 5;
+    hidden_layer_size = 3;
     
     /// PHENOTYPE LIMITS
-    pME->set_map_params(20, 60, 0, 100, 10, 10, FILL, MUTATE);                                                   //-------- To Change Map Settings
+    pME->set_map_params(0, 40, 0, 15, 10, 10, FILL, MUTATE);                                                   //-------- To Change Map Settings
 
     // (dim1_min, dim1_max, dim2_min, dim2_max, resolution 1,2, fill generation, mutate generation)
     //pME->display_Map_params();        // TODO - delete and add print()
@@ -123,12 +123,13 @@ void Wrapper::initialize_wrapper(int FILL, int MUTATE){
     out_layer_size=(hidden_layer_size+1)*outs;
     int num_weights=in_layer_size+out_layer_size;
     
-    wrapper_sets_I_params(num_weights, num_weights, 0.5, 0.5, 4, 2);        //-------- To Change Individual Settings
+    wrapper_sets_I_params(num_weights, num_weights, 0.5, 0.5, 8, 8);        //-------- To Change Individual Settings
 
     // individual_size 1,2, mutate_magnitude 1,2, mutation_amount 1,2)
     // int size1, int size2, double mut_mag1, double mut_mag2, int mut_amo1, int mut_amo2
     
     Sim.myfile.open("SimulatorData.txt");
+    Sim.verbosefile.open("VerboseSimulatorData.txt");
 
     NN.initialize(this->hidden_layer_size, Sim.currentstate.num_of_controls);
 }
@@ -160,9 +161,6 @@ void Wrapper::fitness_calculation(State current){
     //fit_rating += current.xpos;
     
         //cout << "FIT1: " << fit_rating << endl;
-    if(current.zpos > 0){ /// still in air. (0)
-        fit_rating = -99999999999999; /// TODO MAX_INT
-    }
     
         //cout << "FIT2: " << fit_rating << endl;
     /// MINKE FITNESS CALCULATION
@@ -170,17 +168,35 @@ void Wrapper::fitness_calculation(State current){
     double gravity = 9.81;
     /// stay in air.
     //fit_rating += Sim.stateholder.size() * 1000;
-    for(int i=0; i<Sim.stateholder.size(); i++){
-        fit_rating -= Sim.stateholder.at(i).KEz;
+    int I = Sim.stateholder.size();
+    int ilow = max(0,I-10);
+    for(int i=ilow; i<I; i++){
+        //fit_rating -= Sim.stateholder.at(i).KEz;
+        //fit_rating -= Sim.stateholder.at(i).zpos / I;
+        fit_rating -= abs(Sim.stateholder.at(i).zvel)/(I-ilow);
         //cout << "FIT2.1: " << fit_rating << endl;
-        fit_rating -= Sim.stateholder.at(i).KEx;
+        //fit_rating -= Sim.stateholder.at(i).KEx;
         //cout << "FIT2.2: " << fit_rating << endl;
-        fit_rating -= Sim.stateholder.at(i).KEp;
+        //fit_rating -= Sim.stateholder.at(i).KEp;
         //cout << "FIT2.3: " << fit_rating << endl;
-        fit_rating -= 1000 * Sim.stateholder.at(i).zpos * mass * gravity;
+        //fit_rating -= 1000 * Sim.stateholder.at(i).zpos * mass * gravity;
         //cout << "FIT2.4: " << fit_rating << endl;
     }
-        
+    if(fit_rating > -5.0){
+        cout << "BGN FINAL STATES: " << fit_rating << endl;
+        for(int i = ilow; i<I; i++){
+            cout << i << "\t" << Sim.stateholder.at(i).xpos << "\t" << Sim.stateholder.at(i).zpos << "\t" << Sim.stateholder.at(i).zvel << endl;
+        }
+        cout << "END FINAL STATES " << endl;
+    }
+    
+    if(current.zpos > 0){ /// still in air. (0)
+        fit_rating = -99999999999999; /// TODO MAX_INT
+        for(int i=0; i<I; i++){
+            fit_rating -= Sim.stateholder.at(i).zpos / I;
+        }
+    }
+    
     
     //cout << "FIT3: " << fit_rating << endl;
         
@@ -197,7 +213,7 @@ void Wrapper::fitness_calculation(State current){
     
     /// SOFT LANDING FITNESS:
     //fit_rating -=current.KEz;
-    
+    cout << "Fit rating is:\t\t" << fit_rating << endl;
 
 }
 // ----------------------------------------------------------------------------------- TODO - change
@@ -214,11 +230,16 @@ void Wrapper::find_phenotypes(){
 //----------------------------------------------------
         /// pheno 1 is time in air
     phenotype_1=Sim.currentstate.time;
-    phenotype_2=Sim.currentstate.KEz;
+    //phenotype_2=Sim.currentstate.KEz;
     
     /// pheno 2 is
-    //phenotype_2=Sim.currentstate.KEx;
-    
+    phenotype_2=0;
+    int I = Sim.stateholder.size();
+    for(int i=0; i<I; i++){
+        phenotype_2+= abs(Sim.stateholder.at(i).zvel/I);
+    }
+    cout << "zvel pheontype IS:\t\t\t";
+    cout << phenotype_2 << endl;
         // ----------------------------------------------------
     /// for a Binary Selection Parallel Simulated Annealing.....
     //double r1 = ((double)rand() / RAND_MAX);
@@ -355,7 +376,8 @@ void Wrapper::mutate_MAP(){
         NN.take_output_limits(Sim.currentstate.control_LowLimits,Sim.currentstate.control_UpLimits);
         
             /// %%% /// %%% BEGIN SIMULATION LOOP %%% /// %%% ///
-        while (Sim.t<Sim.tmax && Sim.lander.frame.at(1).s > Sim.lander.frame.at(1).target){
+        int UPPERLIMIT = 1000;
+        while (Sim.t<Sim.tmax && Sim.lander.frame.at(1).s > Sim.lander.frame.at(1).target && Sim.lander.frame.at(1).s < UPPERLIMIT){
                 /// while Sim still has time AND the Craft above ground level.
             NN.activation_function(Sim.currentstate.state_variables_vec);
             Sim.run_timestep(NN.communication_to_simulator());
@@ -416,7 +438,15 @@ void Wrapper::print_entire_map_solution(){
 //        ME.full_bins.at(element).current_individual.at(0).display_individual2();
         // ---------------------------------------------
         
-        NN.take_weights(ME.full_bins.at(element).current_individual.at(0).get_individual1() , ME.full_bins.at(element).current_individual.at(0).get_individual2());
+        //NN.take_weights(ME.full_bins.at(element).current_individual.at(0).get_individual1() , ME.full_bins.at(element).current_individual.at(0).get_individual2());
+        vector<double> v1;
+        vector<double> v2;
+        /// brain switching.
+        v1 = get_individual_1_IH(ME.full_bins.at(element).current_individual.at(0).get_individual1());
+        v2 = get_individual_1_HO(ME.full_bins.at(element).current_individual.at(0).get_individual1());
+        NN.take_weights(v1,v2);
+        
+        
         NN.take_input_limits(Sim.currentstate.state_variables_LowLimit, Sim.currentstate.state_variables_UpLimit);
         NN.take_output_limits(Sim.currentstate.control_LowLimits,Sim.currentstate.control_UpLimits);
     
@@ -639,6 +669,7 @@ void Wrapper::rand_bin(){
 // --------------------------------------------------
 void Wrapper::always_last(){
     Sim.myfile.close();
+    Sim.verbosefile.close();
 }
 // --------------------------------------------------
 

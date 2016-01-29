@@ -85,7 +85,7 @@ int submain(){
     //W.clear_map();
     //W.load_genome1();
     //W.load_genome2();
-    W.write_from_old_genomes();   // will stay once tested.
+    //W.write_from_old_genomes();   // will stay once tested.
     // -------Testing, Not Done --------
     
     

@@ -77,37 +77,39 @@ void State::initialize_translate_limits(){
     control_LowLimits.clear();
     control_UpLimits.clear();
     
-    state_variables_LowLimit.reserve(6);
-    state_variables_UpLimit.reserve(6);
+    state_variables_LowLimit.reserve(8);
+    state_variables_UpLimit.reserve(8);
     control_LowLimits.reserve(2);
     control_UpLimits.reserve(2);
 
     
     // state variable upper limits
     //state_variables_UpLimit.push_back(2500.0);   // xpos [m]
-    state_variables_UpLimit.push_back(60.0);   // time [s]
-    state_variables_UpLimit.push_back(60.0);   // xvel [m/s]
-    state_variables_UpLimit.push_back(50.0);   // zpos [m]
-    state_variables_UpLimit.push_back(30.0);   // zvel [m/s]
+    state_variables_UpLimit.push_back(70.0);   // time [s]
+    state_variables_UpLimit.push_back(200.0);   // xvel [m/s]
+    state_variables_UpLimit.push_back(200.0);   // zpos [m]
+    state_variables_UpLimit.push_back(50.0);   // zvel [m/s]
     state_variables_UpLimit.push_back(1.0);    // sin(phi) [ratio of rad]
     state_variables_UpLimit.push_back(1.0);    // cos(phi) [ratio of rad]
+    state_variables_UpLimit.push_back(1.0); /// phivel
     
     // state variable lower limits
     //state_variables_LowLimit.push_back(0.0);      // xpos [m]
-    state_variables_LowLimit.push_back(0.0);    // time [s]
-    state_variables_LowLimit.push_back(0.0);   // xvel [m/s]
-    state_variables_LowLimit.push_back(0.0);      // zpos [m]
-    state_variables_LowLimit.push_back(-30.0);   // zvel [m/s]
+    state_variables_LowLimit.push_back(-10.0);    // time [s]
+    state_variables_LowLimit.push_back(100.0);   // xvel [m/s]
+    state_variables_LowLimit.push_back(-25.0);      // zpos [m]
+    state_variables_LowLimit.push_back(-50.0);   // zvel [m/s]
     state_variables_LowLimit.push_back(-1.0);    // sin(phi) [ratio of rad]
     state_variables_LowLimit.push_back(-1.0);    // cos(phi) [ratio of rad]
+    state_variables_LowLimit.push_back(-1.0); /// phivel
     
     // control upper limits
-    control_UpLimits.push_back(400.0);    // thrust [N] /// previously 500
-    control_UpLimits.push_back(5);     // torque [Nm]
+    control_UpLimits.push_back(100.0);    // thrust [N] /// previously 500
+    control_UpLimits.push_back(3);     // torque [Nm]
     
     // control lower limits
     control_LowLimits.push_back(0.0);       // thrust [N]
-    control_LowLimits.push_back(-5);     // torque [Nm]
+    control_LowLimits.push_back(-3);     // torque [Nm]
 }
 // --------------------------------------------------
 
@@ -117,7 +119,7 @@ void State::initialize_translate_limits(){
 // Translate function() takes information of craft and target, pushes into vector to go to NN. May need to be in simulator to have access to target.
 vector<double> State::translate_function(){
     state_variables_vec.clear();
-    state_variables_vec.reserve(7);
+    state_variables_vec.reserve(10);
     //state_variables_vec.push_back(xpos);
     state_variables_vec.push_back(time);
     state_variables_vec.push_back(xvel);
@@ -125,6 +127,7 @@ vector<double> State::translate_function(){
     state_variables_vec.push_back(zvel);
     state_variables_vec.push_back(sine(phi));
     state_variables_vec.push_back(cosine(phi));
+    state_variables_vec.push_back(phivel);
     //state_variables_vec.push_back(AOA);
     //cout << "state_variable vector size is: " << state_variables_vec.size();
     return state_variables_vec;
@@ -149,7 +152,7 @@ void State::printround(ofstream & file, double thrust){
 }
 
 void State::printround_LY(ofstream & file, double thrust){
-    file << xpos << "\t" << zpos << endl;//<< "\t" <<  KEz << endl;
+    file << xpos << "\t" << zpos << "\t" << phi << "\t" << stallcheck << "\t" << KEz << "\t" << 20*9.81*zpos << "\t" << time << endl;//<< "\t" <<  KEz << endl;
 }
 
 

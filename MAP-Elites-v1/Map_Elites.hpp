@@ -563,7 +563,7 @@ void Map_Elites::print_all_occupants(){
     ofstream myfile;
     myfile.open ("all_occupants_with_fit_ratings.txt");
     for(int element=0; element<full_bins.size();element++){
-        myfile << "occupant for bin: " << element << "\t accessed count: " << full_bins.at(element).counter << '\n';
+        myfile << "occupant for bin: " << full_bins.at(element).id << "\t accessed count: " << full_bins.at(element).counter << '\n';
         for(int occupant=0; occupant < full_bins.at(element).previous_fit_rating.size(); occupant++){
             myfile << full_bins.at(element).previous_fit_rating.at(occupant) << '\n';
         }
