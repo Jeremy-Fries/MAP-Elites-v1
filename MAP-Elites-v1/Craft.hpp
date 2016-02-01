@@ -34,7 +34,7 @@ public:
     vector<LinDOF> frame;
     vector<RotDOF> orientation;
     double mass, inertia, KEinitial;
-    double sref, alpha, lift, drag;
+    double sref, alpha, lift, drag, xWindSpeed, zWindSpeed;
     int stall;
 // --------------------------------------------------
     void initialize(int l, int r);

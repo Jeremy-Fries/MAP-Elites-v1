@@ -31,6 +31,7 @@ class State{
 protected:
     double time, timestep, xpos, xvel;
     double zpos, zvel, phi, phivel, KEx, KEz, KEp, AOA, stallcheck, forceLift, forceDrag;
+    double xWind, zWind;
     vector<double> state_variables_vec;
     vector<double> state_variables_UpLimit;
     vector<double> state_variables_LowLimit;
@@ -45,8 +46,8 @@ public:
     vector<double> translate_function();
 // --------------------------------------------------
     void printheader();
-    void printround(ofstream & file, double);
-    void printround_LY(ofstream &file, double);
+    void printround(ofstream & outfile, double);
+    void printround_LY(ofstream &file, double, ofstream & wind);
 };
 
 
@@ -60,6 +61,8 @@ void State::get_state(Craft l, double t, double ts){
     phi = l.orientation.at(0).q;
     phivel = l.orientation.at(0).qdot;
     AOA = l.alpha;
+    xWind = l.frame.at(0).WindSpeed;
+    zWind = l.frame.at(1).WindSpeed;
     
     
     KEx = 0.5*pow(xvel,2)*l.mass;
@@ -137,19 +140,20 @@ void State::printheader(){
 // --------------------------------------------------
 //print values for each round
 //file is the output file to be read by MatLab
-void State::printround(ofstream & file, double thrust){
+void State::printround(ofstream & outfile, double thrust){
     
     //cout << time << "\t\t\t" << timestep << "\t\t\t" << xpos << "\t\t\t" << xvel << "\t\t\t" << zpos << "\t\t\t";
     //cout << zvel << "\t\t\t" << phi << "\t\t\t" << phivel << "\t\t\t" << KEx << "\t\t\t" << KEz << "\t\t\t" << KEp << endl;
     //file << time << "\t\t\t" << timestep << "\t\t\t" << xpos << "\t\t\t" << xvel << "\t\t\t" << zpos << "\t\t\t";
-    file << time << "\t\t" << thrust << "\t\t" << xpos << "\t\t" << xvel << "\t\t" << zpos << "\t\t";
+    outfile << time << "\t\t" << thrust << "\t\t" << xpos << "\t\t" << xvel << "\t\t" << zpos << "\t\t";
     //file << zvel << "\t\t" << phi << "\t\t" << phivel << "\t\t" << KEx << "\t\t" << KEz << "\t\t" << KEp << "\t\t" << stallcheck << endl;
-    file << stallcheck << "\t\t" << forceLift << endl;
+    outfile << stallcheck << "\t\t" << forceLift << endl;
     
 }
 
-void State::printround_LY(ofstream & file, double thrust){
+void State::printround_LY(ofstream & file, double thrust, ofstream & wind){
     file << xpos << "\t" << zpos << endl;//<< "\t" <<  KEz << endl;
+    wind << time << "\t\t" << xWind << "\t\t" << zWind << endl;
 }
 
 

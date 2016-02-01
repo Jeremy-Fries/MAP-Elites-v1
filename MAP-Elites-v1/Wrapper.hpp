@@ -129,6 +129,7 @@ void Wrapper::initialize_wrapper(int FILL, int MUTATE){
     // int size1, int size2, double mut_mag1, double mut_mag2, int mut_amo1, int mut_amo2
     
     Sim.myfile.open("SimulatorData.txt");
+    Sim.windfile.open("WindProfiles.txt");
 
     NN.initialize(this->hidden_layer_size, Sim.currentstate.num_of_controls);
 }
@@ -639,6 +640,7 @@ void Wrapper::rand_bin(){
 // --------------------------------------------------
 void Wrapper::always_last(){
     Sim.myfile.close();
+    Sim.windfile.close();
 }
 // --------------------------------------------------
 

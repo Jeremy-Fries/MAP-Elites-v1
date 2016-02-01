@@ -87,6 +87,7 @@ protected:
     Craft lander;
     State currentstate;
     ofstream myfile;
+    ofstream windfile;
     
 public:
 // --------------------------------------------------
@@ -255,7 +256,7 @@ int Simulator::check_stall(vector<State> sh){
 }
 
 void Simulator::run_timestep(vector<double> controls){
-    forces = forcecalc(controls, lander, rhoair, aero);
+    forces = forcecalc(controls, lander, rhoair, aero, t);
     anglechange = anglechange + dynamicscalc(lander, forces, tstep, linear, rotational);
     t = t+tstep;
     currentstate.get_state(lander, t, tstep);       //update current state
@@ -267,7 +268,7 @@ void Simulator::run_timestep(vector<double> controls){
 }
 
 void Simulator::run_final_timestep(vector<double> controls){
-    forces = forcecalc(controls, lander, rhoair, aero);
+    forces = forcecalc(controls, lander, rhoair, aero, t);
     anglechange = anglechange + dynamicscalc(lander, forces, tstep, linear, rotational);
     t = t+tstep;
     currentstate.get_state(lander, t, tstep);       //update current state
@@ -275,7 +276,7 @@ void Simulator::run_final_timestep(vector<double> controls){
     currentstate.translate_function();
     
     currentstate.stallcheck = check_stall(stateholder);              //check to see if stall condition is met
-    currentstate.printround_LY(myfile,controls.at(0));                //Output simulator outputs to screen and file
+    currentstate.printround_LY(myfile,controls.at(0),windfile);                //Output simulator outputs to screen and file
     //fitnessvector();    // potentially comment out // potential tag/ searchable
 }
 // Runs the simulator while time is less than max time and lander is above ground

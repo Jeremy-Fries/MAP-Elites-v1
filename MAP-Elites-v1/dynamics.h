@@ -40,10 +40,51 @@ void getalpha(double a, double &colift, double &codrag, vector<vector<double> > 
     
 }
 
+void getWindSpeed(double &xCurrentSpeed, double &zCurrentSpeed, double t){
+    //Winds varying between +/- 7 m/s
+    double currentWeight = 0.8;                 // Change this value to determine how much the speed of the previous timestep affects that of the current timestep.
+    int xdirection = rand()%2;
+    int zdirection = rand()%2;
+    double new_xWindSpeed, new_zWindSpeed;
+    vector <double> WindSpeed;
+    WindSpeed.reserve(2);
+    double xWindSpeed = (rand()%70)*.1;
+    double zWindSpeed = (rand()%70)*.1;
+    xWindSpeed = 7*sin(2*t*3.14159/60)+pow(-1,xdirection)*xWindSpeed;
+    zWindSpeed = pow(-1,zdirection)*zWindSpeed;
+    
+    
+    new_xWindSpeed = xCurrentSpeed*currentWeight + (1-currentWeight)*xWindSpeed;
+    new_zWindSpeed = zCurrentSpeed*currentWeight + (1-currentWeight)*zWindSpeed;
+    
+    //cout<< "\nPrevious X Wind Speed was: " << xCurrentSpeed << "\t New X Wind Speed Is: " << new_xWindSpeed << endl;
+    //cout<< "Previous Z Wind Speed was: " << zCurrentSpeed << "\t New Z Wind Speed Is: " << new_zWindSpeed << endl;
+    
+    xCurrentSpeed = new_xWindSpeed;
+    zCurrentSpeed = new_zWindSpeed;
+}
+
+vector<double> getAirSpeed(Craft l){
+    double xAirSpeed, zAirSpeed, AirSpeed;
+    vector<double> AirSpeedVector;
+    AirSpeedVector.reserve(3);
+    
+    xAirSpeed = l.frame.at(0).sdot - l.frame.at(0).WindSpeed;   // Calculate Airspeed for each direction from wind and ground speed
+    zAirSpeed = l.frame.at(1).sdot - l.frame.at(1).WindSpeed;
+    
+    AirSpeed = sqrt(pow(xAirSpeed,2)+pow(zAirSpeed,2));     // Calculate magnitude of total airspeed
+    
+    AirSpeedVector.push_back(xAirSpeed);
+    AirSpeedVector.push_back(zAirSpeed);
+    AirSpeedVector.push_back(AirSpeed);
+    
+    return AirSpeedVector;
+}
+
 // calc controls to forces in newtonian directions
 // theta describes the angle of the velocity with respect to the x-axis, negative or positive
 // phi describes the angle of the body with respect to the negative x-axis
-vector<double> forcecalc(vector<double> controller, Craft& c, double rho, vector<vector<double> > ae) {
+vector<double> forcecalc(vector<double> controller, Craft& c, double rho, vector<vector<double> > ae, double time) {
     vector<double> forcevec;                        // vector to be returned
     double phi = reset_angle(c.orientation.at(0).q);             //renaming pitch for ease of use
     c.orientation.at(0).q = phi;
@@ -51,14 +92,27 @@ vector<double> forcecalc(vector<double> controller, Craft& c, double rho, vector
     double g = -9.81*c.mass;                               //gravitational component
     double velsqr = pow(c.frame.at(0).sdot,2)+pow(c.frame.at(1).sdot,2);    //square of total velocity
     double vel = sqrt(velsqr);                      //total velocity
-    double theta = asin(abs(c.frame.at(1).sdot)/vel);       //orientation of velocity vector
+    
+    //double theta = asin(abs(c.frame.at(1).sdot)/vel);       //orientation of velocity vector, use this line if not considering wind
+    double theta;
+    
+    vector<double> AirSpeed;
+    double TotalAirSpeed;
+    AirSpeed.reserve(3);
+    forcevec.reserve(3);
     
     // initialize coefficients of lift and drag to 0
     double cl = 0;
     double cd = 0;
     
+    // Get Wind and AirSpeed
+    getWindSpeed(c.frame.at(0).WindSpeed, c.frame.at(1).WindSpeed, time);
+    AirSpeed = getAirSpeed(c);
+    TotalAirSpeed = AirSpeed.at(2);
+    theta = asin(abs(AirSpeed.at(1))/TotalAirSpeed);
+    
     // test which quadrant velocity vector is in
-    vector<int> quad = checkquadrant(c);
+    vector<int> quad = checkquadrant(phi, AirSpeed);
     
     // calling functions to find coefficients
     vector<double> coefficients = coeffcalc(quad, phi, theta);
@@ -87,8 +141,9 @@ vector<double> forcecalc(vector<double> controller, Craft& c, double rho, vector
     //cout << "AoA is " << alpha_degrees << "\t Cl is " << cl << "\t Cd is " << cd << "\n";
     
     //Calculate forces of lift and drag, will be 0 if cl and cd not available from file.
-    c.lift = cl*rho*velsqr*c.sref*0.5;
-    c.drag = cd*rho*velsqr*c.sref*0.5;
+    
+    c.lift = cl*rho*TotalAirSpeed*TotalAirSpeed*c.sref*0.5;
+    c.drag = cd*rho*TotalAirSpeed*TotalAirSpeed*c.sref*0.5;
     
     //cout << "LIFT IS: " << c.lift << " AND DRAG: " << c.drag << endl;
     //cout << "COEF:::: " << cl << "\t" << cd << endl;

@@ -43,20 +43,20 @@ double reset_angle(double angle){
 }
 
 // check which quadrant the velocity vector and aircraft x vector are in
-vector<int> checkquadrant(Craft land){
+vector<int> checkquadrant(double q, vector<double> AS){
     int direction;
     vector<int> quadrants;
-    double phi;
+    //double phi;
     
     // check quadrant for velocity vector
-    if (land.frame.at(0).sdot >= 0){
-        if(land.frame.at(1).sdot >= 0){
+    if (AS.at(0) >= 0){
+        if(AS.at(1) >= 0){
             direction = 1; //first quadrant
         }else{
             direction = 4; //fourth quadrant
         }
     }else{
-        if(land.frame.at(1).sdot >= 0){
+        if(AS.at(1) >= 0){
             direction = 2; //second quadrant
         }else{
             direction = 3; //third quadrant
@@ -66,16 +66,16 @@ vector<int> checkquadrant(Craft land){
     
     // check quadrant for aircraft body orientation
     
-    phi = reset_angle(land.orientation.at(0).q);
+    //phi = reset_angle(land.orientation.at(0).q);
     double pi = 4*atan(1);
     
-    if(0<=phi && phi<=(pi/2)){
+    if(0<=q && q<=(pi/2)){
         direction = 1;
-    }else if((pi/2)<phi&& phi <=pi){
+    }else if((pi/2)<q&& q <=pi){
         direction = 2;
-    }else if(phi<0 && phi>=(-pi/2)){
+    }else if(q<0 && q>=(-pi/2)){
         direction = 4;
-    }else if((-pi/2)>phi&& phi>=(-pi)){
+    }else if((-pi/2)>q&& q>=(-pi)){
         direction = 3;
     }else{
         cout << "\n ERROR\n";

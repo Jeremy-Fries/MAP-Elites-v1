@@ -26,7 +26,7 @@ using namespace std;
 class LinDOF{
     friend class Craft;
 public:
-    double s, sdot, sdotdot;
+    double s, sdot, sdotdot, WindSpeed;
     double target;      // TODO - Move target to sim
     
     void initialize();
@@ -40,6 +40,7 @@ void LinDOF::initialize(){
     //sdot = 100;
     sdotdot = 0;        //linear acceleration
     target = 0;         //target position
+    WindSpeed = 0;
     
     //cout << s<<"\t\t"<<sdot<<"\t\t"<<endl;
 }
