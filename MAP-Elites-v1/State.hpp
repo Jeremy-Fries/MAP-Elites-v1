@@ -105,11 +105,11 @@ void State::initialize_translate_limits(){
     
     // control upper limits
     control_UpLimits.push_back(100.0);    // thrust [N] /// previously 500
-    control_UpLimits.push_back(3);     // torque [Nm]
+    control_UpLimits.push_back(20);     // torque [Nm]
     
     // control lower limits
     control_LowLimits.push_back(0.0);       // thrust [N]
-    control_LowLimits.push_back(-3);     // torque [Nm]
+    control_LowLimits.push_back(-20);     // torque [Nm]
 }
 // --------------------------------------------------
 

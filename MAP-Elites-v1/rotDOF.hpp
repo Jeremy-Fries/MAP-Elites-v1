@@ -35,6 +35,7 @@ public:
 
 void RotDOF::initialize(){
     //q = (rand()%60)*4*atan(1)/180; //Initializing orientation between 0 and 60 degrees with respect to the negative x-axis and converting to radians
+    //q= -10 * 3.141529/180;
     q=0;
     //q = (double) rand()/RAND_MAX * 2*3.141529;
     //q = 3.1415/2;

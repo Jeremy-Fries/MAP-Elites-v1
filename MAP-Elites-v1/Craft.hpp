@@ -67,7 +67,7 @@ void Craft::initialize(int dl, int dr){
         orientation.push_back(rot);
     }
     
-    frame.at(1).sdot = 0;
+    frame.at(1).sdot = 0; /// z direction
     
 }
 

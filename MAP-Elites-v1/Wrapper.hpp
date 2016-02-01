@@ -114,7 +114,7 @@ void Wrapper::initialize_wrapper(int FILL, int MUTATE){
     hidden_layer_size = 3;
     
     /// PHENOTYPE LIMITS
-    pME->set_map_params(0, 40, 0, 15, 10, 10, FILL, MUTATE);                                                   //-------- To Change Map Settings
+    pME->set_map_params(0, 40, 0, 15, 20, 20, FILL, MUTATE);                                                   //-------- To Change Map Settings
 
     // (dim1_min, dim1_max, dim2_min, dim2_max, resolution 1,2, fill generation, mutate generation)
     //pME->display_Map_params();        // TODO - delete and add print()
