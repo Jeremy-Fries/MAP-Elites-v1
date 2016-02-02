@@ -171,14 +171,15 @@ void Wrapper::fitness_calculation(State current){
     double gravity = 9.81;
     /// stay in air.
     //fit_rating += Sim.stateholder.size() * 1000;
-    for(int i=0; i<Sim.stateholder.size(); i++){
-        fit_rating -= Sim.stateholder.at(i).KEz;
+    int I = Sim.stateholder.size();
+    for(int i=0; i<I; i++){
+        fit_rating -= Sim.stateholder.at(i).KEz/I;
         //cout << "FIT2.1: " << fit_rating << endl;
-        fit_rating -= Sim.stateholder.at(i).KEx;
+        fit_rating -= Sim.stateholder.at(i).KEx/I;
         //cout << "FIT2.2: " << fit_rating << endl;
-        fit_rating -= Sim.stateholder.at(i).KEp;
+        fit_rating -= Sim.stateholder.at(i).KEp/I;
         //cout << "FIT2.3: " << fit_rating << endl;
-        fit_rating -= 1000 * Sim.stateholder.at(i).zpos * mass * gravity;
+        fit_rating -= Sim.stateholder.at(i).zpos * mass * gravity/I;
         //cout << "FIT2.4: " << fit_rating << endl;
     }
         
@@ -299,7 +300,8 @@ void Wrapper::fill_MAP(){
         
         
             /// %%% /// %%% BEGIN SIMULATION LOOP %%% /// %%% ///
-        while (Sim.t<Sim.tmax && Sim.lander.frame.at(1).s > Sim.lander.frame.at(1).target){
+        int UPPERLIMIT = 200;
+        while (Sim.t<Sim.tmax && Sim.lander.frame.at(1).s > Sim.lander.frame.at(1).target && Sim.lander.frame.at(1).s < UPPERLIMIT){
             
             // if stall() swich brain
             //NN.take_weights(get_individual_2_IH(I.get_individual1()), get_individual_2_HO(I.get_individual2()));
@@ -356,7 +358,8 @@ void Wrapper::mutate_MAP(){
         NN.take_output_limits(Sim.currentstate.control_LowLimits,Sim.currentstate.control_UpLimits);
         
             /// %%% /// %%% BEGIN SIMULATION LOOP %%% /// %%% ///
-        while (Sim.t<Sim.tmax && Sim.lander.frame.at(1).s > Sim.lander.frame.at(1).target){
+        int UPPERLIMIT = 200;
+        while (Sim.t<Sim.tmax && Sim.lander.frame.at(1).s > Sim.lander.frame.at(1).target && Sim.lander.frame.at(1).s < UPPERLIMIT){
                 /// while Sim still has time AND the Craft above ground level.
             NN.activation_function(Sim.currentstate.state_variables_vec);
             Sim.run_timestep(NN.communication_to_simulator());

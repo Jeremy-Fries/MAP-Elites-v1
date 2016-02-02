@@ -76,7 +76,7 @@ int submain(){
   
     Wrapper W;
     
-    W.initialize_wrapper(2,10); // (Fill, Mutate)
+    W.initialize_wrapper(20,100); // (Fill, Mutate)
 
     // swtich statment, fill map or read map
     W.fill_MAP();
@@ -85,7 +85,7 @@ int submain(){
     //W.clear_map();
     //W.load_genome1();
     //W.load_genome2();
-    W.write_from_old_genomes();   // will stay once tested.
+    //W.write_from_old_genomes();   // will stay once tested.
     // -------Testing, Not Done --------
     
     

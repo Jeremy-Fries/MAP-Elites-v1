@@ -89,9 +89,9 @@ void State::initialize_translate_limits(){
     // state variable upper limits
     //state_variables_UpLimit.push_back(2500.0);   // xpos [m]
     state_variables_UpLimit.push_back(60.0);   // time [s]
-    state_variables_UpLimit.push_back(60.0);   // xvel [m/s]
+    state_variables_UpLimit.push_back(160.0);   // xvel [m/s]
     state_variables_UpLimit.push_back(50.0);   // zpos [m]
-    state_variables_UpLimit.push_back(30.0);   // zvel [m/s]
+    state_variables_UpLimit.push_back(10.0);   // zvel [m/s]
     state_variables_UpLimit.push_back(1.0);    // sin(phi) [ratio of rad]
     state_variables_UpLimit.push_back(1.0);    // cos(phi) [ratio of rad]
     state_variables_UpLimit.push_back(1.0); /// phivel
@@ -99,9 +99,9 @@ void State::initialize_translate_limits(){
     // state variable lower limits
     //state_variables_LowLimit.push_back(0.0);      // xpos [m]
     state_variables_LowLimit.push_back(0.0);    // time [s]
-    state_variables_LowLimit.push_back(0.0);   // xvel [m/s]
+    state_variables_LowLimit.push_back(100.0);   // xvel [m/s]
     state_variables_LowLimit.push_back(0.0);      // zpos [m]
-    state_variables_LowLimit.push_back(-30.0);   // zvel [m/s]
+    state_variables_LowLimit.push_back(-10.0);   // zvel [m/s]
     state_variables_LowLimit.push_back(-1.0);    // sin(phi) [ratio of rad]
     state_variables_LowLimit.push_back(-1.0);    // cos(phi) [ratio of rad]
     state_variables_LowLimit.push_back(-1.0); /// phivel
@@ -154,9 +154,9 @@ void State::printround(ofstream & outfile, double thrust){
     
 }
 
-void State::printround_LY(ofstream & file, double thrust, ofstream & wind){
+void State::printround_LY(ofstream & file, double thrust, ofstream & windfile){
     file << xpos << "\t" << zpos << endl;//<< "\t" <<  KEz << endl;
-    wind << time << "\t\t" << xWind << "\t\t" << zWind << endl;
+    windfile << "\t" << time << "\t" << xWind << "\t" << zWind << endl;
 }
 
 
