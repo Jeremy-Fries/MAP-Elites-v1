@@ -510,6 +510,11 @@ void Wrapper::load_genome2(){
 //write
 void Wrapper::write_from_old_genomes(){
     /// Read from txt file
+    
+    //-----*********-----//
+    int RunCountEach = 1;       //Change this value to run each set of weights multiple times.
+    //-----*********-----//
+    
     Map_of_genome1.clear();
     Map_of_genome2.clear();
     
@@ -520,44 +525,46 @@ void Wrapper::write_from_old_genomes(){
     
     int old_placed_counter=0;
     if (Map_of_genome1.size()== Map_of_genome2.size()){
-        for (int i=0;i<Map_of_genome1.size();i++){
-            Individual I;
-            I.set_individual_params(Map_of_genome1.at(i).size(), Map_of_genome2.at(i).size(), imutate_mag_1, imutate_mag_2, imutate_amount_1, imutate_amount_2);
-            I.build_individual_1_from_another(Map_of_genome1.at(i));
-            I.build_individual_2_from_another(Map_of_genome2.at(i));
-    
-            Sim.initialize_sim();
+        for(int j=0;j<RunCountEach;j++){
+            for (int i=0;i<Map_of_genome1.size();i++){
+                Individual I;
+                I.set_individual_params(Map_of_genome1.at(i).size(), Map_of_genome2.at(i).size(), imutate_mag_1, imutate_mag_2, imutate_amount_1, imutate_amount_2);
+                I.build_individual_1_from_another(Map_of_genome1.at(i));
+                I.build_individual_2_from_another(Map_of_genome2.at(i));
+        
+                Sim.initialize_sim();
+                
+                NN.take_input_limits(Sim.currentstate.state_variables_LowLimit, Sim.currentstate.state_variables_UpLimit);
+                NN.take_output_limits(Sim.currentstate.control_LowLimits, Sim.currentstate.control_UpLimits);
+                NN.take_num_hidden_units(this->hidden_layer_size); /// repeated from initialize, but no harm.
+                NN.take_num_controls(Sim.currentstate.num_of_controls); /// repeated from initialize, but to no harm.
+                NN.take_weights(I.get_individual1(), I.get_individual2());
+                
+                /// %%% /// %%% BEGIN SIMULATION LOOP %%% /// %%% ///
+                while (Sim.t<Sim.tmax && Sim.lander.frame.at(1).s > Sim.lander.frame.at(1).target){
+                    /// while Sim still has time AND the Craft is above ground level.
+                    NN.activation_function(Sim.currentstate.translate_function());
+                    Sim.run_timestep(NN.communication_to_simulator());
+                    NN.Neural_Network_Reset();
+                }
+                /// %%% /// %%% END SIMULATION LOOP %%% /// %%% ///
             
-            NN.take_input_limits(Sim.currentstate.state_variables_LowLimit, Sim.currentstate.state_variables_UpLimit);
-            NN.take_output_limits(Sim.currentstate.control_LowLimits, Sim.currentstate.control_UpLimits);
-            NN.take_num_hidden_units(this->hidden_layer_size); /// repeated from initialize, but no harm.
-            NN.take_num_controls(Sim.currentstate.num_of_controls); /// repeated from initialize, but to no harm.
-            NN.take_weights(I.get_individual1(), I.get_individual2());
-            
-            /// %%% /// %%% BEGIN SIMULATION LOOP %%% /// %%% ///
-            while (Sim.t<Sim.tmax && Sim.lander.frame.at(1).s > Sim.lander.frame.at(1).target){
-                /// while Sim still has time AND the Craft is above ground level.
-                NN.activation_function(Sim.currentstate.translate_function());
-                Sim.run_timestep(NN.communication_to_simulator());
-                NN.Neural_Network_Reset();
+                State current;
+                current = Sim.currentstate;
+                
+                fitness_calculation(current);
+                I.set_fit_rating(fit_rating);
+                //I.display_fit_rating();
+                
+                find_phenotypes();
+                I.set_phenotypes(phenotype_1,phenotype_2);
+                //I.display_phenotype1();
+                //I.display_phenotype2();
+                
+                ME.challenger = I;
+                ME.place_individual_in_map();
+                old_placed_counter++;
             }
-            /// %%% /// %%% END SIMULATION LOOP %%% /// %%% ///
-            
-            State current;
-            current = Sim.currentstate;
-            
-            fitness_calculation(current);
-            I.set_fit_rating(fit_rating);
-            //I.display_fit_rating();
-            
-            find_phenotypes();
-            I.set_phenotypes(phenotype_1,phenotype_2);
-            //I.display_phenotype1();
-            //I.display_phenotype2();
-            
-            ME.challenger = I;
-            ME.place_individual_in_map();
-            old_placed_counter++;
         }
     }
     else {

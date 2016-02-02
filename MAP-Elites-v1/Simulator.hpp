@@ -56,7 +56,7 @@ protected:
     int linear, rotational, numalf;     //number of linear and rotational DOFs, number of AOAs with CL and CD values
     double t, anglechange, fitness;     //time, rotational tracker, fitness value(likely to change)
     double tstep;                       //simulation calculates values every 0.1 seconds set in initialize
-    double const tmax = 60;             //Maximum time that simulation will run for
+    double const tmax = 160;             //Maximum time that simulation will run for
     double const rhoair = 1.2;          //Density of air, used for aerodynamic calculations
     
     

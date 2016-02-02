@@ -45,7 +45,7 @@ void Craft::initialize(int dl, int dr){
     mass = 20;
     inertia = 20;
     KEinitial = 0;
-    sref = 0.02; // wing considered roughly rectangular with 20 cm chord length, 1 m span
+    sref = 0.2; // wing considered roughly rectangular with 20 cm chord length, 1 m span
     alpha = 0;
     lift = 0;
     drag = 0;
@@ -68,7 +68,8 @@ void Craft::initialize(int dl, int dr){
     }
     
     frame.at(1).sdot = 0;
-    
+    //frame.at(0).sdot = 219.3548247;
+    frame.at(0).sdot = 230;
 }
 
 #endif /* Craft_hpp */

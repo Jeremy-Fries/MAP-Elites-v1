@@ -89,8 +89,8 @@ void State::initialize_translate_limits(){
     // state variable upper limits
     //state_variables_UpLimit.push_back(2500.0);   // xpos [m]
     state_variables_UpLimit.push_back(60.0);   // time [s]
-    state_variables_UpLimit.push_back(160.0);   // xvel [m/s]
-    state_variables_UpLimit.push_back(50.0);   // zpos [m]
+    state_variables_UpLimit.push_back(120.0);   // xvel [m/s]
+    state_variables_UpLimit.push_back(100.0);   // zpos [m]
     state_variables_UpLimit.push_back(10.0);   // zvel [m/s]
     state_variables_UpLimit.push_back(1.0);    // sin(phi) [ratio of rad]
     state_variables_UpLimit.push_back(1.0);    // cos(phi) [ratio of rad]
@@ -111,7 +111,7 @@ void State::initialize_translate_limits(){
     control_UpLimits.push_back(5);     // torque [Nm]
     
     // control lower limits
-    control_LowLimits.push_back(0.0);       // thrust [N]
+    control_LowLimits.push_back(0);       // thrust [N]
     control_LowLimits.push_back(-5);     // torque [Nm]
 }
 // --------------------------------------------------
@@ -147,17 +147,28 @@ void State::printround(ofstream & outfile, double thrust){
     
     //cout << time << "\t\t\t" << timestep << "\t\t\t" << xpos << "\t\t\t" << xvel << "\t\t\t" << zpos << "\t\t\t";
     //cout << zvel << "\t\t\t" << phi << "\t\t\t" << phivel << "\t\t\t" << KEx << "\t\t\t" << KEz << "\t\t\t" << KEp << endl;
-    //file << time << "\t\t\t" << timestep << "\t\t\t" << xpos << "\t\t\t" << xvel << "\t\t\t" << zpos << "\t\t\t";
-    outfile << time << "\t\t" << thrust << "\t\t" << xpos << "\t\t" << xvel << "\t\t" << zpos << "\t\t";
-    //file << zvel << "\t\t" << phi << "\t\t" << phivel << "\t\t" << KEx << "\t\t" << KEz << "\t\t" << KEp << "\t\t" << stallcheck << endl;
+    outfile << time << "\t\t\t" << timestep << "\t\t\t" << xpos << "\t\t\t" << xvel << "\t\t\t" << zpos << "\t\t\t";
+    //outfile << time << "\t\t" << thrust << "\t\t" << xpos << "\t\t" << xvel << "\t\t" << zpos << "\t\t";
+    outfile << zvel << "\t\t" << phi << "\t\t" << phivel << "\t\t" << KEx << "\t\t" << KEz << "\t\t" << KEp << "\t\t" << stallcheck << endl;
     outfile << stallcheck << "\t\t" << forceLift << endl;
     
 }
 
+
 void State::printround_LY(ofstream & file, double thrust, ofstream & windfile){
     file << xpos << "\t" << zpos << endl;//<< "\t" <<  KEz << endl;
     windfile << "\t" << time << "\t" << xWind << "\t" << zWind << endl;
+    
 }
+
+//void State::printround_SA(ofstream & file, double thrust, ofstream & wind){
+////    file << xpos << "\t" << zpos << endl;//<< "\t" <<  KEz << endl;
+////    file << time << "\t\t" << timestep << "\t\t" << xpos << "\t\t";
+////    file << xvel  << "\t\t" << zpos  << "\t\t" << zvel << endl;
+//    file << time << "\t\t\t" << timestep << "\t\t\t" << xpos << "\t\t\t" << xvel << "\t\t\t" << zpos << "\t\t\t";
+//    file << zvel << "\t\t" << phi << "\t\t" << phivel << "\t\t" << KEx << "\t\t" << KEz << "\t\t" << KEp << "\t\t" << stallcheck << endl;
+//    wind << time << "\t\t" << xWind << "\t\t" << zWind << endl;
+//}
 
 
 #endif /* State_hpp */

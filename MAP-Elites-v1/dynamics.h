@@ -51,11 +51,15 @@ void getWindSpeed(double &xCurrentSpeed, double &zCurrentSpeed, double t){
     double xWindSpeed = (rand()%70)*.1;
     double zWindSpeed = (rand()%70)*.1;
     xWindSpeed = 7*sin(2*t*3.14159/60)+pow(-1,xdirection)*xWindSpeed;
+    //xWindSpeed = 7*sin(2*t*3.14159/60);
     zWindSpeed = pow(-1,zdirection)*zWindSpeed;
     
     
     new_xWindSpeed = xCurrentSpeed*currentWeight + (1-currentWeight)*xWindSpeed;
     new_zWindSpeed = zCurrentSpeed*currentWeight + (1-currentWeight)*zWindSpeed;
+    
+    //new_xWindSpeed = 0;
+    new_zWindSpeed = 0;
     
     //cout<< "\nPrevious X Wind Speed was: " << xCurrentSpeed << "\t New X Wind Speed Is: " << new_xWindSpeed << endl;
     //cout<< "Previous Z Wind Speed was: " << zCurrentSpeed << "\t New Z Wind Speed Is: " << new_zWindSpeed << endl;
@@ -78,6 +82,8 @@ vector<double> getAirSpeed(Craft l){
     AirSpeedVector.push_back(zAirSpeed);
     AirSpeedVector.push_back(AirSpeed);
     
+    
+    
     return AirSpeedVector;
 }
 
@@ -92,9 +98,15 @@ vector<double> forcecalc(vector<double> controller, Craft& c, double rho, vector
     double g = -9.81*c.mass;                               //gravitational component
     double velsqr = pow(c.frame.at(0).sdot,2)+pow(c.frame.at(1).sdot,2);    //square of total velocity
     double vel = sqrt(velsqr);                      //total velocity
-    
-    //double theta = asin(abs(c.frame.at(1).sdot)/vel);       //orientation of velocity vector, use this line if not considering wind
     double theta;
+    vector<int> quad;
+    quad.reserve(3);
+    vector<double> coefficients;
+    coefficients.reserve(10);
+    
+    //-----*****************------//
+    int WindSwitch = 0; // Set to 0 to turn Wind off, 1 to turn Wind On
+    //-----*****************------//
     
     vector<double> AirSpeed;
     double TotalAirSpeed;
@@ -105,17 +117,28 @@ vector<double> forcecalc(vector<double> controller, Craft& c, double rho, vector
     double cl = 0;
     double cd = 0;
     
+    
     // Get Wind and AirSpeed
-    getWindSpeed(c.frame.at(0).WindSpeed, c.frame.at(1).WindSpeed, time);
-    AirSpeed = getAirSpeed(c);
-    TotalAirSpeed = AirSpeed.at(2);
-    theta = asin(abs(AirSpeed.at(1))/TotalAirSpeed);
+    if(WindSwitch ==0){
+        TotalAirSpeed = vel;
+        theta = asin(abs(c.frame.at(1).sdot)/vel);
+        AirSpeed.push_back(c.frame.at(0).sdot);
+        AirSpeed.push_back(c.frame.at(1).sdot);
+        
+    }else if(WindSwitch==1){
+        getWindSpeed(c.frame.at(0).WindSpeed, c.frame.at(1).WindSpeed, time);
+        AirSpeed = getAirSpeed(c);
+        TotalAirSpeed = AirSpeed.at(2);
+        theta = asin(abs(AirSpeed.at(1))/TotalAirSpeed);
+    }else{
+        throw "Choose Wind on or off";
+    }
     
     // test which quadrant velocity vector is in
-    vector<int> quad = checkquadrant(phi, AirSpeed);
+    quad = checkquadrant(phi, AirSpeed);
     
     // calling functions to find coefficients
-    vector<double> coefficients = coeffcalc(quad, phi, theta);
+    coefficients = coeffcalc(quad, phi, theta);
     
     c.alpha = reset_angle(coefficients.at(0));
     //c.alpha = reset_angle(c.alpha);
