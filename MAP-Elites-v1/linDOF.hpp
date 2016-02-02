@@ -35,7 +35,7 @@ public:
 
 //declare initializations of degree of freedom parameters
 void LinDOF::initialize(){
-    s = 100;     //linear position
+    s = 25;     //linear position
     sdot = 150; //~130min    //linear velocity
     //sdot = 100;
     sdotdot = 0;        //linear acceleration

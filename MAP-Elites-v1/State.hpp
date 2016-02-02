@@ -80,8 +80,8 @@ void State::initialize_translate_limits(){
     control_LowLimits.clear();
     control_UpLimits.clear();
     
-    state_variables_LowLimit.reserve(6);
-    state_variables_UpLimit.reserve(6);
+    state_variables_LowLimit.reserve(7);
+    state_variables_UpLimit.reserve(7);
     control_LowLimits.reserve(2);
     control_UpLimits.reserve(2);
 
@@ -94,6 +94,7 @@ void State::initialize_translate_limits(){
     state_variables_UpLimit.push_back(30.0);   // zvel [m/s]
     state_variables_UpLimit.push_back(1.0);    // sin(phi) [ratio of rad]
     state_variables_UpLimit.push_back(1.0);    // cos(phi) [ratio of rad]
+    state_variables_UpLimit.push_back(1.0); /// phivel
     
     // state variable lower limits
     //state_variables_LowLimit.push_back(0.0);      // xpos [m]
@@ -103,9 +104,10 @@ void State::initialize_translate_limits(){
     state_variables_LowLimit.push_back(-30.0);   // zvel [m/s]
     state_variables_LowLimit.push_back(-1.0);    // sin(phi) [ratio of rad]
     state_variables_LowLimit.push_back(-1.0);    // cos(phi) [ratio of rad]
+    state_variables_LowLimit.push_back(-1.0); /// phivel
     
     // control upper limits
-    control_UpLimits.push_back(400.0);    // thrust [N] /// previously 500
+    control_UpLimits.push_back(200.0);    // thrust [N] /// previously 500
     control_UpLimits.push_back(5);     // torque [Nm]
     
     // control lower limits
@@ -128,6 +130,7 @@ vector<double> State::translate_function(){
     state_variables_vec.push_back(zvel);
     state_variables_vec.push_back(sine(phi));
     state_variables_vec.push_back(cosine(phi));
+    state_variables_vec.push_back(phivel);
     //state_variables_vec.push_back(AOA);
     //cout << "state_variable vector size is: " << state_variables_vec.size();
     return state_variables_vec;

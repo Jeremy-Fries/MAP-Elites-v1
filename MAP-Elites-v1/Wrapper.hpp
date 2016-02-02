@@ -108,7 +108,7 @@ private:
             // Initialize Wrapper
 void Wrapper::initialize_wrapper(int FILL, int MUTATE){
     
-    int states = 6;
+    int states = 7;
     int outs = 2;
     
     hidden_layer_size = 5;

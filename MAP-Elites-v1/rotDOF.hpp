@@ -41,7 +41,7 @@ void RotDOF::initialize(){
     //q += (double) rand()/RAND_MAX * 3.141529/18.0;
     //q -= (double) rand()/RAND_MAX * 3.141529/18.0;
     //qdot = 0;
-    qdot = 0.2;
+    qdot = 0;
     qdotdot = 0; //Initializing angular velocity and acceleration to 0 for simplicity.
     target = 0;
 }
