@@ -114,7 +114,7 @@ void Wrapper::initialize_wrapper(int FILL, int MUTATE){
     hidden_layer_size = 5;
     
     /// PHENOTYPE LIMITS
-    pME->set_map_params(20, 60, 0, 100, 10, 10, FILL, MUTATE);                                                   //-------- To Change Map Settings
+    pME->set_map_params(0, 12, 0, 30, 10, 10, FILL, MUTATE);                                                   //-------- To Change Map Settings
 
     // (dim1_min, dim1_max, dim2_min, dim2_max, resolution 1,2, fill generation, mutate generation)
     //pME->display_Map_params();        // TODO - delete and add print()
@@ -123,7 +123,7 @@ void Wrapper::initialize_wrapper(int FILL, int MUTATE){
     out_layer_size=(hidden_layer_size+1)*outs;
     int num_weights=in_layer_size+out_layer_size;
     
-    wrapper_sets_I_params(num_weights, num_weights, 0.5, 0.5, 4, 2);        //-------- To Change Individual Settings
+    wrapper_sets_I_params(num_weights, num_weights, 0.05, 0.05, 4, 2);        //-------- To Change Individual Settings
 
     // individual_size 1,2, mutate_magnitude 1,2, mutation_amount 1,2)
     // int size1, int size2, double mut_mag1, double mut_mag2, int mut_amo1, int mut_amo2
@@ -215,8 +215,22 @@ void Wrapper::find_phenotypes(){
     
 //----------------------------------------------------
         /// pheno 1 is time in air
-    phenotype_1=Sim.currentstate.time;
-    phenotype_2=Sim.currentstate.KEz;
+    //phenotype_1=Sim.currentstate.time;
+    //phenotype_2=Sim.currentstate.KEz;
+    
+    phenotype_1 = 0;
+    phenotype_2 = 0;
+    
+    int I = Sim.stateholder.size();
+    int ilow = max(0,I-20);
+    
+    for(int i=ilow; i<I; i++){
+        phenotype_1 += abs(Sim.stateholder.at(i).zvel)/I;
+        phenotype_2 += abs(Sim.stateholder.at(i).zpos)/I;
+    }
+    
+    cout << "P1,2: " << phenotype_1 << " , " << phenotype_2 << endl;
+    
     
     /// pheno 2 is
     //phenotype_2=Sim.currentstate.KEx;
@@ -296,7 +310,7 @@ void Wrapper::fill_MAP(){
         // need to change
         //NN.take_weights(I.get_individual1(), I.get_individual2());
         
-        NN.take_weights(get_individual_1_IH(I.get_individual1()), get_individual_1_HO(I.get_individual2()));
+        NN.take_weights(get_individual_1_IH(I.get_individual1()), get_individual_1_HO(I.get_individual1()));
         
         
             /// %%% /// %%% BEGIN SIMULATION LOOP %%% /// %%% ///
@@ -353,7 +367,7 @@ void Wrapper::mutate_MAP(){
         Sim.initialize_sim();
         
         //NN.take_weights(ME.challenger.get_individual1(), ME.challenger.get_individual2());
-        NN.take_weights(get_individual_1_IH(ME.challenger.get_individual1()), get_individual_1_HO(ME.challenger.get_individual2()));
+        NN.take_weights(get_individual_1_IH(ME.challenger.get_individual1()), get_individual_1_HO(ME.challenger.get_individual1()));
         NN.take_input_limits(Sim.currentstate.state_variables_LowLimit, Sim.currentstate.state_variables_UpLimit);
         NN.take_output_limits(Sim.currentstate.control_LowLimits,Sim.currentstate.control_UpLimits);
         
@@ -420,13 +434,19 @@ void Wrapper::print_entire_map_solution(){
 //        ME.full_bins.at(element).current_individual.at(0).display_individual2();
         // ---------------------------------------------
         
-        NN.take_weights(ME.full_bins.at(element).current_individual.at(0).get_individual1() , ME.full_bins.at(element).current_individual.at(0).get_individual2());
+        /// model from previous.
+        //NN.take_weights(ME.full_bins.at(element).current_individual.at(0).get_individual1() , ME.full_bins.at(element).current_individual.at(0).get_individual2());
+        
+        vector<double> ih = get_individual_1_IH(ME.full_bins.at(element).current_individual.at(0).get_individual1());
+        vector<double> ho = get_individual_1_HO(ME.full_bins.at(element).current_individual.at(0).get_individual1());
+        NN.take_weights(ih,ho);
         NN.take_input_limits(Sim.currentstate.state_variables_LowLimit, Sim.currentstate.state_variables_UpLimit);
         NN.take_output_limits(Sim.currentstate.control_LowLimits,Sim.currentstate.control_UpLimits);
     
     
         /// %%% /// %%% BEGIN SIMULATION LOOP %%% /// %%% ///
-        while (Sim.t<Sim.tmax && Sim.lander.frame.at(1).s > Sim.lander.frame.at(1).target){
+        int UPPERLIMIT = 200;
+        while (Sim.t<Sim.tmax && Sim.lander.frame.at(1).s > Sim.lander.frame.at(1).target && Sim.lander.frame.at(1).s < UPPERLIMIT){
                 /// while Sim still has time AND the Craft above ground level.
             NN.activation_function(Sim.currentstate.state_variables_vec);
             Sim.run_final_timestep(NN.communication_to_simulator());
