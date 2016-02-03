@@ -473,7 +473,7 @@ void Wrapper::print_entire_map_solution(){
         while (Sim.t<Sim.tmax && Sim.lander.frame.at(1).s > Sim.lander.frame.at(1).target && Sim.lander.frame.at(1).s < UPPERLIMIT){
                 /// while Sim still has time AND the Craft above ground level.
             NN.activation_function(Sim.currentstate.state_variables_vec);
-            Sim.run_final_timestep(NN.communication_to_simulator());
+            Sim.run_final_timestep(NN.communication_to_simulator(), map_solutions);
             vector<double> CC = NN.communication_to_simulator();
             NN.Neural_Network_Reset();                      
         }

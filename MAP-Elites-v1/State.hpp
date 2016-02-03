@@ -48,6 +48,7 @@ public:
     void printheader();
     void printround(ofstream & outfile, double);
     void printround_LY(ofstream &file, double, ofstream & wind);
+    void printround_SF(ofstream &file, double, ofstream & wind, int map_solutions);
 };
 
 
@@ -159,6 +160,10 @@ void State::printround_LY(ofstream & file, double thrust, ofstream & windfile){
     file << xpos << "\t" << zpos << "\t" << thrust << "\t" << phi << endl;//<< "\t" <<  KEz << endl;
     windfile << "\t" << time << "\t" << xWind << "\t" << zWind << endl;
     
+}
+
+void State::printround_SF(ofstream & file, double thrust, ofstream & wind, int map_solutions){
+    file << xpos << "\t" << zpos << "\t" << phi << "\t" << stallcheck << "\t" << KEz << "\t" << KEx << "\t" << 20*9.81*zpos << "\t" << time << "\t" << map_solutions << endl;
 }
 
 //void State::printround_SA(ofstream & file, double thrust, ofstream & wind){

@@ -105,7 +105,7 @@ vector<double> forcecalc(vector<double> controller, Craft& c, double rho, vector
     coefficients.reserve(10);
     
     //-----*****************------//
-    int WindSwitch = 0; // Set to 0 to turn Wind off, 1 to turn Wind On
+    int WindSwitch = 1; // Set to 0 to turn Wind off, 1 to turn Wind On
     //-----*****************------//
     
     vector<double> AirSpeed;
