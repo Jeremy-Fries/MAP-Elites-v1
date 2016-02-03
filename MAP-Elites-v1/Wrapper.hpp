@@ -191,7 +191,7 @@ void Wrapper::fitness_calculation(State current){
     double delt=0.1;
     cout << "\t";
     cout << "IMPACT SPEED: " << abs(zult-zpenult)/delt << "\t" ;
-    cout << "GLIDE ANGLE: " << atan(Sim.stateholder.at(I-1).zvel/Sim.stateholder.at(I-1).xvel) * 180/3.1415 "\t";
+    cout << "GLIDE ANGLE: " << atan(Sim.stateholder.at(I-1).zvel/Sim.stateholder.at(I-1).xvel) * 180/3.1415 << "\t";
     
     fit_rating = - abs(atan(Sim.stateholder.at(I-1).zvel/Sim.stateholder.at(I-1).xvel)) * 180/3.1415;
     cout << "\tFIT3: " << fit_rating << "\t";
