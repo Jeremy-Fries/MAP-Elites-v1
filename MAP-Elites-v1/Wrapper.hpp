@@ -114,7 +114,7 @@ void Wrapper::initialize_wrapper(int FILL, int MUTATE){
     hidden_layer_size = 5;
     
     /// PHENOTYPE LIMITS
-    pME->set_map_params(500, 2500, 0, 20, 10, 10, FILL, MUTATE);                                                   //-------- To Change Map Settings
+    pME->set_map_params(200, 2500, 0, 5, 10, 10, FILL, MUTATE);                                                   //-------- To Change Map Settings
 
     // (dim1_min, dim1_max, dim2_min, dim2_max, resolution 1,2, fill generation, mutate generation)
     //pME->display_Map_params();        // TODO - delete and add print()
@@ -123,7 +123,7 @@ void Wrapper::initialize_wrapper(int FILL, int MUTATE){
     out_layer_size=(hidden_layer_size+1)*outs;
     int num_weights=in_layer_size+out_layer_size;
     
-    wrapper_sets_I_params(num_weights, num_weights, 0.2, 0.2, 15, 0);        //-------- To Change Individual Settings
+    wrapper_sets_I_params(num_weights, num_weights, 0.2, 0.2, 10, 0);        //-------- To Change Individual Settings
 
     // individual_size 1,2, mutate_magnitude 1,2, mutation_amount 1,2)
     // int size1, int size2, double mut_mag1, double mut_mag2, int mut_amo1, int mut_amo2
@@ -161,9 +161,7 @@ void Wrapper::fitness_calculation(State current){
     //fit_rating += current.xpos;
     
         //cout << "FIT1: " << fit_rating << endl;
-    if(current.zpos > 0){ /// still in air. (0)
-        fit_rating = -99999999999999; /// TODO MAX_INT
-    }
+
     
         //cout << "FIT2: " << fit_rating << endl;
     /// MINKE FITNESS CALCULATION
@@ -174,7 +172,7 @@ void Wrapper::fitness_calculation(State current){
     int I = Sim.stateholder.size();
     int ilow = max(0,I-30);
     for(int i=ilow; i<I; i++){
-        fit_rating -= abs(Sim.stateholder.at(i).zpos/I);
+        //fit_rating -= abs(Sim.stateholder.at(i).zpos/I);
         //cout << "FIT2.1: " << fit_rating << endl;
         //fit_rating -= Sim.stateholder.at(i).KEx/I;
         //cout << "FIT2.2: " << fit_rating << endl;
@@ -182,6 +180,9 @@ void Wrapper::fitness_calculation(State current){
         //cout << "FIT2.3: " << fit_rating << endl;
         //fit_rating -= Sim.stateholder.at(i).zpos * mass * gravity/I;
         //cout << "FIT2.4: " << fit_rating << endl;
+        /// average glide angle over 3 seconds.
+        fit_rating -= abs(atan(Sim.stateholder.at(i).zvel/Sim.stateholder.at(i).xvel)) * 180/3.1415 / (I-ilow);
+        //cout << "\ti= " << i << "\t" << fit_rating << "\t" << - abs(atan(Sim.stateholder.at(i).zvel/Sim.stateholder.at(i).xvel)) * 180/3.1415 / (I-ilow);
     }
         
     
@@ -193,11 +194,16 @@ void Wrapper::fitness_calculation(State current){
     cout << "IMPACT SPEED: " << abs(zult-zpenult)/delt << "\t" ;
     cout << "GLIDE ANGLE: " << atan(Sim.stateholder.at(I-1).zvel/Sim.stateholder.at(I-1).xvel) * 180/3.1415 << "\t";
     
-    fit_rating = - abs(atan(Sim.stateholder.at(I-1).zvel/Sim.stateholder.at(I-1).xvel)) * 180/3.1415;
+    //fit_rating = - abs(atan(Sim.stateholder.at(I-1).zvel/Sim.stateholder.at(I-1).xvel)) * 180/3.1415;
+    //if(current.zpos > 0){ /// still in air. (0)
+    //    fit_rating = -99999999999999; /// TODO MAX_INT
+    //}
     cout << "\tFIT3: " << fit_rating << "\t";
     
     
     cout << endl;
+    
+
     
     /// Hang Fitness Calculation
     //double tar1=0;
@@ -237,11 +243,15 @@ void Wrapper::find_phenotypes(){
     int I = Sim.stateholder.size();
     int ilow = max(0,I-20);
     
+    //cout << "from " << ilow << "\t->" << I << endl;
     for(int i=ilow; i<I; i++){
+        //cout << i << endl;
         //phenotype_1 += abs(Sim.stateholder.at(i).zvel)/I;
-        phenotype_1 += abs(Sim.stateholder.at(i).xpos)/I;
-        phenotype_2 += abs(Sim.stateholder.at(i).zpos)/I;
+        phenotype_1 += abs(Sim.stateholder.at(i).xpos)/(I-ilow);
+        //cout << abs(Sim.stateholder.at(i).xpos)/I << "\t";
+        phenotype_2 += abs(Sim.stateholder.at(i).zpos)/(I-ilow);
     }
+    cout << endl;
     
     cout << "P1,2: " << phenotype_1 << " , " << phenotype_2;// << endl;
     
@@ -469,8 +479,10 @@ void Wrapper::print_entire_map_solution(){
         }
         /// %%% /// %%% END SIMULATION LOOP %%% /// %%% ///
         map_solutions++;
+        fitness_calculation(Sim.currentstate);
+        find_phenotypes();
     }
-    cout << endl << endl << "Number of Solutions OUTPUTTED: " << map_solutions << endl;
+    cout << endl << endl << "Number of Solutions OUTPUT: " << map_solutions << endl;
     cout << endl << "Number of Solutions is: " << ME.full_bins.size()  << endl;
 }
 // --------------------------------------------------

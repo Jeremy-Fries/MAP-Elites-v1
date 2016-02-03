@@ -107,7 +107,7 @@ void State::initialize_translate_limits(){
     state_variables_LowLimit.push_back(-0.2); /// phivel
     
     // control upper limits
-    control_UpLimits.push_back(000.0);    // thrust [N] /// previously 500
+    control_UpLimits.push_back(50.0);    // thrust [N] /// previously 500
     control_UpLimits.push_back(5);     // torque [Nm]
     
     // control lower limits
