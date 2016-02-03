@@ -114,7 +114,7 @@ void Wrapper::initialize_wrapper(int FILL, int MUTATE){
     hidden_layer_size = 5;
     
     /// PHENOTYPE LIMITS
-    pME->set_map_params(0, 12, 0, 30, 10, 10, FILL, MUTATE);                                                   //-------- To Change Map Settings
+    pME->set_map_params(500, 2500, 0, 20, 10, 10, FILL, MUTATE);                                                   //-------- To Change Map Settings
 
     // (dim1_min, dim1_max, dim2_min, dim2_max, resolution 1,2, fill generation, mutate generation)
     //pME->display_Map_params();        // TODO - delete and add print()
@@ -123,7 +123,7 @@ void Wrapper::initialize_wrapper(int FILL, int MUTATE){
     out_layer_size=(hidden_layer_size+1)*outs;
     int num_weights=in_layer_size+out_layer_size;
     
-    wrapper_sets_I_params(num_weights, num_weights, 0.05, 0.05, 4, 2);        //-------- To Change Individual Settings
+    wrapper_sets_I_params(num_weights, num_weights, 0.2, 0.2, 15, 0);        //-------- To Change Individual Settings
 
     // individual_size 1,2, mutate_magnitude 1,2, mutation_amount 1,2)
     // int size1, int size2, double mut_mag1, double mut_mag2, int mut_amo1, int mut_amo2
@@ -172,20 +172,33 @@ void Wrapper::fitness_calculation(State current){
     /// stay in air.
     //fit_rating += Sim.stateholder.size() * 1000;
     int I = Sim.stateholder.size();
-    for(int i=0; i<I; i++){
-        fit_rating -= Sim.stateholder.at(i).KEz/I;
+    int ilow = max(0,I-30);
+    for(int i=ilow; i<I; i++){
+        fit_rating -= abs(Sim.stateholder.at(i).zpos/I);
         //cout << "FIT2.1: " << fit_rating << endl;
-        fit_rating -= Sim.stateholder.at(i).KEx/I;
+        //fit_rating -= Sim.stateholder.at(i).KEx/I;
         //cout << "FIT2.2: " << fit_rating << endl;
-        fit_rating -= Sim.stateholder.at(i).KEp/I;
+        //fit_rating -= Sim.stateholder.at(i).KEp/I;
         //cout << "FIT2.3: " << fit_rating << endl;
-        fit_rating -= Sim.stateholder.at(i).zpos * mass * gravity/I;
+        //fit_rating -= Sim.stateholder.at(i).zpos * mass * gravity/I;
         //cout << "FIT2.4: " << fit_rating << endl;
     }
         
     
-    //cout << "FIT3: " << fit_rating << endl;
-        
+    
+    double zult = Sim.stateholder.at(I-1).zpos;
+    double zpenult = Sim.stateholder.at(I-2).zpos;
+    double delt=0.1;
+    cout << "\t";
+    cout << "IMPACT SPEED: " << abs(zult-zpenult)/delt << "\t" ;
+    cout << "GLIDE ANGLE: " << atan(Sim.stateholder.at(I-1).zvel/Sim.stateholder.at(I-1).xvel) * 180/3.1415 "\t";
+    
+    fit_rating = - abs(atan(Sim.stateholder.at(I-1).zvel/Sim.stateholder.at(I-1).xvel)) * 180/3.1415;
+    cout << "\tFIT3: " << fit_rating << "\t";
+    
+    
+    cout << endl;
+    
     /// Hang Fitness Calculation
     //double tar1=0;
     //double tar2=0;
@@ -225,11 +238,12 @@ void Wrapper::find_phenotypes(){
     int ilow = max(0,I-20);
     
     for(int i=ilow; i<I; i++){
-        phenotype_1 += abs(Sim.stateholder.at(i).zvel)/I;
+        //phenotype_1 += abs(Sim.stateholder.at(i).zvel)/I;
+        phenotype_1 += abs(Sim.stateholder.at(i).xpos)/I;
         phenotype_2 += abs(Sim.stateholder.at(i).zpos)/I;
     }
     
-    cout << "P1,2: " << phenotype_1 << " , " << phenotype_2 << endl;
+    cout << "P1,2: " << phenotype_1 << " , " << phenotype_2;// << endl;
     
     
     /// pheno 2 is

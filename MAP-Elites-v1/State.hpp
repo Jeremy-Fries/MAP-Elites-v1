@@ -88,26 +88,26 @@ void State::initialize_translate_limits(){
     
     // state variable upper limits
     //state_variables_UpLimit.push_back(2500.0);   // xpos [m]
-    state_variables_UpLimit.push_back(60.0);   // time [s]
-    state_variables_UpLimit.push_back(120.0);   // xvel [m/s]
-    state_variables_UpLimit.push_back(100.0);   // zpos [m]
+    state_variables_UpLimit.push_back(70.0);   // time [s]
+    state_variables_UpLimit.push_back(90.0);   // xvel [m/s]
+    state_variables_UpLimit.push_back(30.0);   // zpos [m]
     state_variables_UpLimit.push_back(10.0);   // zvel [m/s]
-    state_variables_UpLimit.push_back(1.0);    // sin(phi) [ratio of rad]
+    state_variables_UpLimit.push_back(0.5);    // sin(phi) [ratio of rad]
     state_variables_UpLimit.push_back(1.0);    // cos(phi) [ratio of rad]
-    state_variables_UpLimit.push_back(1.0); /// phivel
+    state_variables_UpLimit.push_back(0.2); /// phivel
     
     // state variable lower limits
     //state_variables_LowLimit.push_back(0.0);      // xpos [m]
-    state_variables_LowLimit.push_back(0.0);    // time [s]
-    state_variables_LowLimit.push_back(100.0);   // xvel [m/s]
-    state_variables_LowLimit.push_back(0.0);      // zpos [m]
+    state_variables_LowLimit.push_back(-10.0);    // time [s]
+    state_variables_LowLimit.push_back(40.0);   // xvel [m/s]
+    state_variables_LowLimit.push_back(-5.0);      // zpos [m]
     state_variables_LowLimit.push_back(-10.0);   // zvel [m/s]
-    state_variables_LowLimit.push_back(-1.0);    // sin(phi) [ratio of rad]
-    state_variables_LowLimit.push_back(-1.0);    // cos(phi) [ratio of rad]
-    state_variables_LowLimit.push_back(-1.0); /// phivel
+    state_variables_LowLimit.push_back(-0.5);    // sin(phi) [ratio of rad]
+    state_variables_LowLimit.push_back(0.0);    // cos(phi) [ratio of rad]
+    state_variables_LowLimit.push_back(-0.2); /// phivel
     
     // control upper limits
-    control_UpLimits.push_back(200.0);    // thrust [N] /// previously 500
+    control_UpLimits.push_back(000.0);    // thrust [N] /// previously 500
     control_UpLimits.push_back(5);     // torque [Nm]
     
     // control lower limits
@@ -156,7 +156,7 @@ void State::printround(ofstream & outfile, double thrust){
 
 
 void State::printround_LY(ofstream & file, double thrust, ofstream & windfile){
-    file << xpos << "\t" << zpos << endl;//<< "\t" <<  KEz << endl;
+    file << xpos << "\t" << zpos << "\t" << thrust << "\t" << phi << endl;//<< "\t" <<  KEz << endl;
     windfile << "\t" << time << "\t" << xWind << "\t" << zWind << endl;
     
 }

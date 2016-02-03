@@ -69,7 +69,7 @@ void Craft::initialize(int dl, int dr){
     
     frame.at(1).sdot = 0;
     //frame.at(0).sdot = 219.3548247;
-    frame.at(0).sdot = 230;
+    //frame.at(0).sdot = 230;
 }
 
 #endif /* Craft_hpp */
