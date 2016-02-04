@@ -96,7 +96,7 @@ public:
     void initialize_sim();
     void run_sim();
     void run_timestep(vector<double>);
-    void run_final_timestep(vector<double>);
+    void run_final_timestep(vector<double>, int);
     void end_sim();
     int check_stall(vector<State>);
 // --------------------------------------------------
@@ -267,7 +267,7 @@ void Simulator::run_timestep(vector<double> controls){
     //fitnessvector();    // potentially comment out // potential tag/ searchable
 }
 
-void Simulator::run_final_timestep(vector<double> controls){
+void Simulator::run_final_timestep(vector<double> controls, int map_solutions){
     forces = forcecalc(controls, lander, rhoair, aero, t);
     anglechange = anglechange + dynamicscalc(lander, forces, tstep, linear, rotational);
     t = t+tstep;
@@ -276,7 +276,8 @@ void Simulator::run_final_timestep(vector<double> controls){
     currentstate.translate_function();
     
     currentstate.stallcheck = check_stall(stateholder);              //check to see if stall condition is met
-    currentstate.printround_LY(myfile,controls.at(0),windfile);                //Output simulator outputs to screen and file
+    //currentstate.printround_LY(myfile,controls.at(0),windfile);                //Output simulator outputs to screen and file
+    currentstate.printround_SF(myfile,controls.at(0),windfile, map_solutions);                //Output simulator outputs to screen and file
     //fitnessvector();    // potentially comment out // potential tag/ searchable
 }
 // Runs the simulator while time is less than max time and lander is above ground

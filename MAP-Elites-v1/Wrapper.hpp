@@ -494,7 +494,7 @@ void Wrapper::print_entire_map_solution(){
             
             
             NN.activation_function(Sim.currentstate.state_variables_vec);
-            Sim.run_final_timestep(NN.communication_to_simulator());
+            Sim.run_final_timestep(NN.communication_to_simulator(), map_solutions);
             vector<double> CC = NN.communication_to_simulator();
             NN.Neural_Network_Reset();                      
         }
