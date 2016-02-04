@@ -50,7 +50,7 @@ void getWindSpeed(double &xCurrentSpeed, double &zCurrentSpeed, double t){
     WindSpeed.reserve(2);
     double xWindSpeed = (rand()%70)*.1;
     double zWindSpeed = (rand()%70)*.1;
-    xWindSpeed = 7*sin(2*t*3.14159/60)+pow(-1,xdirection)*xWindSpeed;
+    xWindSpeed = 15*sin(2*t*3.14159/60)+pow(-1,xdirection)*xWindSpeed;
     //xWindSpeed = 7*sin(2*t*3.14159/60);
     zWindSpeed = pow(-1,zdirection)*zWindSpeed;
     
@@ -105,7 +105,7 @@ vector<double> forcecalc(vector<double> controller, Craft& c, double rho, vector
     coefficients.reserve(10);
     
     //-----*****************------//
-    int WindSwitch = 0; // Set to 0 to turn Wind off, 1 to turn Wind On
+    int WindSwitch = 1; // Set to 0 to turn Wind off, 1 to turn Wind On
     //-----*****************------//
     
     vector<double> AirSpeed;

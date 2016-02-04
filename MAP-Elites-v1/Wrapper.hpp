@@ -114,7 +114,7 @@ void Wrapper::initialize_wrapper(int FILL, int MUTATE){
     hidden_layer_size = 5;
     
     /// PHENOTYPE LIMITS
-    pME->set_map_params(200, 2500, 0, 5, 10, 10, FILL, MUTATE);                                                   //-------- To Change Map Settings
+    pME->set_map_params(175, 500, 0, 4, 10, 10, FILL, MUTATE);                                                   //-------- To Change Map Settings
 
     // (dim1_min, dim1_max, dim2_min, dim2_max, resolution 1,2, fill generation, mutate generation)
     //pME->display_Map_params();        // TODO - delete and add print()
@@ -123,7 +123,7 @@ void Wrapper::initialize_wrapper(int FILL, int MUTATE){
     out_layer_size=(hidden_layer_size+1)*outs;
     int num_weights=in_layer_size+out_layer_size;
     
-    wrapper_sets_I_params(num_weights, num_weights, 0.2, 0.2, 10, 0);        //-------- To Change Individual Settings
+    wrapper_sets_I_params(num_weights, num_weights, 0.2, 0.2, 10, 10);        //-------- To Change Individual Settings
 
     // individual_size 1,2, mutate_magnitude 1,2, mutation_amount 1,2)
     // int size1, int size2, double mut_mag1, double mut_mag2, int mut_amo1, int mut_amo2
@@ -248,6 +248,9 @@ void Wrapper::find_phenotypes(){
         //cout << i << endl;
         //phenotype_1 += abs(Sim.stateholder.at(i).zvel)/I;
         phenotype_1 += abs(Sim.stateholder.at(i).xpos)/(I-ilow);
+        //if(i > I-10){
+        //phenotype_2 += Sim.stateholder.at(i).phi/(I-ilow);
+        //}
         //cout << abs(Sim.stateholder.at(i).xpos)/I << "\t";
         phenotype_2 += abs(Sim.stateholder.at(i).zpos)/(I-ilow);
     }
@@ -343,7 +346,10 @@ void Wrapper::fill_MAP(){
             
             // if stall() swich brain
             //NN.take_weights(get_individual_2_IH(I.get_individual1()), get_individual_2_HO(I.get_individual2()));
-            
+            double altitude_to_switch=5;
+            if(Sim.lander.frame.at(1).s < altitude_to_switch && Sim.lander.frame.at(1).sdot < 0){
+                NN.take_weights(get_individual_2_IH(I.get_individual2()), get_individual_2_HO(I.get_individual2()));
+            }
             
                 /// while Sim still has time AND the Craft is above ground level.
             NN.activation_function(Sim.currentstate.translate_function());
@@ -399,6 +405,12 @@ void Wrapper::mutate_MAP(){
         int UPPERLIMIT = 200;
         while (Sim.t<Sim.tmax && Sim.lander.frame.at(1).s > Sim.lander.frame.at(1).target && Sim.lander.frame.at(1).s < UPPERLIMIT){
                 /// while Sim still has time AND the Craft above ground level.
+            
+            double altitude_to_switch=5;
+            if(Sim.lander.frame.at(1).s < altitude_to_switch && Sim.lander.frame.at(1).sdot < 0){
+                NN.take_weights(get_individual_2_IH(ME.challenger.get_individual2()), get_individual_2_HO(ME.challenger.get_individual2()));
+            }
+            
             NN.activation_function(Sim.currentstate.state_variables_vec);
             Sim.run_timestep(NN.communication_to_simulator());
             NN.Neural_Network_Reset();
@@ -472,6 +484,15 @@ void Wrapper::print_entire_map_solution(){
         int UPPERLIMIT = 200;
         while (Sim.t<Sim.tmax && Sim.lander.frame.at(1).s > Sim.lander.frame.at(1).target && Sim.lander.frame.at(1).s < UPPERLIMIT){
                 /// while Sim still has time AND the Craft above ground level.
+            
+            double altitude_to_switch=5;
+            if(Sim.lander.frame.at(1).s < altitude_to_switch && Sim.lander.frame.at(1).sdot < 0){
+                vector<double> ih2 = get_individual_2_IH(ME.full_bins.at(element).current_individual.at(0).get_individual2());
+                vector<double> ho2 = get_individual_2_HO(ME.full_bins.at(element).current_individual.at(0).get_individual2());
+                NN.take_weights(ih2,ho2);
+            }
+            
+            
             NN.activation_function(Sim.currentstate.state_variables_vec);
             Sim.run_final_timestep(NN.communication_to_simulator());
             vector<double> CC = NN.communication_to_simulator();

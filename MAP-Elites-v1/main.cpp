@@ -76,7 +76,7 @@ int submain(){
   
     Wrapper W;
     
-    W.initialize_wrapper(20,100); // (Fill, Mutate)
+    W.initialize_wrapper(50,200); // (Fill, Mutate)
 
     // swtich statment, fill map or read map
     W.fill_MAP();
